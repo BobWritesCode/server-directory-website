@@ -1,0 +1,11 @@
+:root {
+    --aqua: rgb(57, 181, 181);
+}
+
+.tag {
+    background-color: var(--aqua);
+}
+
+.text-aqua {
+    color: var(--aqua);
+}
