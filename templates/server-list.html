@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
+    <!-- Main content -->
+    <div class="col-8">
+        <div class="p-1 m-3">
+            <h1 class="text-light">Server Listings</h1>
+        </div>
+        {% for item in object_list %}
+        <div class="d-flex border border-primary p-1 m-3">
+            <div class="col-2 p-1">
+                {% if "placeholder" in item.logo.url %}
+                <img class="img-fluid" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+                {% else %}
+                <img class="img-fluid" src=" {{ post.featured_image.url }}">
+                {% endif %}
+            </div>
+            <div class="col-9 p-1">
+                <h5 class="text-light">{{ item.title }}</h5>
+                <p class="text-light">{{ item.short_description }}</p>
+                <p class="text-light">Tags:
+                    {% for tag in item.tags.all %}
+                    <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
+                    {% endfor %}
+                </p>
+                <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ item.number_of_likes }} <span class="visually-hidden">likes.</span></p>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- Sidebar -->
+    <div class="col-4 bg-dark-secondary me-0 text-light">
+        {% for tag in game.tags %}
+        {% endfor %}
+    </div>
+</div>
+
+
+
+{%endblock%}
