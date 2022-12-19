@@ -1,7 +1,8 @@
 from django.urls import path
 
-from website.views import ServerListings
+from . import views
 
 urlpatterns = [
-    path('', ServerListings.as_view(), name='home'),
+    path('', views.HomePageView.as_view(), name='home'),
+    path('server-list/<slug>', views.ServerListings.as_view(), name='server-list'),
 ]
