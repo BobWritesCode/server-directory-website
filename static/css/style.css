@@ -2,10 +2,22 @@
     --aqua: rgb(57, 181, 181);
 }
 
+.height100vh {
+    height: 100vh;
+}
+
 .tag {
     background-color: var(--aqua);
 }
 
 .text-aqua {
     color: var(--aqua);
+}
+
+.bg-dark-secondary {
+    background-color: #150050;
+}
+
+.fill {
+    flex: 1 1 auto;
 }
