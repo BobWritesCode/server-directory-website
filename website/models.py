@@ -12,9 +12,11 @@ class Tag(models.Model):
         return f"{self.name}"
 
 class Game(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=False)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
+    image = CloudinaryField('image', default='placeholder', blank=False)
+    status = models.IntegerField(choices=STATUS, default=0)
 
     def __str__(self):
         return f"{self.name}"
