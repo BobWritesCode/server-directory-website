@@ -12,9 +12,17 @@ def index(request):
     ctx = {'games': games}
     return render(request, "index.html", ctx)
 
-
 class ServerListings(ListView):
-    model = ServerListing
-    queryset = ServerListing.objects.filter(status=1).order_by('-created_on')
-    template_name = 'server-list.html'
-    paginate_by = 10
+
+    def get(self, request, slug, *args, **kwargs):
+
+        game = get_object_or_404(Game, slug=slug)
+        queryset = ServerListing.objects.filter(status=1, game=game).order_by('-created_on')
+
+        return render(
+            request,
+            "server-list.html",
+            {
+                "serverlisting": queryset,
+            },
+        )
