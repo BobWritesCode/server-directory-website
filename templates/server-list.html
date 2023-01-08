@@ -19,7 +19,7 @@
                 {% endif %}
             </div>
             <div class="col-9 p-1">
-                <h5 class="text-light">{{ item.title }}</h5>
+                <a href="{% url 'server' item.slug %}"><h5 class="text-light">{{ item.title }}</h5></a>
                 <p class="text-light">{{ item.short_description }}</p>
                 <p class="text-light">Tags:
                     {% for tag in item.tags.all %}
