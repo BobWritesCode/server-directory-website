@@ -37,7 +37,9 @@
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
                 {% if user.is_authenticated %}
-                <li class="navbar-text"><strong>Hi {{ user.username }}!</strong></li>
+                <li class="navbar-text">
+                    <strong>Hi {{ user.username }}!</strong>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -46,6 +48,12 @@
                 {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="navbar-text">
+                    <span>/</span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
                 </li>
 
                 {% endif %}
