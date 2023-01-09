@@ -15,7 +15,7 @@
                 {% if "placeholder" in item.logo.url %}
                 <img class="img-fluid" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
                 {% else %}
-                <img class="img-fluid" src=" {{ post.featured_image.url }}">
+                <img class="img-fluid" src=" {{ item.logo.url }}">
                 {% endif %}
             </div>
             <div class="col-9 p-1">
