@@ -12,6 +12,11 @@ def index(request):
     ctx = {'games': games}
     return render(request, "index.html", ctx)
 
+
+def login(request):
+    return render(request, "account/login.html")
+
+
 class ServerListings(ListView):
 
     def get(self, request, slug, *args, **kwargs):
