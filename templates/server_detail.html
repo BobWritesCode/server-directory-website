@@ -6,6 +6,19 @@
     <div class="col-8">
 
         <h2 class="text-light">{{ server.title }}</h5>
+        <p class="text-light">{{ server.game }}</p>
+        {% if "placeholder" in server.logo.url %}
+        <img class="img-fluid mb-3" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+        {% else %}
+        <img class="img-fluid mb-3" src=" {{ server.logo.url }}">
+        {% endif %}
+        <p class="text-light mb-3">Tags:
+            {% for tag in server.tags.all %}
+            <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
+            {% endfor %}
+        </p>
+        <a class="btn btn-discord text-light mb-3" href="https://discord.com/invite/{{ server.discord }}" target="_blank" title="Link to discord server"><i class="fab fa-discord"></i> Join the discord server</a>
+        <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ server.number_of_likes }} <span class="visually-hidden">likes.</span></p>
         <p class="text-light">{{ server.short_description }}</p>
         <p class="text-light">{{ server.long_description }}</p>
 
