@@ -21,3 +21,12 @@
 .fill {
     flex: 1 1 auto;
 }
+
+.btn-discord {
+    background-color: #7289DA;
+    color: inherit;
+}
+
+.btn-discord:hover {
+    background-color: #5f74c0;
+}
