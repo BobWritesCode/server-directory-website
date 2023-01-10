@@ -8,8 +8,10 @@ from django.views import View, generic
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 
-from website.models import ServerListing, Game
-from .forms import ProfileForm
+
+
+from .models import ServerListing, Game
+from .forms import ProfileForm, CreateServerListingForm
 
 
 
@@ -26,8 +28,33 @@ def login(request):
 
 
 @login_required
+def server_create(request):
+
+    if request.method == 'POST':
+
+        form = CreateServerListingForm(request.POST)
+
+        if form.is_valid():
+            form.instance.owner = request.user
+            form.save()
+            return redirect('my-account')
+
+    else:
+        pass
+
+    return render(
+        request,
+        "server_create.html",
+        {
+            'form': CreateServerListingForm(),
+        }
+    )
+
+
+@login_required
 def myaccount(request):
     if request.method == 'POST':
+
         form = ProfileForm(request.POST, instance=request.user)
 
         if form.is_valid():

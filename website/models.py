@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
 STATUS = ((0, 'Draft'), (1, 'Published'))
@@ -47,3 +48,9 @@ class ServerListing(models.Model):
 
     def number_of_likes(self):
         return self.likes.count()
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            next_id = ServerListing.objects.order_by('-id').first().id + 1
+            self.slug = str(self.title) + '-' + str(next_id)
+        super(ServerListing, self).save(*args, **kwargs)

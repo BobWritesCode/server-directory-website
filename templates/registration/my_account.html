@@ -57,7 +57,7 @@
         {% if num_of_listings >= 3 %}
         <p>You cannot create any more listings, you have reach maximum number of listings for 1 account.</p>
         {% else %}
-        <button type="button" class="btn btn-success">Create listing</button>
+        <a class="btn btn-success" href="{% url 'server_create' %}">Create listing</a>
         {% endif %}
         <hr class="border border-primary border-3 opacity-75">
         <h3>Manage account</h3>
