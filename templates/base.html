@@ -51,13 +51,11 @@
 
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    <a class="ms-1 nav-link" href="{% url 'login' %}">Login</a>
                 </li>
-                <li class="navbar-text">
-                    <span>/</span>
-                </li>
+
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'signup' %}">Sign Up</a>
+                    <a class="ms-1 me-3 btn btn-outline-primary" href="{% url 'signup' %}">Sign Up</a>
                 </li>
 
                 {% endif %}
