@@ -1,11 +1,15 @@
 
-from django.shortcuts import render, get_object_or_404
-from django.views import View, generic
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views import View, generic
 from django.views.generic.list import ListView
-from django.views.generic.base import TemplateView
 from django.urls import reverse_lazy
-from website.models import ServerListing, Tag, Game
+
+from website.models import ServerListing, Game
+from .forms import ProfileForm
+
 
 
 def index(request):
@@ -18,6 +22,27 @@ def index(request):
 
 def login(request):
     return render(request, "registration/login.html")
+
+
+@login_required
+def myaccount(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect(to='my-account')
+    else:
+        form = ProfileForm(instance=request.user)
+
+    return render(
+        request,
+        'registration/my_account.html',
+        {
+            'form': form,
+        }
+    )
 
 
 class SignUpView(generic.CreateView):

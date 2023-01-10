@@ -8,4 +8,5 @@ urlpatterns = [
     path('server/<slug>', views.ServerDetail.as_view(), name='server'),
     path('accounts/login', views.login, name='login'),
     path('accounts/signup', views.SignUpView.as_view(), name='signup'),
+    path('accounts/myaccount', views.myaccount, name='my-account'),
 ]

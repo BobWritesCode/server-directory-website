@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}User Profile{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
+    <div class="col-8  align-items-center text-light">
+        <h2 class="text-center">My Account</h2>
+        <h3>Profile</h3>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input id="username" class="form-control" type="text" value="{{ user.username }}" aria-label="disable input for username" disabled>
+            </div>
+            <div class="mb-3">
+                {{ form|crispy }}
+            </div>
+            <button type="submit" class="btn btn-primary">Update profile</button>
+        </form>
+
+        <hr class="border border-primary border-3 opacity-75">
+        <h3>Servers</h3>
+        <p>Server list here</p>
+        <button type="button" class="btn btn-success">Create listing</button>
+        <hr class="border border-primary border-3 opacity-75">
+        <h3>Manage account</h3>
+        <button type="button" class="btn btn-primary mb-3">Change Password</button>
+        <br>
+        <button type="button" class="btn btn-danger">Delete Account</button>
+    </div>
+</div>
+{% endblock %}
