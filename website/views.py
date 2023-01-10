@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View, generic
 from django.views.generic.list import ListView
@@ -34,6 +35,9 @@ def myaccount(request):
             messages.success(request, 'Your profile is updated successfully')
             return redirect(to='my-account')
     else:
+        username = request.user
+        queryset = ServerListing.objects.filter(owner=username).order_by('-created_on')
+        num_of_listings = queryset.count()
         form = ProfileForm(instance=request.user)
 
     return render(
@@ -41,6 +45,8 @@ def myaccount(request):
         'registration/my_account.html',
         {
             'form': form,
+            "serverlisting": queryset,
+            'num_of_listings' : num_of_listings,
         }
     )
 

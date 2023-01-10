@@ -21,8 +21,44 @@
 
         <hr class="border border-primary border-3 opacity-75">
         <h3>Servers</h3>
-        <p>Server list here</p>
+
+        {% for item in serverlisting %}
+        <div class="border border-primary p-1 m-3">
+            <div class="d-flex">
+                <div class="col-2 p-1">
+                    {% if "placeholder" in item.logo.url %}
+                    <img class="img-fluid" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+                    {% else %}
+                    <img class="img-fluid" src=" {{ item.logo.url }}">
+                    {% endif %}
+                </div>
+                <div class="col-9 p-1">
+                    <a href="{% url 'server' item.slug %}"><h5 class="text-light">{{ item.title }}</h5></a>
+                    <p class="text-light">{{ item.short_description }}</p>
+                    <p class="text-light">Tags:
+                        {% for tag in item.tags.all %}
+                        <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ item.number_of_likes }} <span class="visually-hidden">likes.</span></p>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-primary mb-1">Edit</button>
+                {% if item.status == 0 %}
+                <button type="button" class="btn btn-danger mb-1">Disable</button>
+                {% else %}
+                <button type="button" class="btn btn-success mb-1">Enable</button>
+                {% endif %}
+                <button type="button" class="btn btn-danger mb-1">Delete</button>
+            </div>
+        </div>
+        {% endfor %}
+        {% if num_of_listings >= 3 %}
+        <p>You cannot create any more listings, you have reach maximum number of listings for 1 account.</p>
+        {% else %}
         <button type="button" class="btn btn-success">Create listing</button>
+        {% endif %}
         <hr class="border border-primary border-3 opacity-75">
         <h3>Manage account</h3>
         <button type="button" class="btn btn-primary mb-3">Change Password</button>
