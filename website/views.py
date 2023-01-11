@@ -3,16 +3,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View, generic
 from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 
-
-
+from cloudinary import uploader
 from .models import ServerListing, Game
 from .forms import ProfileForm, CreateServerListingForm
-
 
 
 def index(request):
@@ -31,13 +30,25 @@ def login(request):
 def server_create(request):
 
     if request.method == 'POST':
-
-        form = CreateServerListingForm(request.POST)
+        form = CreateServerListingForm(request.POST, request.FILES)
 
         if form.is_valid():
+            image = uploader.upload(request.FILES['logo'])
+            print(image)
+            form.instance.logo = image['url']
             form.instance.owner = request.user
             form.save()
+
             return redirect('my-account')
+
+        else:
+            return render(
+                request,
+                "server_create.html",
+                {
+                    'form': form,
+                }
+            )
 
     else:
         pass

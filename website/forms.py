@@ -24,8 +24,9 @@ class CreateServerListingForm(forms.ModelForm):
     short_description = forms.CharField(max_length=200, widget=forms.Textarea)
     long_description = forms.CharField(max_length=2000, widget=forms.Textarea)
     status = forms.ChoiceField(choices=((0, 'Draft'),(1, 'Published')))
-    discord =  forms.CharField(max_length=50)
+    discord =  forms.CharField(max_length=10)
+    logo = forms.ImageField(required=False)
 
     class Meta:
         model = ServerListing
-        fields = ['game', 'tags', 'title', 'short_description', 'long_description', 'status', 'discord']
+        fields = ['game', 'tags', 'title', 'short_description', 'long_description', 'status', 'discord', 'logo']

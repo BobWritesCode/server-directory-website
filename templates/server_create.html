@@ -1,18 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Create Server Listing{% endblock %}
+
 {% load crispy_forms_tags %}
+{% load cloudinary %}
+
 {% block content %}
+
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
     <div class="col-8  align-items-center text-light">
         <h2>Create Listing</h2>
 
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
                 {{ form|crispy }}
             </div>
             <button type="submit" class="btn btn-primary">Update profile</button>
         </form>
+
     </div>
 </div>
 
