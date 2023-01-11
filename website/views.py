@@ -32,8 +32,9 @@ def server_create(request):
         form = CreateServerListingForm(request.POST, request.FILES)
 
         if form.is_valid():
-            image = uploader.upload(request.FILES['logo'])
-            form.instance.logo = image['url']
+            if request.FILES:
+                image = uploader.upload(request.FILES['logo'])
+                form.instance.logo = image['url']
             form.instance.owner = request.user
             form.save()
 
