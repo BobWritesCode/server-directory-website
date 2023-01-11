@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Edit Server Listing{% endblock %}
+
+{% load crispy_forms_tags %}
+{% load cloudinary %}
+
+{% block content %}
+
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
+    <div class="col-8  align-items-center text-light">
+        <h2>Edit Listing</h2>
+        {% crispy form %}
+    </div>
+</div>
+
+{% endblock %}

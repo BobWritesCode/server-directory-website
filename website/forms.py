@@ -1,5 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Submit, HTML
+
 from website.models import Game, Tag, ServerListing
 
 
@@ -18,15 +22,79 @@ class CreateServerListingForm(forms.ModelForm):
     '''
     A form that allows the user to create a server listing.
     '''
-    game = forms.ModelChoiceField(queryset=Game.objects.filter(status=1).order_by('name'))
-    tags = forms.ModelMultipleChoiceField(Tag.objects)
-    title = forms.CharField(max_length=50)
-    short_description = forms.CharField(max_length=200, widget=forms.Textarea)
-    long_description = forms.CharField(max_length=2000, widget=forms.Textarea)
-    status = forms.ChoiceField(choices=((0, 'Draft'),(1, 'Published')))
-    discord =  forms.CharField(max_length=10)
-    logo = forms.ImageField(required=False)
+
+    game = forms.ModelChoiceField(
+        label = "Choose game:",
+        queryset=Game.objects.filter(status=1).order_by('name'),
+        required = True,
+    )
+
+    tags = forms.ModelMultipleChoiceField(
+        label = "Choose tags:",
+        queryset = Tag.objects.order_by('name'),
+        required = True,
+    )
+
+    title = forms.CharField(
+        label = "Name of server:",
+        max_length = 50,
+        required = True,
+    )
+
+    short_description = forms.CharField(
+        label = "Short description:",
+        max_length = 200,
+        widget = forms.Textarea,
+        required = True,
+    )
+
+    long_description = forms.CharField(
+        label = "Long description:",
+        max_length = 2000,
+        widget = forms.Textarea,
+        required = True,
+    )
+
+    status = forms.TypedChoiceField(
+        label = "Status:",
+        choices = ((1, "Published"), (0, "Draft")),
+        coerce = lambda x: bool(int(x)),
+        widget = forms.RadioSelect,
+        initial = '0',
+        required = True,
+    )
+
+    discord =  forms.CharField(
+        label = "Discord server invite:",
+        max_length = 10,
+        required = True,
+    )
+
+    logo = forms.ImageField(
+        label = "Update image:",
+        widget = forms.FileInput,
+        required = False,
+    )
 
     class Meta:
         model = ServerListing
         fields = ['game', 'tags', 'title', 'short_description', 'long_description', 'status', 'discord', 'logo']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                'first arg is the legend of the fieldset',
+                'game',
+                'title',
+                HTML("""{% if item.logo.url %}<img class="img-fluid" src="{{ item.logo.url }}">{% endif %}""", ),
+                'logo',
+                'tags',
+                'short_description',
+                'long_description',
+                'discord',
+                'status',
+            ),
+            Submit('submit', 'Submit', css_class='btn btn-primary'),
+        )

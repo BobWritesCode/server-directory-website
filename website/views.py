@@ -33,7 +33,6 @@ def server_create(request):
 
         if form.is_valid():
             image = uploader.upload(request.FILES['logo'])
-            print(image)
             form.instance.logo = image['url']
             form.instance.owner = request.user
             form.save()
@@ -57,6 +56,26 @@ def server_create(request):
             'form': CreateServerListingForm(),
         }
     )
+
+@login_required
+def server_edit(request, item_pk):
+    item = get_object_or_404(ServerListing, pk=item_pk)
+    if request.method == "POST":
+        form = CreateServerListingForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            if request.FILES:
+                image = uploader.upload(request.FILES['logo'])
+                form.instance.logo = image['url']
+            form.save()
+            return redirect('my-account')
+
+    form = CreateServerListingForm(instance=item)
+
+    context = {
+        'form': form,
+        'item': item,
+    }
+    return render(request, 'server_edit.html', context)
 
 
 @login_required

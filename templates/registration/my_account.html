@@ -44,7 +44,7 @@
                 </div>
             </div>
             <div>
-                <button type="button" class="btn btn-primary mb-1">Edit</button>
+                <a class="btn btn-primary mb-1"  href="/server_edit/{{item.pk}}">Edit</a>
                 {% if item.status == 0 %}
                 <button type="button" class="btn btn-danger mb-1">Disable</button>
                 {% else %}

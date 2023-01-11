@@ -24,18 +24,18 @@ class Game(models.Model):
 
 class ServerListing(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="server_listings")
-    tags = models.ManyToManyField(Tag, blank=True)
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
+    logo = CloudinaryField('image', default='placeholder')
+    tags = models.ManyToManyField(Tag, blank=True)
     short_description = models.TextField(max_length=200)
     long_description = models.TextField(max_length=2000)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="server_owner")
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    logo = CloudinaryField('image', default='placeholder')
-    status = models.IntegerField(choices=STATUS, default=0)
     discord =  models.CharField(max_length=50)
     likes = models.ManyToManyField(User, related_name="server_likes", blank=True)
+    status = models.IntegerField(choices=STATUS, default=0)
 
     class Meta:
         ordering = ['-created_on']
