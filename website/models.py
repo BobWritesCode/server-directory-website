@@ -50,7 +50,9 @@ class ServerListing(models.Model):
         return self.likes.count()
 
     def save(self, *args, **kwargs):
-        if not self.id:
+        if self.pk:
+            self.slug = f'Listing-{self.pk}'
+        else:
             next_id = ServerListing.objects.order_by('-id').first().id + 1
-            self.slug = str(self.title) + '-' + str(next_id)
+            self.slug = f'Listing-{next_id}'
         super(ServerListing, self).save(*args, **kwargs)
