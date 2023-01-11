@@ -3,6 +3,7 @@ from .models import ServerListing, Tag, Game
 
 @admin.register(ServerListing)
 class ServerListingAdmin(admin.ModelAdmin):
+    list_display = ('title', 'game', 'status',  'created_on', 'updated_on')
     prepopulated_fields = {'slug': ('title',)}
     list_filter = ('status', 'created_on')
 
