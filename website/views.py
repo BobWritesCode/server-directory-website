@@ -28,7 +28,6 @@ def login(request):
 
 @login_required
 def server_create(request):
-
     if request.method == 'POST':
         form = CreateServerListingForm(request.POST, request.FILES)
 
@@ -49,10 +48,8 @@ def server_create(request):
                     'form': form,
                 }
             )
-
     else:
         pass
-
     return render(
         request,
         "server_create.html",
@@ -60,6 +57,13 @@ def server_create(request):
             'form': CreateServerListingForm(),
         }
     )
+
+
+@login_required
+def server_delete(request, item_pk):
+    item = get_object_or_404(ServerListing, pk=item_pk)
+    item.delete()
+    return redirect('my-account')
 
 
 @login_required

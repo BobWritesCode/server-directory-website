@@ -10,4 +10,5 @@ urlpatterns = [
     path('accounts/signup', views.SignUpView.as_view(), name='signup'),
     path('accounts/myaccount', views.myaccount, name='my-account'),
     path('server_create', views.server_create, name='server_create'),
+    path('server_delete/<item_pk>', views.server_delete, name='server_delete'),
 ]

@@ -50,7 +50,7 @@
                 {% else %}
                 <button type="button" class="btn btn-success mb-1">Enable</button>
                 {% endif %}
-                <button type="button" class="btn btn-danger mb-1">Delete</button>
+                <a class="btn btn-danger mb-1"  href="/server_delete/{{item.pk}}">Delete</a>
             </div>
         </div>
         {% endfor %}
