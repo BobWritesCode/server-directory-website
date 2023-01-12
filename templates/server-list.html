@@ -33,8 +33,15 @@
         {% endfor %}
     </div>
     <!-- Sidebar -->
-    <div class="col-4 bg-3 me-0 text-light">
-        {% for tag in game.tags %}
+    <div class="col-4 bg-3 me-0 text-light ps-3 pt-3">
+        <h3>Filter search</h3>
+        <h4>Tag selected</h4>
+        {% for selected_tag in selected_tags %}
+        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'R%'|add:selected_tag|add:tag_string %}" role="button">{{ selected_tag }}</a>
+        {% endfor %}
+        <h4>Select Tags</h4>
+        {% for tag in tags %}
+        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'A%'|add:tag.name|add:tag_string %}" role="button">{{ tag.name }}</a>
         {% endfor %}
     </div>
 </div>
