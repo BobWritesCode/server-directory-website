@@ -10,15 +10,15 @@
             <h1 class="text-light">Server Listings</h1>
         </div>
         {% for item in serverlisting %}
-        <div class="d-flex border border-primary p-1 m-3">
-            <div class="col-2 p-1">
+        <div class="d-flex p-1 m-3 bg-1 rounded-3">
+            <div class="col-4 p-1">
                 {% if "placeholder" in item.logo.url %}
-                <img class="img-fluid" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+                <img class="img-thumbnail" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
                 {% else %}
-                <img class="img-fluid" src=" {{ item.logo.url }}">
+                <img class="img-thumbnail" src=" {{ item.logo.url }}">
                 {% endif %}
             </div>
-            <div class="col-9 p-1">
+            <div class="col-4 p-1">
                 <a href="{% url 'server' item.slug %}"><h5 class="text-light">{{ item.title }}</h5></a>
                 <p class="text-light">{{ item.short_description }}</p>
                 <p class="text-light">Tags:
@@ -26,14 +26,14 @@
                     <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
                     {% endfor %}
                 </p>
-                <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ item.number_of_likes }} <span class="visually-hidden">likes.</span></p>
+                <p class="text-aqua"><span class="bumps">{{ item.number_of_bumps }} Bumps</span></p>
 
             </div>
         </div>
         {% endfor %}
     </div>
     <!-- Sidebar -->
-    <div class="col-4 bg-dark-secondary me-0 text-light">
+    <div class="col-4 bg-3 me-0 text-light">
         {% for tag in game.tags %}
         {% endfor %}
     </div>
