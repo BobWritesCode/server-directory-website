@@ -34,7 +34,8 @@ class ServerListing(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     discord =  models.CharField(max_length=50)
-    likes = models.ManyToManyField(User, related_name="server_likes", blank=True)
+    bumps = models.ManyToManyField(User, related_name="server_bumps", blank=True)
+    last_bump = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
 
     class Meta:
@@ -46,8 +47,8 @@ class ServerListing(models.Model):
     def number_of_tags(self):
         return self.tags.count()
 
-    def number_of_likes(self):
-        return self.likes.count()
+    def number_of_bumps(self):
+        return self.bumps.count()
 
     def save(self, *args, **kwargs):
         if self.pk:
