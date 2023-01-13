@@ -1,7 +1,7 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
@@ -22,10 +22,6 @@ def index(request):
         'tag_string' : "0",
         }
     return render(request, "index.html", ctx)
-
-
-def login(request):
-    return render(request, "registration/login.html")
 
 
 @login_required
@@ -107,6 +103,12 @@ def myaccount(request):
             'num_of_listings' : num_of_listings,
         }
     )
+
+
+class LoginView(generic.CreateView):
+    template_name = "registration/signup.html"
+    authentication_form = AuthenticationForm
+    success_url = reverse_lazy("home")
 
 
 class SignUpView(generic.CreateView):
