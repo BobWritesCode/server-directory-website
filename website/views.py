@@ -137,19 +137,27 @@ def server_listings(request, slug, tag_string=""):
         if action == "A":
             'Prepare new tag_string to send to front-end'
             tag_string = '%' + '%'.join(selected_tags)
-            'Use list comprehension to remove selected tags from all available tags'
-            tags = [x for x in game.tags.all() if x.name not in selected_tags]
+
         else:
+            'Which tag has been selected to be removed'
             to_be_removed = selected_tags.pop(0)
+
+            'Remove tag from selected list'
             selected_tags.remove(to_be_removed)
+
+            'Check to see if all tags have been unselected'
+            'Prepare tag_string'
             if len(selected_tags) != 0:
                 tag_string = '%' + '%'.join(selected_tags)
             else:
                 tag_string = ''
 
-        'Narrows list down based on tags picked by user'
+        'Narrows server list down based on tags picked by user'
         for value in selected_tags:
             queryset = queryset.filter(tags__name=value)
+
+        'Use list comprehension to remove selected tags from all available tags'
+        tags = [x for x in game.tags.all() if x.name not in selected_tags]
 
     else:
         'If tag_string empty then create empty list'
