@@ -11,15 +11,15 @@
         </div>
         {% for item in serverlisting %}
         <div class="d-flex p-1 m-3 bg-1 rounded-3">
-            <div class="col-4 p-1">
+            <div class="p-1 position-relative overflow-hidden">
                 {% if "placeholder" in item.logo.url %}
-                <img class="img-thumbnail" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+                <img class="myimg" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
                 {% else %}
-                <img class="img-thumbnail" src=" {{ item.logo.url }}">
+                <img class="myimg" src=" {{ item.logo.url }}">
                 {% endif %}
             </div>
-            <div class="col-4 p-1">
-                <a href="{% url 'server' item.slug %}"><h5 class="text-light">{{ item.title }}</h5></a>
+            <div class="p-1">
+                <a href="{% url 'server' item.slug %}" class="text-decoration-none"><h5 class="text-light">{{ item.title }}</h5></a>
                 <p class="text-light">{{ item.short_description }}</p>
                 <p class="text-light">Tags:
                     {% for tag in item.tags.all %}
