@@ -3,14 +3,69 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='home'),
-    path('server-list/<str:slug>', views.server_listings, name='server-list'),
-    path('server-list/<str:slug>/<str:tag_string>', views.server_listings, name='server-list-wth-tags'),
-    path('server/<slug>', views.ServerDetail.as_view(), name='server'),
-    path('accounts/login', views.LoginView.as_view(), name='login'),
-    path('accounts/signup', views.SignUpView.as_view(), name='signup'),
-    path('accounts/myaccount', views.myaccount, name='my-account'),
-    path('server_create', views.server_create, name='server_create'),
-    path('server_edit/<item_pk>', views.server_edit, name='server_edit'),
-    path('server_delete/<item_pk>', views.server_delete, name='server_delete'),
+    path(
+        '',
+        views.index,
+        name='home'
+    ),
+
+    path(
+        'server-list/<str:slug>',
+        views.server_listings,
+        name='server-list'
+    ),
+
+    path(
+        'server-list/<str:slug>/<str:tag_string>',
+        views.server_listings,
+        name='server-list-wth-tags'
+    ),
+
+    path(
+        'server/<slug>',
+        views.ServerDetail.as_view(),
+        name='server'
+    ),
+
+    path(
+        'accounts/myaccount',
+        views.myaccount,
+        name='my-account'
+    ),
+
+    path(
+        'accounts/login',
+        views.LoginView.as_view(),
+        name='login'
+    ),
+
+    path(
+        'accounts/signup',
+        views.SignUpView.as_view(),
+        name='signup'
+    ),
+
+    path(
+        'accounts/password_change/',
+        views.PasswordChangeView.as_view(),
+        name='password_change'
+    ),
+
+    path(
+        'server_create',
+        views.server_create,
+        name='server_create'
+    ),
+
+    path(
+        'server_edit/<item_pk>',
+        views.server_edit,
+        name='server_edit'
+    ),
+
+    path(
+        'server_delete/<item_pk>',
+        views.server_delete,
+        name='server_delete'
+    ),
 ]
