@@ -1,20 +1,32 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views import View, generic
 from django.urls import reverse_lazy
+from django.views import View, generic
 
 from cloudinary import uploader
+
 from .models import ServerListing, Game, Tag
 from .forms import ProfileForm, CreateServerListingForm
 
+def send_mail_tu_user():
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'contact@warwickhart.com',
+        ['warwick_hart@hotmail.com'],
+        fail_silently=False,
+    )
+
 
 def index(request):
+
     games = Game.objects.filter(status=1)
     ctx = {
         'games': games,
@@ -103,23 +115,10 @@ def myaccount(request):
     )
 
 
-class LoginView(generic.CreateView):
-    template_name = "registration/signup.html"
-    authentication_form = AuthenticationForm
-    success_url = reverse_lazy("home")
-
-
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
     template_name = "registration/signup.html"
-
-
-class PasswordChangeView(generic.CreateView):
-    template_name = "registration/password_change_form.html"
-    success_url = 'password_change_done'
-    form_class = PasswordChangeForm
-    extra_context = {}
 
 
 def server_listings(request, slug, tag_string=""):

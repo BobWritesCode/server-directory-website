@@ -1,4 +1,8 @@
-from django.urls import path
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from django.urls import path, reverse_lazy
+
+
 
 from . import views
 
@@ -35,7 +39,11 @@ urlpatterns = [
 
     path(
         'accounts/login',
-        views.LoginView.as_view(),
+        auth_views.LoginView.as_view(
+            template_name = 'registration/signup.html',
+            authentication_form = AuthenticationForm,
+            success_url = reverse_lazy("home"),
+            ),
         name='login'
     ),
 
@@ -47,7 +55,12 @@ urlpatterns = [
 
     path(
         'accounts/password_change/',
-        views.PasswordChangeView.as_view(),
+        auth_views.PasswordChangeView.as_view(
+            template_name = "registration/password_change_form.html",
+            success_url = 'password_change_done',
+            form_class = PasswordChangeForm,
+            extra_context = {},
+        ),
         name='password_change'
     ),
 
