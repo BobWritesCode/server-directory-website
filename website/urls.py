@@ -1,5 +1,8 @@
 from django.contrib.auth import views as auth_views
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.forms import (
+    AuthenticationForm, PasswordChangeForm, PasswordResetForm,
+    SetPasswordForm
+    )
 from django.urls import path, reverse_lazy
 
 
@@ -84,6 +87,17 @@ urlpatterns = [
             extra_context = {},
         ),
         name='password_change'
+    ),
+
+    path(
+        'accounts/reset/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name = "registration/password_reset_confirm.html",
+            success_url = 'password_reset_complete',
+            form_class = SetPasswordForm,
+            extra_context = {},
+        ),
+        name='password_reset_confirm'
     ),
 
     path(
