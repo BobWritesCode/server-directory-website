@@ -17,6 +17,22 @@ class ProfileForm(forms.ModelForm):
         model = User
         fields = ['email']
 
+class ConfirmAccountDeleteForm(forms.ModelForm):
+    '''
+    A form for user to confirm deletion of their account.
+    '''
+    confirm = forms.CharField(
+        label = f'To confirm deletion please type "remove" in the below box and then hit confirm:',
+        max_length = 10,
+        error_messages={'required': f'To confirm deletion please type "<strong>remove</strong>" in the below box and then hit confirm'},
+        required = True,
+    )
+
+    class Meta:
+        model = User
+        fields = ['id']
+
+
 
 class CreateServerListingForm(forms.ModelForm):
     '''

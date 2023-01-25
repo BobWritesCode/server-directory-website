@@ -16,13 +16,13 @@
             <div class="mb-3">
                 {{ form|crispy }}
             </div>
-            <button type="submit" class="btn btn-primary">Update profile</button>
+            <button type="submit" class="btn btn-primary" name="account-email-update">Update profile</button>
         </form>
 
         <hr class="border border-primary border-3 opacity-75">
         <h3>Servers</h3>
 
-        {% for item in serverlisting %}
+        {% for item in server_listing %}
         <div class="border border-primary p-1 m-3">
             <div class="d-flex">
                 <div class="col-2 p-1">
@@ -63,7 +63,38 @@
         <h3>Manage account</h3>
         <a class="btn btn-success mb-3" href="{% url 'password_change' %}">Change Password</a>
         <br>
-        <button type="button" class="btn btn-danger">Delete Account</button>
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete-account-modal">
+            Delete Account
+        </button>
+
+        <div class="modal fade text-dark" id="delete-account-modal" tabindex="-1" role="dialog" aria-labelledby="Delete Account Modal"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">Delete Account Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <p>
+                                Deleting your account is permanent and irreversible.
+                                <br>
+                                <br>All information linked to the account will also be deleted including any listings.
+                            </p>
+                            {{ form_2|crispy }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger" name="account-delete-confirm">Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Account Deleted{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
+    <div class="col-8  align-items-center text-light">
+        <h2>Account deleted</h2>
+
+        <p>Your account has now been deleted</p>
+
+        <a href="{% url 'home' %}" class="btn btn-primary">Homepage</a>
+
+    </div>
+</div>
+{% endblock %}

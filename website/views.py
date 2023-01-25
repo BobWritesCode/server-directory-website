@@ -13,7 +13,10 @@ from django.views import View, generic
 from cloudinary import uploader
 
 from .models import ServerListing, Game, Tag
-from .forms import ProfileForm, CreateServerListingForm
+from .forms import (
+    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm
+)
+
 
 def send_mail_tu_user():
     send_mail(
@@ -26,13 +29,15 @@ def send_mail_tu_user():
 
 
 def index(request):
-
     games = Game.objects.filter(status=1)
     ctx = {
         'games': games,
-        'tag_string' : "0",
-        }
+        'tag_string': "0",
+    }
     return render(request, "index.html", ctx)
+
+def account_deleted(request):
+    return render(request, "registration/account_deleted.html")
 
 
 @login_required
@@ -63,11 +68,13 @@ def server_create(request):
         }
     )
 
+
 @login_required
 def server_edit(request, item_pk):
     item = get_object_or_404(ServerListing, pk=item_pk)
     if request.method == "POST":
-        form = CreateServerListingForm(request.POST, request.FILES, instance=item)
+        form = CreateServerListingForm(
+            request.POST, request.FILES, instance=item)
         if form.is_valid():
             if request.FILES:
                 image = uploader.upload(request.FILES['logo'])
@@ -92,28 +99,49 @@ def server_delete(request, item_pk):
 
 
 @login_required
-def myaccount(request):
+def my_account(request):
     if request.method == 'POST':
-        form = ProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your profile is updated successfully')
-            return redirect(to='my-account')
-    else:
-        username = request.user
-        queryset = ServerListing.objects.filter(owner=username).order_by('-created_on')
-        num_of_listings = queryset.count()
-        form = ProfileForm(instance=request.user)
+        # Let's see if the user is trying to delete there account.
+        if (
+            ConfirmAccountDeleteForm(request.POST, instance=request.user)
+            and 'account-delete-confirm' in request.POST
+        ):
+            form_2 = ConfirmAccountDeleteForm(request.POST)
+            # Check if user has typed the correct phrase and hit submit
+            if form_2.is_valid() and form_2.data['confirm'] == 'remove':
+                User.objects.get(username = request.user).delete()
+                return redirect(to='account_deleted')
+
+        # Check to see if user is trying to update their email address.
+        # If so, then save new email address to database.
+        if (
+            ProfileForm(request.POST, instance=request.user)
+            and 'account-email-update' in request.POST
+        ):
+            form = ProfileForm(request.POST, instance=request.user)
+            if form.is_valid():
+                form.save()
+                messages.success(
+                    request, 'Your profile is updated successfully')
+                # return redirect(to='my-account')
+
+    username = request.user
+    queryset = ServerListing.objects.filter(
+        owner=username).order_by('-created_on')
+    num_of_listings = queryset.count()
+    form = ProfileForm(instance=request.user)
+    form_2 = ConfirmAccountDeleteForm(instance=request.user)
+
     return render(
         request,
         'registration/my_account.html',
         {
             'form': form,
-            "serverlisting": queryset,
-            'num_of_listings' : num_of_listings,
+            'form_2': form_2,
+            "server_listing": queryset,
+            'num_of_listings': num_of_listings,
         }
     )
-
 
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm

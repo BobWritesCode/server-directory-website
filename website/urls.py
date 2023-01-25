@@ -2,9 +2,8 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import (
     AuthenticationForm, PasswordChangeForm, PasswordResetForm,
     SetPasswordForm
-    )
+)
 from django.urls import path, reverse_lazy
-
 
 
 from . import views
@@ -35,18 +34,18 @@ urlpatterns = [
     ),
 
     path(
-        'accounts/myaccount',
-        views.myaccount,
+        'accounts/my_account',
+        views.my_account,
         name='my-account'
     ),
 
     path(
         'accounts/login',
         auth_views.LoginView.as_view(
-            template_name = 'registration/signup.html',
-            authentication_form = AuthenticationForm,
-            success_url = reverse_lazy("home"),
-            ),
+            template_name='registration/signup.html',
+            authentication_form=AuthenticationForm,
+            success_url=reverse_lazy("home"),
+        ),
         name='login'
     ),
 
@@ -59,10 +58,10 @@ urlpatterns = [
     path(
         'accounts/password_change/',
         auth_views.PasswordChangeView.as_view(
-            template_name = "registration/password_change_form.html",
-            success_url = 'password_change_done',
-            form_class = PasswordChangeForm,
-            extra_context = {},
+            template_name="registration/password_change_form.html",
+            success_url='password_change_done',
+            form_class=PasswordChangeForm,
+            extra_context={},
         ),
         name='password_change'
     ),
@@ -70,10 +69,10 @@ urlpatterns = [
     path(
         'accounts/password_change/',
         auth_views.PasswordChangeView.as_view(
-            template_name = "registration/password_change_form.html",
-            success_url = 'password_change_done',
-            form_class = PasswordChangeForm,
-            extra_context = {},
+            template_name="registration/password_change_form.html",
+            success_url='password_change_done',
+            form_class=PasswordChangeForm,
+            extra_context={},
         ),
         name='password_change'
     ),
@@ -81,10 +80,10 @@ urlpatterns = [
     path(
         'accounts/password_reset/',
         auth_views.PasswordResetView.as_view(
-            template_name = "registration/password_reset_form.html",
-            success_url = 'password_reset_done',
-            form_class = PasswordResetForm,
-            extra_context = {},
+            template_name="registration/password_reset_form.html",
+            success_url='password_reset_done',
+            form_class=PasswordResetForm,
+            extra_context={},
         ),
         name='password_change'
     ),
@@ -92,12 +91,18 @@ urlpatterns = [
     path(
         'accounts/reset/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
-            template_name = "registration/password_reset_confirm.html",
-            success_url = 'password_reset_complete',
-            form_class = SetPasswordForm,
-            extra_context = {},
+            template_name="registration/password_reset_confirm.html",
+            success_url='password_reset_complete',
+            form_class=SetPasswordForm,
+            extra_context={},
         ),
         name='password_reset_confirm'
+    ),
+
+    path(
+        'accounts/account_deleted/',
+        views.account_deleted,
+        name='account_deleted'
     ),
 
     path(
