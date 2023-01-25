@@ -42,7 +42,7 @@ urlpatterns = [
     path(
         'accounts/login',
         auth_views.LoginView.as_view(
-            template_name='registration/signup.html',
+            template_name='registration/login.html',
             authentication_form=AuthenticationForm,
             success_url=reverse_lazy("home"),
         ),
