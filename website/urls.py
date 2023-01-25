@@ -74,7 +74,7 @@ urlpatterns = [
             form_class=PasswordResetForm,
             extra_context={},
         ),
-        name='password_change'
+        name='password_reset'
     ),
 
     path(
