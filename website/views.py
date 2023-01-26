@@ -116,19 +116,21 @@ def server_delete(request, item_pk):
 @login_required
 def my_account(request):
     if request.method == 'POST':
-
         # Check to see if the user is trying to update there email address.
         if (
             UserUpdateEmailAddressForm(request.POST, instance=request.user)
-            and 'account-delete-confirm' in request.POST
+            and 'email-address-update-confirm' in request.POST
         ):
-            form_3 = UserUpdateEmailAddressForm(instance=request.user)
+            form_3 = UserUpdateEmailAddressForm(request.POST)
             if form_3.is_valid():
-                u = CustomUser.objects.get(username=request.user)
-                u.email_verified = False
-                u.save()
-                # send verification email()
-                # reload page
+                user = CustomUser.objects.get(email=request.user)
+                # Flag email address as unverified
+                user.email_verified = False
+                # Save to database.
+                user.save()
+                # Send verification email to the user.
+                send_email_verification(request, user, form_3)
+                return redirect('signup_verify_email')
 
         # Let's see if the user is trying to delete there account.
         if (
@@ -140,19 +142,6 @@ def my_account(request):
             if form_2.is_valid() and form_2.data['confirm'] == 'remove':
                 CustomUser.objects.get(username=request.user).delete()
                 return redirect(to='account_deleted')
-
-        # Check to see if user is trying to update their email address.
-        # If so, then save new email address to database.
-        if (
-            ProfileForm(request.POST, instance=request.user)
-            and 'account-email-update' in request.POST
-        ):
-            form = ProfileForm(request.POST, instance=request.user)
-            if form.is_valid():
-                form.save()
-                messages.success(
-                    request, 'Your profile is updated successfully')
-                # return redirect(to='my-account')
 
     username = request.user
     queryset = ServerListing.objects.filter(
@@ -192,24 +181,7 @@ def sign_up_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            # Prepare email to be sent.
-            current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
-            message = render_to_string('email_templates/verify_email_address.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
-            # Send email to user.
-            send_mail(
-                subject=mail_subject,
-                message=message,
-                from_email='contact@warwickhart.com',
-                recipient_list=[to_email]
-            )
-            # Direct user to next page.
+            send_email_verification(request, user, form)
             return redirect('signup_verify_email')
     else:
         form = SignupForm()
@@ -314,3 +286,27 @@ class ServerDetail(View):
                 "server": server,
             },
         )
+
+
+def send_email_verification(request, user, form):
+    '''
+    Send email address verification to user
+    '''
+    print("here")
+    current_site = get_current_site(request)
+    mail_subject = 'Verify your email address.'
+    message = render_to_string('email_templates/verify_email_address.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': default_token_generator.make_token(user),
+    })
+    to_email = form.cleaned_data.get('email')
+    # Send email to user.
+    send_mail(
+        subject=mail_subject,
+        message=message,
+        from_email='contact@warwickhart.com',
+        recipient_list=[to_email]
+    )
+    print(to_email)

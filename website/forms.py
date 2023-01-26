@@ -11,7 +11,7 @@ class ProfileForm(forms.ModelForm):
     '''
     A form that allows the user to update their profile information.
     '''
-    email = forms.EmailField(label=("Email address"), required=True)
+    email = forms.EmailField(label=("Email address"), required=True, disabled=True)
     email_verified = forms.BooleanField(label=("Verified?"), disabled=True)
 
     class Meta:
@@ -48,13 +48,13 @@ class UserUpdateEmailAddressForm(forms.ModelForm):
     '''
     A form for user to update their email address.
     '''
-    email_1 = forms.EmailField(
+    email = forms.EmailField(
         label=f'New email address:',
         error_messages={'required': f'Required'},
         required=True,
     )
 
-    email_2 = forms.EmailField(
+    email_confirm = forms.EmailField(
         label=f'Repeat new email address:',
         error_messages={'required': f'Required'},
         required=True,

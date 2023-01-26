@@ -11,13 +11,17 @@
             {% csrf_token %}
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input id="username" class="form-control" type="text" value="{{ user.username }}" aria-label="disable input for username" disabled>
+                <input id="username" class="form-control" type="text" value="{{ user.username }}"
+                    aria-label="disable input for username" disabled>
             </div>
             <div class="mb-3">
                 {{ form|crispy }}
             </div>
-            <button type="submit" class="btn btn-primary" name="account-email-update">Update profile</button>
         </form>
+
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#email-address-update-modal">
+            Update Email address
+        </button>
 
         <hr class="border border-primary border-3 opacity-75">
         <h3>Servers</h3>
@@ -33,24 +37,27 @@
                     {% endif %}
                 </div>
                 <div class="col-9 p-1">
-                    <a href="{% url 'server' item.slug %}"><h5 class="text-light">{{ item.title }}</h5></a>
+                    <a href="{% url 'server' item.slug %}">
+                        <h5 class="text-light">{{ item.title }}</h5>
+                    </a>
                     <p class="text-light">{{ item.short_description }}</p>
                     <p class="text-light">Tags:
                         {% for tag in item.tags.all %}
                         <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
                         {% endfor %}
                     </p>
-                    <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ item.number_of_likes }} <span class="visually-hidden">likes.</span></p>
+                    <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ item.number_of_likes }} <span
+                            class="visually-hidden">likes.</span></p>
                 </div>
             </div>
             <div>
-                <a class="btn btn-primary mb-1"  href="/server_edit/{{item.pk}}">Edit</a>
+                <a class="btn btn-primary mb-1" href="/server_edit/{{item.pk}}">Edit</a>
                 {% if item.status == 0 %}
                 <button type="button" class="btn btn-danger mb-1">Disable</button>
                 {% else %}
                 <button type="button" class="btn btn-success mb-1">Enable</button>
                 {% endif %}
-                <a class="btn btn-danger mb-1"  href="/server_delete/{{item.pk}}">Delete</a>
+                <a class="btn btn-danger mb-1" href="/server_delete/{{item.pk}}">Delete</a>
             </div>
         </div>
         {% endfor %}
@@ -67,8 +74,9 @@
             Delete Account
         </button>
 
-        <div class="modal fade text-dark" id="delete-account-modal" tabindex="-1" role="dialog" aria-labelledby="Delete Account Modal"
-            aria-hidden="true">
+        <!-- Delete Account Modal -->
+        <div class="modal fade text-dark" id="delete-account-modal" tabindex="-1" role="dialog"
+            aria-labelledby="Delete Account Modal" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -95,6 +103,42 @@
                 </div>
             </div>
         </div>
+
+        <!-- Email Address Update Modal -->
+        <div class="modal fade text-dark" id="email-address-update-modal" tabindex="-1" role="dialog"
+            aria-labelledby="Email Address Update Modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">Email Address Update</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <p>
+                                Please provide your updated email address.
+                                <br>
+                                <br>You will be sent an email to verify your new email address before it can be used.
+                                <br>
+                                <br>Your previous email address will become inactive when click confirm below. This
+                                means features like forgotten password will no longer work until your verify the new
+                                email address.
+                            </p>
+                            {{ form_3|crispy }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger"
+                                name="email-address-update-confirm">Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 {% endblock %}

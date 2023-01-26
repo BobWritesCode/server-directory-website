@@ -3,14 +3,12 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
-from .managers import CustomUserManager
-
 STATUS = ((0, 'Draft'), (1, 'Published'))
 
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=20, unique=True)
-    first_name = models.CharField(max_length=20, unique=True)
+    first_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True)
     email_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
