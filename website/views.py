@@ -1,20 +1,28 @@
 
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.mail import send_mail
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import send_mail, EmailMessage
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse_lazy
 from django.views import View, generic
-
 from cloudinary import uploader
+
+UserModel = get_user_model()
 
 from .models import ServerListing, Game, Tag
 from .forms import (
-    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm
+    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
+    SignupForm
 )
 
 
@@ -36,8 +44,17 @@ def index(request):
     }
     return render(request, "index.html", ctx)
 
+
 def account_deleted(request):
     return render(request, "registration/account_deleted.html")
+
+
+def signup_verify_email(request):
+    return render(request, "registration/signup_verify_email.html")
+
+def email_address_verified(request):
+    return render(request, "registration/email_address_verified.html")
+    email_address_verified
 
 
 @login_required
@@ -109,7 +126,7 @@ def my_account(request):
             form_2 = ConfirmAccountDeleteForm(request.POST)
             # Check if user has typed the correct phrase and hit submit
             if form_2.is_valid() and form_2.data['confirm'] == 'remove':
-                User.objects.get(username = request.user).delete()
+                User.objects.get(username=request.user).delete()
                 return redirect(to='account_deleted')
 
         # Check to see if user is trying to update their email address.
@@ -143,10 +160,54 @@ def my_account(request):
         }
     )
 
-class SignUpView(generic.CreateView):
-    form_class = UserCreationForm
-    success_url = reverse_lazy("login")
-    template_name = "registration/signup.html"
+
+def sign_up_view(request):
+    """
+    User create account view
+    """
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        # Check user has completed form as required.
+        if form.is_valid():
+            # Saving user to the database but inactive.
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            # Send verification email to user
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('email_templates/verify_email_address.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            print(message)
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
+            )
+            email.send()
+            # return HttpResponse('Please confirm your email address to complete the registration')
+            # Direct user to next page.
+            return redirect('signup_verify_email')
+    else:
+        form = SignupForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = UserModel._default_manager.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('email_address_verified')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 
 def server_listings(request, slug, tag_string=""):

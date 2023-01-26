@@ -10,8 +10,9 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 /**
- * Clears input box where user will need to type remove
- * @return {None} Nothing returned
+ * Clears input box where user will need to type 'remove' to confirm
+ * account deletion.
+ * @return {None} No  return
  */
 function clearRemoveInput() {
     $("#div_id_confirm").find("input[name=confirm]").val("");

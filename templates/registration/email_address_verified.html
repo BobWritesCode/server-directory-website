@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Email Address Verified{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-8 d-flex flex-column align-items-center">
+        <h2>Email Address Verified</h2>
+
+        <p>
+            Thank you for your email confirmation. Now you can login your account.
+        </p>
+
+        <a href="{% url 'login' %}" class="btn btn-primary">Login</a>
+
+    </div>
+</div>
+{% endblock %}

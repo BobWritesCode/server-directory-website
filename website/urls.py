@@ -51,9 +51,26 @@ urlpatterns = [
 
     path(
         'accounts/signup',
-        views.SignUpView.as_view(),
+        views.sign_up_view,
         name='signup'
     ),
+
+    path(
+        'accounts/signup_verify_email',
+        views.signup_verify_email,
+        name='signup_verify_email'
+    ),
+
+    path('activate/<uidb64>/<token>/',
+    views.activate,
+    name='activate'
+    ),
+
+    path(
+        'accounts/email_address_verified',
+        views.email_address_verified,
+        name='email_address_verified'
+        ),
 
     path(
         'accounts/password_change/',
