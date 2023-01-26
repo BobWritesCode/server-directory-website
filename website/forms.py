@@ -1,11 +1,10 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML
 
-from website.models import Game, Tag, ServerListing
+from website.models import CustomUser, Game, Tag, ServerListing
 
 
 class ProfileForm(forms.ModelForm):
@@ -13,16 +12,18 @@ class ProfileForm(forms.ModelForm):
     A form that allows the user to update their profile information.
     '''
     email = forms.EmailField(label=("Email address"), required=True)
+    email_verified = forms.BooleanField(label=("Verified?"), disabled=True)
 
     class Meta:
-        model = User
-        fields = ['email']
+        model = CustomUser
+        fields = ['email', 'email_verified']
+
 
 class SignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ('username', 'email', 'password1', 'password2')
 
 
@@ -39,7 +40,28 @@ class ConfirmAccountDeleteForm(forms.ModelForm):
     )
 
     class Meta:
-        model = User
+        model = CustomUser
+        fields = ['id']
+
+
+class UserUpdateEmailAddressForm(forms.ModelForm):
+    '''
+    A form for user to update their email address.
+    '''
+    email_1 = forms.EmailField(
+        label=f'New email address:',
+        error_messages={'required': f'Required'},
+        required=True,
+    )
+
+    email_2 = forms.EmailField(
+        label=f'Repeat new email address:',
+        error_messages={'required': f'Required'},
+        required=True,
+    )
+
+    class Meta:
+        model = CustomUser
         fields = ['id']
 
 

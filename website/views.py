@@ -1,9 +1,13 @@
 
+from .forms import (
+    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
+    SignupForm, UserUpdateEmailAddressForm
+)
+from .models import CustomUser, ServerListing, Game, Tag
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
@@ -18,12 +22,6 @@ from django.views import View, generic
 from cloudinary import uploader
 
 UserModel = get_user_model()
-
-from .models import ServerListing, Game, Tag
-from .forms import (
-    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
-    SignupForm
-)
 
 
 def send_mail_tu_user():
@@ -52,9 +50,9 @@ def account_deleted(request):
 def signup_verify_email(request):
     return render(request, "registration/signup_verify_email.html")
 
+
 def email_address_verified(request):
     return render(request, "registration/email_address_verified.html")
-    email_address_verified
 
 
 @login_required
@@ -118,6 +116,20 @@ def server_delete(request, item_pk):
 @login_required
 def my_account(request):
     if request.method == 'POST':
+
+        # Check to see if the user is trying to update there email address.
+        if (
+            UserUpdateEmailAddressForm(request.POST, instance=request.user)
+            and 'account-delete-confirm' in request.POST
+        ):
+            form_3 = UserUpdateEmailAddressForm(instance=request.user)
+            if form_3.is_valid():
+                u = CustomUser.objects.get(username=request.user)
+                u.email_verified = False
+                u.save()
+                # send verification email()
+                # reload page
+
         # Let's see if the user is trying to delete there account.
         if (
             ConfirmAccountDeleteForm(request.POST, instance=request.user)
@@ -126,7 +138,7 @@ def my_account(request):
             form_2 = ConfirmAccountDeleteForm(request.POST)
             # Check if user has typed the correct phrase and hit submit
             if form_2.is_valid() and form_2.data['confirm'] == 'remove':
-                User.objects.get(username=request.user).delete()
+                CustomUser.objects.get(username=request.user).delete()
                 return redirect(to='account_deleted')
 
         # Check to see if user is trying to update their email address.
@@ -148,6 +160,7 @@ def my_account(request):
     num_of_listings = queryset.count()
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
+    form_3 = UserUpdateEmailAddressForm(instance=request.user)
 
     return render(
         request,
@@ -155,6 +168,7 @@ def my_account(request):
         {
             'form': form,
             'form_2': form_2,
+            'form_3': form_3,
             "server_listing": queryset,
             'num_of_listings': num_of_listings,
         }
@@ -169,9 +183,11 @@ def sign_up_view(request):
         form = SignupForm(request.POST)
         # Check user has completed form as required.
         if form.is_valid():
+
             # Original code before modifications, check ReadMe:
             # https://shafikshaon.medium.com/
             # user-registration-with-email-verification-in-django-8aeff5ce498d
+
             # Saving user to memory as inactive.
             user = form.save(commit=False)
             user.is_active = False
@@ -211,11 +227,13 @@ def activate(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = UserModel._default_manager.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
+        user.email_verified = True
         user.save()
+
         return redirect('email_address_verified')
     else:
         return HttpResponse('Activation link is invalid!')
