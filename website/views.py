@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -169,11 +169,14 @@ def sign_up_view(request):
         form = SignupForm(request.POST)
         # Check user has completed form as required.
         if form.is_valid():
-            # Saving user to the database but inactive.
+            # Original code before modifications, check ReadMe:
+            # https://shafikshaon.medium.com/
+            # user-registration-with-email-verification-in-django-8aeff5ce498d
+            # Saving user to memory as inactive.
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            # Send verification email to user
+            # Prepare email to be sent.
             current_site = get_current_site(request)
             mail_subject = 'Activate your account.'
             message = render_to_string('email_templates/verify_email_address.html', {
@@ -182,13 +185,14 @@ def sign_up_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
-            print(message)
             to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
+            # Send email to user.
+            send_mail(
+                subject=mail_subject,
+                message=message,
+                from_email='contact@warwickhart.com',
+                recipient_list=[to_email]
             )
-            email.send()
-            # return HttpResponse('Please confirm your email address to complete the registration')
             # Direct user to next page.
             return redirect('signup_verify_email')
     else:
@@ -197,6 +201,13 @@ def sign_up_view(request):
 
 
 def activate(request, uidb64, token):
+    '''
+    Activate user account after they have they visited the link in the
+    email address verification, sent to the user by email.
+    '''
+    # Original code:
+    # https://shafikshaon.medium.com/
+    # user-registration-with-email-verification-in-django-8aeff5ce498d
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = UserModel._default_manager.get(pk=uid)
