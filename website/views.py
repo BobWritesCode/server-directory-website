@@ -20,6 +20,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse_lazy
 from django.views import View, generic
 from cloudinary import uploader
+import json
 
 UserModel = get_user_model()
 
@@ -319,3 +320,18 @@ def check_match(value1: str, value2: str):
     if value1 == value2:
         return True
     return False
+
+def email_check(request):
+    '''
+    Check if email address already in use.
+    '''
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    content = body['email']
+
+    if CustomUser.objects.filter(email = content).exists():
+        result = True
+    else:
+        result = False
+
+    return HttpResponse ( json.dumps({'result': result}) )

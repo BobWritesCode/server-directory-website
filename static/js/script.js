@@ -34,32 +34,40 @@ function userEmailUpdate() {
 
     $(".error-message").remove();
 
-    if (val1 !== val2) {
-        $("#email-update-form")
-            .find("#id_email_confirm")
-            .after(
-                "<div class='error-message alert alert-warning mt-1' role='alert'> Must match. </div>"
-            );
-    }
-
+    // Check if email is correct format.
     if (!validateEmail(val1)) {
         $("#email-update-form")
             .find("#id_email")
             .after(
                 "<div class='error-message alert alert-warning mt-1' role='alert'> Not a valid email address </div>"
             );
+        return
     }
 
-    if (!validateEmail(val2)) {
+    // Check if both inputs match.
+    if (val1 !== val2) {
         $("#email-update-form")
             .find("#id_email_confirm")
             .after(
-                "<div class='error-message alert alert-warning mt-1' role='alert'> Not a valid email address </div>"
+                "<div class='error-message alert alert-warning mt-1' role='alert'> Must match. </div>"
             );
+        return
     }
 
+    // If no error messages then send request to server to check input email address does not already exist.
     if ($(".error-message").length == 0) {
-        $("#email-update-form").submit();
+        checkEmailInUse('/request', { email: val1 })
+            .then((data) => {
+                if (data.result) {
+                    $("#email-update-form")
+                        .find("#id_email")
+                        .after(
+                            "<div class='error-message alert alert-warning mt-1' role='alert'> Email address already registered </div>"
+                        );
+                } else {
+                    $("#email-update-form").submit();
+                }
+            });
     }
 }
 
@@ -74,4 +82,23 @@ function validateEmail(email) {
         dotPosition < atPosition + 2 ||
         dotPosition + 2 >= email.length
     );
+}
+
+/**
+ * Send a request to the server to check if user input email address is already registered.
+ * @returns True or False
+ */
+async function checkEmailInUse(url = '', data = {}) {
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: { 'X-CSRFToken': csrftoken },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data)
+    });
+    return response.json();
 }

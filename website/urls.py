@@ -128,4 +128,10 @@ urlpatterns = [
         views.server_delete,
         name='server_delete'
     ),
+
+    path(
+        'request',
+        views.email_check,
+        name='email_check'
+    ),
 ]
