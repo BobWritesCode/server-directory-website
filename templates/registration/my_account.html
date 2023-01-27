@@ -115,7 +115,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="post">
+                    <form method="post" id="email-update-form">
                         {% csrf_token %}
                         <div class="modal-body">
                             <p>
@@ -130,7 +130,7 @@
                             {{ form_3|crispy }}
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger"
+                            <button type="button" class="btn btn-danger"
                                 name="email-address-update-confirm">Confirm</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>

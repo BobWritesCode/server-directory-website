@@ -116,10 +116,11 @@ def server_delete(request, item_pk):
 @login_required
 def my_account(request):
     if request.method == 'POST':
+        print(request.POST)
         # Check to see if the user is trying to update there email address.
         if (
             UserUpdateEmailAddressForm(request.POST, instance=request.user)
-            and 'email-address-update-confirm' in request.POST
+            and 'email_confirm' in request.POST
         ):
             form_3 = UserUpdateEmailAddressForm(request.POST)
             if form_3.is_valid():
@@ -292,7 +293,6 @@ def send_email_verification(request, user, form):
     '''
     Send email address verification to user
     '''
-    print("here")
     current_site = get_current_site(request)
     mail_subject = 'Verify your email address.'
     message = render_to_string('email_templates/verify_email_address.html', {
@@ -309,4 +309,13 @@ def send_email_verification(request, user, form):
         from_email='contact@warwickhart.com',
         recipient_list=[to_email]
     )
-    print(to_email)
+
+
+def check_match(value1: str, value2: str):
+    '''
+    Returns bool depending if args match.
+    :returns: True or False
+    '''
+    if value1 == value2:
+        return True
+    return False
