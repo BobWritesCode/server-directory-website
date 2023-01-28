@@ -57,7 +57,10 @@
                 {% else %}
                 <button type="button" class="btn btn-success mb-1">Enable</button>
                 {% endif %}
-                <a class="btn btn-danger mb-1" href="/server_delete/{{item.pk}}">Delete</a>
+                <button type="button" class="btn btn-danger mb-1" data-item="{{item.pk}}" data-toggle="modal" data-target="#server-listing-delete-modal">
+                    Delete Listing
+                </button>
+                <!-- <a class="btn btn-danger mb-1" href="/server_delete/{{item.pk}}">Delete</a> -->
             </div>
         </div>
         {% endfor %}
@@ -132,6 +135,35 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger"
                                 name="email-address-update-confirm">Confirm</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Listing delete Modal -->
+        <div class="modal fade text-dark" id="server-listing-delete-modal" tabindex="-1" role="dialog"
+            aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modal-title">Delete Listing Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" id="server-listing-delete-form">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <p>
+                                Deleting this listing is permanent and irreversible.
+                            </p>
+                            {{ form_4|crispy }}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" name="server-listing-delete-confirm">Confirm</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </form>

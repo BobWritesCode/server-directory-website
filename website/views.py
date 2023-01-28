@@ -1,7 +1,7 @@
 
 from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
-    SignupForm, UserUpdateEmailAddressForm
+    SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm
 )
 from .models import CustomUser, ServerListing, Game, Tag
 from django.contrib import messages
@@ -88,23 +88,38 @@ def server_create(request):
 @login_required
 def server_edit(request, item_pk):
     item = get_object_or_404(ServerListing, pk=item_pk)
+
     if request.method == "POST":
-        form = CreateServerListingForm(
-            request.POST, request.FILES, instance=item)
+        # Let's see if the user is trying to delete the listing.
+        if (
+            ConfirmServerListingDeleteForm(request.POST, instance=request.user)
+            and "server_listing_delete_confirm" in request.POST
+        ):
+            form_2 = ConfirmServerListingDeleteForm(request.POST)
+            if (
+                form_2.is_valid()
+                and form_2.data["server_listing_delete_confirm"] == "delete"
+            ):
+                item.delete()
+                return redirect("my-account")
+
+        form = CreateServerListingForm(request.POST, request.FILES, instance=item)
         if form.is_valid():
             if request.FILES:
-                image = uploader.upload(request.FILES['logo'])
-                form.instance.logo = image['url']
+                image = uploader.upload(request.FILES["logo"])
+                form.instance.logo = image["url"]
             form.save()
-            return redirect('my-account')
+            return redirect("my-account")
 
     form = CreateServerListingForm(instance=item)
+    form_2 = ConfirmServerListingDeleteForm(instance=item)
 
     context = {
-        'form': form,
-        'item': item,
+        "form": form,
+        "form_2": form_2,
+        "item": item,
     }
-    return render(request, 'server_edit.html', context)
+    return render(request, "server_edit.html", context)
 
 
 @login_required
@@ -117,7 +132,6 @@ def server_delete(request, item_pk):
 @login_required
 def my_account(request):
     if request.method == 'POST':
-        print(request.POST)
         # Check to see if the user is trying to update there email address.
         if (
             UserUpdateEmailAddressForm(request.POST, instance=request.user)
@@ -134,6 +148,22 @@ def my_account(request):
                 send_email_verification(request, user, form_3)
                 return redirect('signup_verify_email')
 
+        # Let's see if the user is trying to delete a listing.
+        if (
+            ConfirmServerListingDeleteForm(request.POST, instance=request.user)
+            and "server_listing_delete_confirm" in request.POST
+        ):
+            form_4 = ConfirmServerListingDeleteForm(request.POST)
+            if (
+                form_4.is_valid()
+                and form_4.data["server_listing_delete_confirm"] == "delete"
+            ):
+                item_pk = form_4.data["itemID"]
+                item = get_object_or_404(ServerListing, pk=item_pk)
+                item.delete()
+                return redirect("my-account")
+
+
         # Let's see if the user is trying to delete there account.
         if (
             ConfirmAccountDeleteForm(request.POST, instance=request.user)
@@ -149,9 +179,11 @@ def my_account(request):
     queryset = ServerListing.objects.filter(
         owner=username).order_by('-created_on')
     num_of_listings = queryset.count()
+
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
     form_3 = UserUpdateEmailAddressForm(instance=request.user)
+    form_4 = ConfirmServerListingDeleteForm(instance=request.user)
 
     return render(
         request,
@@ -160,6 +192,7 @@ def my_account(request):
             'form': form,
             'form_2': form_2,
             'form_3': form_3,
+            'form_4': form_4,
             "server_listing": queryset,
             'num_of_listings': num_of_listings,
         }
@@ -320,6 +353,7 @@ def check_match(value1: str, value2: str):
     if value1 == value2:
         return True
     return False
+
 
 def email_check(request):
     '''

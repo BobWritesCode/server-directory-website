@@ -44,6 +44,22 @@ class ConfirmAccountDeleteForm(forms.ModelForm):
         fields = ['id']
 
 
+class ConfirmServerListingDeleteForm(forms.ModelForm):
+    '''
+    A form for user to confirm deletion a server listing.
+    '''
+    server_listing_delete_confirm = forms.CharField(
+        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        max_length=10,
+        error_messages={
+            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        required=True,
+    )
+
+    class Meta:
+        model = ServerListing
+        fields = ['id']
+
 class UserUpdateEmailAddressForm(forms.ModelForm):
     '''
     A form for user to update their email address.
@@ -133,7 +149,7 @@ class CreateServerListingForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                'first arg is the legend of the fieldset',
+                '', # First arg is the legend of the fieldset
                 'game',
                 'title',
                 HTML(
