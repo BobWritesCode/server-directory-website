@@ -300,7 +300,7 @@ def server_listings(request, slug, tag_string=""):
         request,
         "server-list.html",
         {
-            "serverlisting": queryset,
+            "server_listings": queryset,
             "selected_tags": selected_tags,
             "tags": tags,
             "tag_string": tag_string,
