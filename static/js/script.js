@@ -22,7 +22,7 @@ window.addEventListener("DOMContentLoaded", function () {
     $("button[data-name='Bump Button']").on("click", function () {
         if ($(this).text() != "Bumped") {
             $(this).text("Bumped")
-            bump($(this).attr("data-item"));
+            bump.call(this);
         }
     });
 
@@ -153,19 +153,19 @@ async function checkEmailInUse(url = "", data = {}) {
 }
 
 
-function bump(server_id) {
-    addBump("/bump_server", { server_id: server_id }).then((data) => {
+function bump() {
+    addBump("/bump_server", { server_id: $(this).attr("data-item") }).then((data) => {
         if (data.result) {
-            // return true
-            console.log(data.result);
+            // Change button style and disable.
+            $(this).attr("disabled", true)
+                .removeClass('btn-primary')
+                .addClass('btn-success')
+                .text('BUMPED!')
         } else {
             // return false
-            console.log(data.result);
         }
     });
 }
-
-
 
 async function addBump(url = "", data = {}) {
     const csrftoken = document.querySelector(

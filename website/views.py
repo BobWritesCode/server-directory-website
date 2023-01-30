@@ -243,6 +243,13 @@ def server_listings(request, slug, tag_string=""):
     query = Q(status=1) & Q(game=game)
     queryset = ServerListing.objects.filter(query).distinct()
 
+    # Get user bumps
+    query = Q(user=request.user)
+    bumps_queryset = Bumps.objects.filter(query).values_list('listing_id')
+    # If no bumps found, create table manually.
+    if bumps_queryset:
+        bumps_queryset = bumps_queryset[0]
+
     all_tags_for_game = []
     for x in tags:
         all_tags_for_game.append([x.id, x.name])
@@ -291,6 +298,7 @@ def server_listings(request, slug, tag_string=""):
         "server-list.html",
         {
             "server_listings": queryset,
+            "bumps_queryset": bumps_queryset,
             "selected_tags": selected_tags,
             "tags": tags,
             "tag_string": tag_string,
