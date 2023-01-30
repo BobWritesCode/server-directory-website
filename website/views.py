@@ -25,16 +25,6 @@ import json
 UserModel = get_user_model()
 
 
-def send_mail_tu_user():
-    send_mail(
-        'Subject here',
-        'Here is the message.',
-        'contact@warwickhart.com',
-        ['warwick_hart@hotmail.com'],
-        fail_silently=False,
-    )
-
-
 def index(request):
     games = Game.objects.filter(status=1)
     ctx = {
