@@ -316,10 +316,8 @@ def get_user_bumps(request):
     '''
     query = Q(user=request.user)
     bumps_queryset = Bumps.objects.filter(query).values_list('listing_id')
-    # If no bumps found, create table manually.
-    if bumps_queryset:
-        bumps_queryset = bumps_queryset[0]
-    return bumps_queryset
+    _list = [x[0] for x in bumps_queryset]
+    return _list
 
 
 class ServerDetail(View):
@@ -403,9 +401,9 @@ def bump_server(request):
 
         # Check user has not already left a bump on this listing
         query = Q(listing=listing) & Q(user=request.user)
-        queryset = Bumps.objects.filter(query).count()
+        queryset = Bumps.objects.filter(query)
 
-        if queryset == 0:
+        if queryset.count() == 0:
             # Create a row to table and save
             bump = Bumps.objects.create(user=request.user, listing=listing )
             bump.save()
