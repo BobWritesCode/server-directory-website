@@ -396,21 +396,23 @@ def bump_server(request):
         body = json.loads(body_unicode)
         content = body['server_id']
 
-        # Get create server listing object
+        # Get server listing object
         listing = get_object_or_404(ServerListing, id=content)
 
-        # Check user has not already left a bump on this listing
-        query = Q(listing=listing) & Q(user=request.user)
-        queryset = Bumps.objects.filter(query)
+        # Get user bumps
+        bumps_queryset = get_user_bumps(request)
+        bumps_queryset_len = len(bumps_queryset) + 1
+        print(bumps_queryset_len)
 
-        if queryset.count() == 0:
-            # Create a row to table and save
-            bump = Bumps.objects.create(user=request.user, listing=listing )
-            bump.save()
-            # Tell front end success
-            result = True
-            return HttpResponse ( json.dumps({'result': result}) )
+        # Check if this server already bumped by user
+        if (content in bumps_queryset):
+            return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
 
-        # Tell front end failed to save bump
-        result = False
-        return HttpResponse ( json.dumps({'result': result}) )
+        # Check user has not already bumped max server amount
+        if len(bumps_queryset) > 4:
+            return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+
+        # Create a row to table and save
+        bump = Bumps.objects.create(user=request.user, listing=listing )
+        bump.save()
+        return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )

@@ -155,15 +155,23 @@ async function checkEmailInUse(url = "", data = {}) {
 
 function bump() {
     addBump("/bump_server", { server_id: $(this).attr("data-item") }).then((data) => {
-        if (data.result) {
+        // Change bump button to bumped and disable.
+        if (data.result <= 5) {
             // Change button style and disable.
             $(this).attr("disabled", true)
                 .removeClass('btn-primary')
                 .addClass('btn-success')
                 .text('BUMPED!')
-        } else {
-            // return false
-        }
+        };
+
+        // Disable remaining bump buttons if user used max bumps.
+        if (data.result >= 5) {
+            $('html').find('.btn-primary[data-name="Bump Button"]')
+            .attr("disabled", true)
+            .removeClass('btn-primary')
+            .addClass('btn-warning')
+            .text('No more bumps!')
+        };
     });
 }
 

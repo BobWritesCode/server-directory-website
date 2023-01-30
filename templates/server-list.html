@@ -28,6 +28,8 @@
                 </p>
                 {% if item.id in bumps_queryset %}
                 <button type="button" class="btn btn-success" disabled name="" data-item="{{ item.pk }}" data-name='Bump Button'>Already bumped!</button>
+                {% elif bumps_queryset|length > 4 %}
+                <button type="button" class="btn btn-warning mb-3" disabled name="" data-item="{{ server.pk }}" data-name='Bump Button'>No more bumps!</button>
                 {% else %}
                 <button type="button" class="btn btn-primary" name="" data-item="{{ item.pk }}" data-name='Bump Button'>Bump this server</button>
                 {% endif %}
