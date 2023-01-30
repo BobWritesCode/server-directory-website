@@ -153,8 +153,13 @@ async function checkEmailInUse(url = "", data = {}) {
 }
 
 
+/**
+ * Check user bump status and then change bump button styles based on response.
+ */
 function bump() {
+
     addBump("/bump_server", { server_id: $(this).attr("data-item") }).then((data) => {
+
         // Change bump button to bumped and disable.
         if (data.result <= 5) {
             // Change button style and disable.
@@ -172,8 +177,10 @@ function bump() {
             .addClass('btn-warning')
             .text('No more bumps!')
         };
+
     });
 }
+
 
 async function addBump(url = "", data = {}) {
     const csrftoken = document.querySelector(
