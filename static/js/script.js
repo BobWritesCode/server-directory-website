@@ -19,6 +19,13 @@ window.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    $("button[data-name='Bump Button']").on("click", function () {
+        if ($(this).text() != "Bumped") {
+            $(this).text("Bumped")
+            bump($(this).attr("data-item"));
+        }
+    });
+
     btnDeleteAccount.on("click", function () {
         clearRemoveInput();
     });
@@ -129,6 +136,38 @@ function validateEmail(email) {
  * @returns True or False
  */
 async function checkEmailInUse(url = "", data = {}) {
+    const csrftoken = document.querySelector(
+        "[name=csrfmiddlewaretoken]"
+    ).value;
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: { "X-CSRFToken": csrftoken },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data),
+    });
+    return response.json();
+}
+
+
+function bump(server_id) {
+    addBump("/bump_server", { server_id: server_id }).then((data) => {
+        if (data.result) {
+            // return true
+            console.log(data.result);
+        } else {
+            // return false
+            console.log(data.result);
+        }
+    });
+}
+
+
+
+async function addBump(url = "", data = {}) {
     const csrftoken = document.querySelector(
         "[name=csrfmiddlewaretoken]"
     ).value;

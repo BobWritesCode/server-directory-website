@@ -24,13 +24,14 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.email}"
 
-
 class Tag(models.Model):
     name = models.CharField(max_length=20)
     slug = models.SlugField(max_length=20, unique=True)
 
     def __str__(self):
         return f"{self.name}"
+
+
 
 
 class Game(models.Model):
@@ -46,9 +47,9 @@ class Game(models.Model):
 
 class ServerListing(models.Model):
     game = models.ForeignKey(
-        Game, on_delete=models.CASCADE, related_name="server_listings")
+        Game, on_delete=models.CASCADE, related_name="ServerListing")
     owner = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="server_owner")
+        CustomUser, on_delete=models.CASCADE, related_name="ServerListing")
     title = models.CharField(max_length=50)
     slug = models.SlugField(max_length=50, unique=True)
     logo = CloudinaryField('image', default='placeholder')
@@ -58,10 +59,9 @@ class ServerListing(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     discord = models.CharField(max_length=50)
-    bumps = models.ManyToManyField(
-        CustomUser, related_name="server_bumps", blank=True)
-    last_bump = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS, default=0)
+
+    # bumps = models.ManyToManyField(Bumps, default=0, blank=True)
 
     class Meta:
         ordering = ['-created_on']
@@ -71,9 +71,6 @@ class ServerListing(models.Model):
 
     def number_of_tags(self):
         return self.tags.count()
-
-    def number_of_bumps(self):
-        return self.bumps.count()
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -86,3 +83,9 @@ class ServerListing(models.Model):
 
             self.slug = f'Listing-{next_id}'
         super(ServerListing, self).save(*args, **kwargs)
+
+
+class Bumps(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
+    date_added = models.DateField(auto_now_add=True)

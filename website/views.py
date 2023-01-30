@@ -3,7 +3,7 @@ from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm
 )
-from .models import CustomUser, ServerListing, Game, Tag
+from .models import CustomUser, ServerListing, Game, Tag, Bumps
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
@@ -369,3 +369,34 @@ def email_check(request):
         result = False
 
     return HttpResponse ( json.dumps({'result': result}) )
+
+
+@login_required
+def bump_server(request):
+    '''
+    Add 1 bump to server if already not bumped by user
+    '''
+    if request.method == 'POST':
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        content = body['server_id']
+
+        # Get create server listing object
+        listing = get_object_or_404(ServerListing, id=content)
+
+        # Check user has not already left a bump on this listing
+        query = Q(listing=listing) & Q(user=request.user)
+        queryset = Bumps.objects.filter(query).count()
+
+        if queryset == 0:
+            # Create a row to table and save
+            bump = Bumps.objects.create(user=request.user, listing=listing )
+            bump.save()
+            # Tell front end success
+            result = True
+            return HttpResponse ( json.dumps({'result': result}) )
+
+        # Tell front end failed to save bump
+        result = False
+        return HttpResponse ( json.dumps({'result': result}) )

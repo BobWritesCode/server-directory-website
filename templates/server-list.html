@@ -26,6 +26,7 @@
                     <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
                     {% endfor %}
                 </p>
+                <button type="button" class="btn btn-primary" name="" data-item="{{ item.pk }}" data-name='Bump Button'>{{ item.number_of_bumps }} Bumps</button>
                 <p class="text-aqua"><span class="bumps">{{ item.number_of_bumps }} Bumps</span></p>
 
             </div>
