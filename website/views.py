@@ -244,11 +244,7 @@ def server_listings(request, slug, tag_string=""):
     queryset = ServerListing.objects.filter(query).distinct()
 
     # Get user bumps
-    query = Q(user=request.user)
-    bumps_queryset = Bumps.objects.filter(query).values_list('listing_id')
-    # If no bumps found, create table manually.
-    if bumps_queryset:
-        bumps_queryset = bumps_queryset[0]
+    bumps_queryset = get_user_bumps(request)
 
     all_tags_for_game = []
     for x in tags:
@@ -307,16 +303,38 @@ def server_listings(request, slug, tag_string=""):
     )
 
 
+@login_required
+def get_user_bumps(request):
+    '''
+    Returns a list of user's current bumps
+
+        Parameters:
+            request (Any): The server request
+
+        Returns:
+            bumps_queryset (list): List of user's active bumps
+    '''
+    query = Q(user=request.user)
+    bumps_queryset = Bumps.objects.filter(query).values_list('listing_id')
+    # If no bumps found, create table manually.
+    if bumps_queryset:
+        bumps_queryset = bumps_queryset[0]
+    return bumps_queryset
+
+
 class ServerDetail(View):
     def get(self, request, slug, *args, **kwargs):
         queryset = ServerListing.objects.filter(status=1)
         server = get_object_or_404(queryset, slug=slug)
+        # Get user bumps
+        bumps_queryset = get_user_bumps(request)
 
         return render(
             request,
             "server_detail.html",
             {
                 "server": server,
+                "bumps_queryset": bumps_queryset,
             },
         )
 
