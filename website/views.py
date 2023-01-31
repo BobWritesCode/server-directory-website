@@ -175,16 +175,17 @@ def my_account(request):
     form_3 = UserUpdateEmailAddressForm(instance=request.user)
     form_4 = ConfirmServerListingDeleteForm(instance=request.user)
 
+    # Get user bumped servers
     query = Q(user = request.user)
     bumps_queryset = Bumps.objects.filter(query)
-
+    # Get server queryset based on users bumped servers
     query = Q(pk__in = bumps_queryset.values_list('listing_id'))
     server_listings_queryset = ServerListing.objects.filter(query)
-    print(bumps_queryset)
-    print(server_listings_queryset)
+    # Add server listing slug to bumps queryset
     for index, value in enumerate(bumps_queryset):
         bumps_queryset[index].url = server_listings_queryset.get(id=value.listing.id).slug
-    print(bumps_queryset)
+    # Calculate how many bumps the user has left to use
+    bumps_left = 5 - len(bumps_queryset)
 
     return render(
         request,
@@ -197,6 +198,7 @@ def my_account(request):
             'server_listing': queryset,
             'num_of_listings': num_of_listings,
             'bumps': bumps_queryset,
+            'bumps_left': bumps_left,
         }
     )
 
