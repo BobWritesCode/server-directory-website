@@ -175,6 +175,17 @@ def my_account(request):
     form_3 = UserUpdateEmailAddressForm(instance=request.user)
     form_4 = ConfirmServerListingDeleteForm(instance=request.user)
 
+    query = Q(user = request.user)
+    bumps_queryset = Bumps.objects.filter(query)
+
+    query = Q(pk__in = bumps_queryset.values_list('listing_id'))
+    server_listings_queryset = ServerListing.objects.filter(query)
+    print(bumps_queryset)
+    print(server_listings_queryset)
+    for index, value in enumerate(bumps_queryset):
+        bumps_queryset[index].url = server_listings_queryset.get(id=value.listing.id).slug
+    print(bumps_queryset)
+
     return render(
         request,
         'registration/my_account.html',
@@ -183,8 +194,9 @@ def my_account(request):
             'form_2': form_2,
             'form_3': form_3,
             'form_4': form_4,
-            "server_listing": queryset,
+            'server_listing': queryset,
             'num_of_listings': num_of_listings,
+            'bumps': bumps_queryset,
         }
     )
 
@@ -402,7 +414,6 @@ def bump_server(request):
         # Get user bumps
         bumps_queryset = get_user_bumps(request)
         bumps_queryset_len = len(bumps_queryset) + 1
-        print(bumps_queryset_len)
 
         # Check if this server already bumped by user
         if (content in bumps_queryset):
