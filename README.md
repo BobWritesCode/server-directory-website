@@ -2,7 +2,14 @@
 
 ## Full stack website
 
-# Sending email verification
+### Required app
+
+#### django-apscheduler
+
+pip install django-apscheduler
+
+### Sending email verification
+
 To help me get this set up, I followed this [guide](https://shafikshaon.medium.com/user-registration-with-email-verification-in-django-8aeff5ce498d).
 
 There were some changes to be made due to potentially using newer version of Django.
