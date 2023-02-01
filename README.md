@@ -4,6 +4,10 @@
 
 ### Required app
 
+#### datetime
+
+pip install datetime
+
 #### django-apscheduler
 
 pip install django-apscheduler

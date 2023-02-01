@@ -36,7 +36,7 @@
                 <td>{{forloop.counter}}</td>
                 <td>{{bump.listing}}</td>
                 <td><a href="{% url 'server' bump.url %}" class="text-decoration-none">Go to listing...</a></td>
-                <td>{{bump.date_added}}</td>
+                <td>{{bump.expiry}}</td>
             </tr>
             {% endfor %}
         </table>

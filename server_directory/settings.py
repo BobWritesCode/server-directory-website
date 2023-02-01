@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     'django_apscheduler',
+    'datetime',
 ]
 
 AUTH_USER_MODEL = 'website.CustomUser'

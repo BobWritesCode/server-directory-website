@@ -1,10 +1,12 @@
+from datetime import timedelta, date
 from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
 
-STATUS = ((0, 'Draft'), (1, 'Published'))
+from .constants import DAYS_TO_EXPIRE_BUMP
 
+STATUS = ((0, 'Draft'), (1, 'Published'))
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=20, unique=True, blank=False)
@@ -30,8 +32,6 @@ class Tag(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-
-
 
 
 class Game(models.Model):
@@ -61,8 +61,6 @@ class ServerListing(models.Model):
     discord = models.CharField(max_length=50)
     status = models.IntegerField(choices=STATUS, default=0)
 
-    # bumps = models.ManyToManyField(Bumps, default=0, blank=True)
-
     class Meta:
         ordering = ['-created_on']
 
@@ -86,6 +84,11 @@ class ServerListing(models.Model):
 
 
 class Bumps(models.Model):
+
+    def set_expiry():
+        return date.today() + timedelta(days=DAYS_TO_EXPIRE_BUMP)
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
     date_added = models.DateField(auto_now_add=True)
+    expiry = models.DateField(default=set_expiry(), blank=False)
