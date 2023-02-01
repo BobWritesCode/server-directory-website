@@ -94,3 +94,18 @@ class Bumps(models.Model):
     listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
     date_added = models.DateField(auto_now_add=True)
     expiry = models.DateField(default=set_expiry(), blank=False)
+
+
+class Images(models.Model):
+
+    image = CloudinaryField('image', default='placeholder')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
+    status = models.IntegerField(
+        choices=(
+            (0, 'No'),
+            (1, 'Yes')
+            ),
+        default=0
+        )
+    date_added = models.DateField(auto_now_add=True)
