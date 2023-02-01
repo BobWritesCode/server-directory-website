@@ -1,12 +1,13 @@
-from datetime import timedelta, date
-from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin
-from django.template.defaultfilters import slugify
 from cloudinary.models import CloudinaryField
+from datetime import timedelta, date
+
+from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 from .constants import DAYS_TO_EXPIRE_BUMP
 
 STATUS = ((0, 'Draft'), (1, 'Published'))
+
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=20, unique=True, blank=False)
@@ -25,6 +26,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.email}"
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=20)

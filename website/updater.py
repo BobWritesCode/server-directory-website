@@ -4,6 +4,7 @@ from .jobs import clear_bumps
 
 def start():
     scheduler = BackgroundScheduler()
-    scheduler.add_job(clear_bumps, 'cron', hour='0-23')
+    # add_job() Runs at midnight every night.
+    scheduler.add_job(clear_bumps, 'cron', hour ='0')
     scheduler.start()
 
