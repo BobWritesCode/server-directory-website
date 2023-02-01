@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML
 
-from website.models import CustomUser, Game, Tag, ServerListing
+from website.models import CustomUser, Game, Tag, ServerListing, Images
 
 
 class ProfileForm(forms.ModelForm):
@@ -133,16 +133,12 @@ class CreateServerListingForm(forms.ModelForm):
         required=True,
     )
 
-    logo = forms.ImageField(
-        label="Update image:",
-        widget=forms.FileInput,
-        required=False,
-    )
-
     class Meta:
         model = ServerListing
-        fields = ['game', 'tags', 'title', 'short_description',
-                  'long_description', 'status', 'discord', 'logo']
+        fields = [
+            'game', 'tags', 'title', 'short_description',
+            'long_description', 'status', 'discord', 'logo'
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -154,7 +150,6 @@ class CreateServerListingForm(forms.ModelForm):
                 'title',
                 HTML(
                     """{% if item.logo.url %}<img class="img-fluid" src="{{ item.logo.url }}">{% endif %}""", ),
-                'logo',
                 'tags',
                 'short_description',
                 'long_description',
@@ -163,3 +158,15 @@ class CreateServerListingForm(forms.ModelForm):
             ),
             Submit('submit', 'Submit', css_class='btn btn-primary'),
         )
+
+class ImageForm(forms.ModelForm):
+
+    image = forms.ImageField(
+        label="Upload image:",
+        widget=forms.FileInput,
+        required=False,
+    )
+
+    class Meta:
+        model = Images
+        fields = ['image']

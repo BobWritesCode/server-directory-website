@@ -1,7 +1,8 @@
 
 from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
-    SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm
+    SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
+    ImageForm
 )
 from .models import CustomUser, ServerListing, Game, Tag, Bumps
 from django.contrib import messages
@@ -49,20 +50,32 @@ def email_address_verified(request):
 @login_required
 def server_create(request):
     if request.method == 'POST':
-        form = CreateServerListingForm(request.POST, request.FILES)
-        if form.is_valid():
+
+        form = CreateServerListingForm(request.POST)
+        image_form = ImageForm(request.FILES)
+
+        if form.is_valid() and image_form.is_valid():
+
             if request.FILES:
-                image = uploader.upload(request.FILES['logo'])
-                form.instance.logo = image['url']
+                image = uploader.upload(request.FILES['image'])
+                image_form.instance.image = image['url']
+
             form.instance.owner = request.user
             form.save()
+
+            image_form.instance.user = request.user
+            image_form.instance.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+            image_form.save()
+
             return redirect('my-account')
+
         else:
             return render(
                 request,
                 "server_create.html",
                 {
                     'form': form,
+                    'image_form': image_form,
                 }
             )
 
@@ -71,6 +84,7 @@ def server_create(request):
         "server_create.html",
         {
             'form': CreateServerListingForm(),
+            'image_form': ImageForm(),
         }
     )
 
