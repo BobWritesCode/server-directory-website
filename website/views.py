@@ -6,6 +6,7 @@ from .forms import (
 )
 from .models import CustomUser, ServerListing, Game, Tag, Bumps
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -46,6 +47,15 @@ def signup_verify_email(request):
 def email_address_verified(request):
     return render(request, "registration/email_address_verified.html")
 
+@login_required
+@staff_member_required
+def staff_account(request):
+
+    return render(
+        request,
+        "staff/staff_account.html",
+        {},
+    )
 
 @login_required
 def server_create(request):

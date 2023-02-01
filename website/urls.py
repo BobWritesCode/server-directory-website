@@ -135,9 +135,15 @@ urlpatterns = [
         name='email_check'
     ),
 
-        path(
+    path(
         'bump_server',
         views.bump_server,
         name='bump_server'
+    ),
+
+    path(
+        'staff_account',
+        views.staff_account,
+        name='staff_account'
     ),
 ]

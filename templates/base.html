@@ -46,6 +46,12 @@
                     <a class="nav-link" href="{% url 'my-account' %}">My Account</a>
                 </li>
 
+                {% if user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'staff_account' %}">Admin</a>
+                </li>
+                {% endif %}
+
                 <li class="nav-item">
                     <a class="ms-1 me-3 btn btn-outline-secondary" href="{% url 'logout' %}">Log Out</a>
                 </li>
