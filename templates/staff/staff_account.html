@@ -7,8 +7,12 @@
         <h2 class="text-light text-center m-5">Staff Account Page</h2>
         <hr class="border border-light border-3 opacity-75">
         <h3>Image approval</h3>
-        <p>Image currently awaiting review: {{img_need_review_count}}</p>
+        <p>Image currently awaiting review: {{ img_need_review_count }}</p>
+        {% if img_need_review_count > 0 %}
         <a class="btn btn-primary mb-3" href="{% url 'staff_image_review' %}">Go to image review >></a>
+        {% else %}
+        <a class="btn btn-primary mb-3 disabled" href="{% url 'staff_image_review' %}">Go to image review >></a>
+        {% endif %}
         <hr class="border border-light border-3 opacity-75">
     </div>
 </div>
