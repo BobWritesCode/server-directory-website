@@ -10,7 +10,30 @@
     <div class="col-8 align-items-center text-light">
         <h2>Image Approval</h2>
 
-        <img src="..." class="img-fluid" alt="Responsive image">
+        <img src="{{ image.image }}" class="img-fluid" alt="Responsive image">
+
+        <table class="table table-striped table-dark">
+            <tr>
+                <td># ID</td>
+                <td>{{image.id}}</td>
+
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td>{{image.status_txt}}</td>
+
+            </tr>
+            <tr>
+                <td>User</td>
+                <td>{{image.user_id}}</td>
+            </tr>
+            <tr>
+                <td>Listing</td>
+                <td>{{image.listing_id}}</td>
+            </tr>
+
+        </table>
+
         <button type="button" class="btn btn-success">Approve</button>
         <button type="button" class="btn btn-danger">Reject</button>
         <button type="button" class="btn btn-warning">Ban User</button>

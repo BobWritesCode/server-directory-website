@@ -152,4 +152,11 @@ urlpatterns = [
         views.staff_image_review,
         name='staff_image_review'
     ),
+
+    path(
+        'staff_image_review/<item_pk>',
+        views.staff_image_review,
+        name='staff_image_review_with_id'
+    ),
+
 ]

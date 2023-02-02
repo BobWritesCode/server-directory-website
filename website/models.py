@@ -111,7 +111,8 @@ class Images(models.Model):
     status = models.IntegerField(
         choices=(
             (0, 'No'),
-            (1, 'Yes')
+            (1, 'Yes'),
+            (2, 'No, User banned')
             ),
         default=0
         )

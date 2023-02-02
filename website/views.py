@@ -50,6 +50,7 @@ def signup_verify_email(request):
 def email_address_verified(request):
     return render(request, "registration/email_address_verified.html")
 
+
 @login_required
 @staff_member_required
 def staff_account(request):
@@ -64,16 +65,44 @@ def staff_account(request):
         },
     )
 
+
 @login_required
 @staff_member_required
-def staff_image_review(request):
+def staff_image_review(request, item_pk: int = None):
+    # If ID has been entered in URL.
+    if item_pk:
+        query = Q(pk=item_pk)
+        image = Images.objects.filter(query).first()
+        # If ID for image does not exist, handle request.
+        if not image:
+            return redirect('staff_account')
+    # If no ID has been entered in URL.
+    else:
+        query = Q(status=0)
+        image = Images.objects.filter(query).first()
+        # If no image is currently waiting be approved, then handle request.
+        if image is None:
+            return redirect('staff_account')
+            # # Show image first in Q.
+            # return redirect('staff_image_review_with_id', image.pk)
+
+    # Set status text based on image.status.
+    match image.status:
+        case 0:
+            image.status_txt = "Awaiting approval"
+        case 1:
+            image.status_txt = "Image approved"
+        case 2:
+            image.status_txt = "Image declined, User banned"
 
     return render(
         request,
         "staff/staff_image_review.html",
         {
+            'image': image,
         },
     )
+
 
 @login_required
 def server_create(request):
