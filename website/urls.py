@@ -146,4 +146,10 @@ urlpatterns = [
         views.staff_account,
         name='staff_account'
     ),
+
+    path(
+        'staff_image_review',
+        views.staff_image_review,
+        name='staff_image_review'
+    ),
 ]

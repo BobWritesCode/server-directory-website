@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Image Approval{% endblock %}
+
+{% load crispy_forms_tags %}
+{% load cloudinary %}
+
+{% block content %}
+
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
+    <div class="col-8 align-items-center text-light">
+        <h2>Image Approval</h2>
+
+        <img src="..." class="img-fluid" alt="Responsive image">
+        <button type="button" class="btn btn-success">Approve</button>
+        <button type="button" class="btn btn-danger">Reject</button>
+        <button type="button" class="btn btn-warning">Ban User</button>
+        <button type="button" class="btn btn-primary" disabled>Next</button>
+    </div>
+</div>
+{%endblock%}

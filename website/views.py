@@ -4,7 +4,10 @@ from .forms import (
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
     ImageForm
 )
-from .models import CustomUser, ServerListing, Game, Tag, Bumps
+from .models import (
+    CustomUser, ServerListing, Game, Tag, Bumps, Images
+)
+
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
@@ -50,11 +53,26 @@ def email_address_verified(request):
 @login_required
 @staff_member_required
 def staff_account(request):
+    query = Q(status=0)
+    review_count = Images.objects.filter(query)
 
     return render(
         request,
         "staff/staff_account.html",
-        {},
+        {
+            'img_need_review_count': len(review_count),
+        },
+    )
+
+@login_required
+@staff_member_required
+def staff_image_review(request):
+
+    return render(
+        request,
+        "staff/staff_image_review.html",
+        {
+        },
     )
 
 @login_required
