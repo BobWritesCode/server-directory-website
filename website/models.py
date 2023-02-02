@@ -99,7 +99,14 @@ class Bumps(models.Model):
 class Images(models.Model):
 
     image = CloudinaryField('image', default='placeholder')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_uploaded")
+    approved_by = models.ForeignKey(
+        CustomUser,
+        blank=True,
+        null=True,
+        on_delete=models.DO_NOTHING,
+        related_name="user_approved"
+    )
     listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=(

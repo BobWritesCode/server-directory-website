@@ -75,6 +75,7 @@ def server_create(request):
 
             image_form.instance.user = request.user
             image_form.instance.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+            image_form.instance.approved_by = None
             image_form.save()
 
             return redirect('my-account')
