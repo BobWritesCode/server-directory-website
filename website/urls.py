@@ -159,4 +159,9 @@ urlpatterns = [
         name='staff_image_review_with_id'
     ),
 
+    path(
+        'call_server',
+        views.call_server,
+        name='call_server'
+    ),
 ]

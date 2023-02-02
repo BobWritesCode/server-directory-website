@@ -101,7 +101,7 @@ class Images(models.Model):
 
     image = CloudinaryField('image', default='placeholder')
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_uploaded")
-    approved_by = models.ForeignKey(
+    reviewed_by = models.ForeignKey(
         CustomUser,
         blank=True,
         null=True,
@@ -111,10 +111,12 @@ class Images(models.Model):
     listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=(
-            (0, 'No'),
-            (1, 'Yes'),
-            (2, 'No, User banned')
+            (0, 'Unapproved'),
+            (1, 'Approved'),
+            (2, 'Rejected'),
+            (3, 'Rejected and User banned')
             ),
         default=0
         )
     date_added = models.DateField(auto_now_add=True)
+    expiry = models.DateField(null=True, blank=True)

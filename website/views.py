@@ -1,13 +1,3 @@
-
-from .forms import (
-    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
-    SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
-    ImageForm
-)
-from .models import (
-    CustomUser, ServerListing, Game, Tag, Bumps, Images
-)
-
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
@@ -24,8 +14,23 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.urls import reverse_lazy
 from django.views import View, generic
+
 from cloudinary import uploader
+from datetime import timedelta, date
 import json
+
+
+from .constants import DAYS_TO_EXPIRE_IMAGE
+
+from .forms import (
+    ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
+    SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
+    ImageForm
+)
+from .models import (
+    CustomUser, ServerListing, Game, Tag, Bumps, Images
+)
+
 
 UserModel = get_user_model()
 
@@ -501,3 +506,47 @@ def bump_server(request):
         bump = Bumps.objects.create(user=request.user, listing=listing )
         bump.save()
         return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+
+@staff_member_required
+@login_required
+def call_server(request):
+    '''
+    Generic method for front end to call backend with a request.
+    '''
+    print(request)
+    if request.method == 'POST':
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        content = body['arguments']
+
+        match content['0']:
+            case 'image_approval_approve':
+                item = get_object_or_404(Images, pk=content['1'])
+                item.status = 1
+                item.expiry = None
+                item.reviewed_by = request.user
+                item.save()
+                result = {
+                    'success': True,
+                    'text': "Approved"
+                    }
+
+            case 'image_approval_reject':
+                item = get_object_or_404(Images, pk=content['1'])
+                item.status = 2
+                item.expiry = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
+                item.reviewed_by = request.user
+                item.save()
+                result = {
+                    'success': True,
+                    'text': "Rejected"
+                    }
+
+            case 'image_approval_ban':
+                pass
+            case 'image_approval_next':
+                pass
+
+
+        return HttpResponse ( json.dumps({'result': result}) )

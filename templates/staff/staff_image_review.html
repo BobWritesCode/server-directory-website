@@ -15,12 +15,12 @@
         <table class="table table-striped table-dark">
             <tr>
                 <td># ID</td>
-                <td>{{image.id}}</td>
+                <td id="current_id">{{image.id}}</td>
 
             </tr>
             <tr>
                 <td>Status</td>
-                <td>{{image.status_txt}}</td>
+                <td id="status_txt">{{image.status_txt}}</td>
 
             </tr>
             <tr>
@@ -34,10 +34,10 @@
 
         </table>
 
-        <button type="button" class="btn btn-success">Approve</button>
-        <button type="button" class="btn btn-danger">Reject</button>
-        <button type="button" class="btn btn-warning">Ban User</button>
-        <button type="button" class="btn btn-primary" disabled>Next</button>
+        <button type="button" class="btn btn-success" id="btnApprove">Approve</button>
+        <button type="button" class="btn btn-danger" id="btnReject">Reject</button>
+        <button type="button" class="btn btn-warning" id="btnBan">Ban User</button>
+        <button type="button" class="btn btn-primary" id="Next">Next</button>
     </div>
 </div>
 {% endblock %}
