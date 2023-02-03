@@ -11,15 +11,22 @@
         </div>
         {% for item in server_listings %}
         <div class="d-flex p-1 m-3 bg-1 rounded-3">
-            <div class="p-1 position-relative overflow-hidden">
-                {% if "placeholder" in item.logo.url %}
-                <img class="myimg" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+            <!-- Thumbnail-->
+            <div class="p-1 position-relative overflow-hidden d-flex flex-wrap">
+                {% if item.image_url %}
+                <img class="myimg" src=" {{ item.image_url }}">
                 {% else %}
-                <img class="myimg" src=" {{ item.logo.url }}">
+                <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 ps-2 pe-2">
+                    <p class="mb-1 text-center"><i class="bi bi-camera"></i></p>
+                    <p class="mb-1">Awaiting Image</p>
+                </div>
                 {% endif %}
             </div>
+
             <div class="p-1">
-                <a href="{% url 'server' item.slug %}" class="text-decoration-none"><h5 class="text-light">{{ item.title }}</h5></a>
+                <a href="{% url 'server' item.slug %}" class="text-decoration-none">
+                    <h5 class="text-light">{{ item.title }}</h5>
+                </a>
                 <p class="text-light">{{ item.short_description }}</p>
                 <p class="text-light">Tags:
                     {% for tag in item.tags.all %}
@@ -27,11 +34,14 @@
                     {% endfor %}
                 </p>
                 {% if item.id in bumps_queryset %}
-                <button type="button" class="btn btn-success" disabled name="" data-item="{{ item.pk }}" data-name='Bump Button'>Already bumped!</button>
+                <button type="button" class="btn btn-success" disabled name="" data-item="{{ item.pk }}"
+                    data-name='Bump Button'>Already bumped!</button>
                 {% elif bumps_queryset|length > 4 %}
-                <button type="button" class="btn btn-warning mb-3" disabled name="" data-item="{{ server.pk }}" data-name='Bump Button'>No more bumps!</button>
+                <button type="button" class="btn btn-warning mb-3" disabled name="" data-item="{{ server.pk }}"
+                    data-name='Bump Button'>No more bumps!</button>
                 {% else %}
-                <button type="button" class="btn btn-primary" name="" data-item="{{ item.pk }}" data-name='Bump Button'>Bump this server</button>
+                <button type="button" class="btn btn-primary" name="" data-item="{{ item.pk }}"
+                    data-name='Bump Button'>Bump this server</button>
                 {% endif %}
 
             </div>
@@ -43,11 +53,13 @@
         <h3>Filter search</h3>
         <h4>Tag selected</h4>
         {% for selected_tag in selected_tags %}
-        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'R%'|add:selected_tag|add:tag_string %}" role="button">{{ selected_tag }}</a>
+        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'R%'|add:selected_tag|add:tag_string %}"
+            role="button">{{ selected_tag }}</a>
         {% endfor %}
         <h4>Select Tags</h4>
         {% for tag in tags %}
-        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'A%'|add:tag.name|add:tag_string %}" role="button">{{ tag.name }}</a>
+        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'A%'|add:tag.name|add:tag_string %}"
+            role="button">{{ tag.name }}</a>
         {% endfor %}
     </div>
 </div>

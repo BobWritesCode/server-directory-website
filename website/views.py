@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db.models import Q
 from django.http import HttpResponse
@@ -332,7 +333,24 @@ def server_listings(request, slug, tag_string=""):
     tags = game.tags.all()
 
     query = Q(status=1) & Q(game=game)
-    queryset = ServerListing.objects.filter(query).distinct()
+    listings_queryset = ServerListing.objects.filter(query).distinct()
+
+    # Get images for server listings
+    # Makes sure they are status 1: approved.
+    _list = [x[0] for x in listings_queryset.values_list('id')]
+    query = Q(status=1) & Q(listing_id__in=_list)
+    images_queryset = Images.objects.filter(query).distinct()
+
+    # Pair images with server listing
+    for index, value in enumerate(listings_queryset):
+        # try to paid image with server listing, if image not available or does not
+        # exist then set as None so a placeholder can be shown instead.
+        try:
+            image = images_queryset.get(listing_id=listings_queryset[index].id).image
+        except ObjectDoesNotExist:
+            image = None
+        finally:
+            listings_queryset[index].image_url = image
 
     # Get user bumps
     bumps_queryset = get_user_bumps(request)
@@ -369,7 +387,7 @@ def server_listings(request, slug, tag_string=""):
 
         'Narrows server list down based on tags picked by user'
         for value in selected_tags:
-            queryset = queryset.filter(tags__name=value)
+            listings_queryset = listings_queryset.filter(tags__name=value)
 
         'Use list comprehension to remove selected tags from all available tags'
         tags = [x for x in game.tags.all() if x.name not in selected_tags]
@@ -384,7 +402,7 @@ def server_listings(request, slug, tag_string=""):
         request,
         "server-list.html",
         {
-            "server_listings": queryset,
+            "server_listings": listings_queryset,
             "bumps_queryset": bumps_queryset,
             "selected_tags": selected_tags,
             "tags": tags,
