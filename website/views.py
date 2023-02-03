@@ -507,6 +507,7 @@ def bump_server(request):
         bump.save()
         return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
 
+
 @staff_member_required
 @login_required
 def call_server(request):
@@ -530,7 +531,7 @@ def call_server(request):
                 result = {
                     'success': True,
                     'text': "Approved"
-                    }
+                }
 
             case 'image_approval_reject':
                 item = get_object_or_404(Images, pk=content['1'])
@@ -541,12 +542,52 @@ def call_server(request):
                 result = {
                     'success': True,
                     'text': "Rejected"
-                    }
+                }
 
             case 'image_approval_ban':
-                pass
+                item = get_object_or_404(Images, pk=content['1'])
+                item.status = 3
+                item.expiry = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
+                item.reviewed_by = request.user
+                item.save()
+                ban_user(item.user_id)
+                result = {
+                    'success': True,
+                    'text': "Rejected and user banned"
+                }
+
             case 'image_approval_next':
-                pass
+                query = Q(status=0)
+                image = Images.objects.filter(query).first()
+                # If no image is currently waiting be approved, then handle request.
+                if image is None:
+                    result = {
+                        'success': True,
+                        'text': "/staff_account",
+                    }
+                else:
+                    result = {
+                        'success': True,
+                        'text': f"/staff_image_review/{image.pk}",
+                    }
+
+        return HttpResponse(json.dumps({'result': result}))
 
 
-        return HttpResponse ( json.dumps({'result': result}) )
+def ban_user(user_id):
+    '''
+    Prevents user login, rejects all images for deletion, unpublish listings.
+    '''
+    # Set user to is banned.
+    user = get_object_or_404(CustomUser, pk=user_id)
+    user.is_banned = True
+    user.save()
+
+    # Unpublish all listings
+    query = Q(owner_id = user_id)
+    ServerListing.objects.filter(query).update(status=0)
+
+    # Unpublish all images and set for deletion
+    query = Q(user_id = user_id)
+    image_expire = date.today() + timedelta(days = DAYS_TO_EXPIRE_IMAGE)
+    Images.objects.filter(query).update(status = 3, expiry = image_expire)

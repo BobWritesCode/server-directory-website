@@ -26,7 +26,13 @@ window.addEventListener("DOMContentLoaded", function () {
 function action(arg) {
     addBump("/call_server", { arguments: arguments }).then((data) => {
         if (data.result) {
-            $('#status_txt').text(data.result.text)
+            if (arguments[0]=='image_approval_next'){
+                window.location.href = String(data.result.text);
+            }else{
+                $('#status_txt').text(data.result.text)
+                btnNext.removeAttr('disabled')
+            }
+
         };
     });
 }
