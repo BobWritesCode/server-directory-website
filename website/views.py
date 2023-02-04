@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sessions.models import Session
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
@@ -700,7 +701,12 @@ def ban_user(user_id):
     '''
     # Set user to is banned.
     user = get_object_or_404(CustomUser, pk=user_id)
+
+    # Delete all current user sessions (in case logged in on multiple devices)
+    [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == user.id]
+
     user.is_banned = True
+    user.is_active = False
     user.save()
 
     # Unpublish all listings
