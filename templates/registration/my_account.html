@@ -25,12 +25,12 @@
         <p>You have {{ bumps_left }} bumps remaining.</p>
         <p>Your bumps refill as old ones expire.</p>
         <table class="table table-striped table-dark">
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Server</th>
-                    <th scope="col">Link</th>
-                    <th scope="col">Expiry</th>
-                </tr>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Server</th>
+                <th scope="col">Link</th>
+                <th scope="col">Expiry</th>
+            </tr>
             {% for bump in bumps %}
             <tr>
                 <td>{{forloop.counter}}</td>
@@ -45,15 +45,22 @@
         <h3>Your Listings:</h3>
 
         {% for item in server_listing %}
-        <div class="border border-primary p-1 m-3">
+        <div class="border border-light p-1 m-3">
             <div class="d-flex">
-                <div class="col-2 p-1">
-                    {% if "placeholder" in item.logo.url %}
-                    <img class="img-fluid" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
+
+                <!-- Thumbnail-->
+                <div class="col-3 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center" style="max-width: 100%; max-height: 25vh;">
+                    {% if item.image_url %}
+                    <img class="img-cover" style="height: 25vh;" src="{{ item.image_url }}" alt="Image uploaded by for listing owner.">
+                    <div class="bottom-center">{{ item.image_status }}</div>
                     {% else %}
-                    <img class="img-fluid" src=" {{ item.logo.url }}">
+                    <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75" style="width: 100%; height: 25vh;">
+                        <p class="mb-1 text-center" style="font-size: xx-large;"><i class="bi bi-camera"></i></p>
+                        <p class="mb-1 text-center" style="font-size: x-large;">Awaiting Image</p>
+                    </div>
                     {% endif %}
                 </div>
+
                 <div class="col-9 p-1">
                     <a href="{% url 'server_detail' item.slug %}">
                         <h5 class="text-light">{{ item.title }}</h5>
@@ -75,7 +82,8 @@
                 {% else %}
                 <button type="button" class="btn btn-success mb-1">Enable</button>
                 {% endif %}
-                <button type="button" class="btn btn-danger mb-1" data-item="{{item.pk}}" data-toggle="modal" data-target="#server-listing-delete-modal">
+                <button type="button" class="btn btn-danger mb-1" data-item="{{item.pk}}" data-toggle="modal"
+                    data-target="#server-listing-delete-modal">
                     Delete Listing
                 </button>
             </div>
@@ -88,7 +96,8 @@
         {% endif %}
         <hr class="border border-primary border-3 opacity-75">
         <h3>Manage account</h3>
-        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#email-address-update-modal">
+        <button type="button" class="btn btn-success mb-3" data-toggle="modal"
+            data-target="#email-address-update-modal">
             Update Email address
         </button>
         <a class="btn btn-success mb-3" href="{% url 'password_change' %}">Change Password</a>
@@ -182,7 +191,8 @@
                             {{ form_4|crispy }}
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" name="server-listing-delete-confirm">Confirm</button>
+                            <button type="button" class="btn btn-danger"
+                                name="server-listing-delete-confirm">Confirm</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </div>
                     </form>

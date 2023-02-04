@@ -199,7 +199,9 @@ def server_delete(request, item_pk):
 
 @login_required
 def my_account(request):
+
     if request.method == 'POST':
+
         # Check to see if the user is trying to update there email address.
         if (
             UserUpdateEmailAddressForm(request.POST, instance=request.user)
@@ -231,7 +233,6 @@ def my_account(request):
                 item.delete()
                 return redirect("my-account")
 
-
         # Let's see if the user is trying to delete there account.
         if (
             ConfirmAccountDeleteForm(request.POST, instance=request.user)
@@ -247,6 +248,39 @@ def my_account(request):
     queryset = ServerListing.objects.filter(
         owner=username).order_by('-created_on')
     num_of_listings = queryset.count()
+
+
+    # Get images for server listings
+    # Makes sure they are status 1: approved.
+    _list = [x[0] for x in queryset.values_list('id')]
+    query =  Q(listing_id__in=_list)
+    images_queryset = Images.objects.filter(query).distinct()
+
+
+    # Pair images with server listing
+    for index, value in enumerate(queryset):
+        # try to pair image with server listing, if image not available or does not
+        # exist then set as None so a placeholder can be shown instead.
+        try:
+            image = images_queryset.get(listing_id=queryset[index].id).image
+
+            match images_queryset.get(listing_id=queryset[index].id).status:
+                case 0:
+                    status = "Awaiting review"
+                case 1:
+                    status = "Approved"
+                case 2:
+                    status = "Rejected"
+                case 3:
+                    status = "Banned"
+
+        except ObjectDoesNotExist:
+            image = None
+            status = None
+        finally:
+            queryset[index].image_url = image
+            queryset[index].image_status = status
+
 
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
@@ -264,6 +298,7 @@ def my_account(request):
         bumps_queryset[index].url = server_listings_queryset.get(id=value.listing.id).slug
     # Calculate how many bumps the user has left to use
     bumps_left = 5 - len(bumps_queryset)
+
 
     return render(
         request,
