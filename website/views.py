@@ -171,21 +171,51 @@ def server_edit(request, item_pk):
                 item.delete()
                 return redirect("my-account")
 
-        form = CreateServerListingForm(request.POST, request.FILES, instance=item)
-        if form.is_valid():
+        # If user is trying to update the listing
+        form = CreateServerListingForm(request.POST, instance=item)
+        image_form = ImageForm(request.FILES)
+
+        if form.is_valid() and image_form.is_valid():
+
             if request.FILES:
-                image = uploader.upload(request.FILES["logo"])
-                form.instance.logo = image["url"]
+                # Get instance from database.
+                image = Images.objects.get(listing_id=form.instance.id)
+                # Upload new imaged
+                new_image = uploader.upload(request.FILES['image'])
+                # Get image URL
+                image.image = new_image['url']
+                # Set new variables to instance
+                image.date_added = date.today()
+                image.approved_by = None
+                image.status = 0
+                image.reviewed_by = None
+                image.save()
+
             form.save()
+
             return redirect("my-account")
 
-    form = CreateServerListingForm(instance=item)
-    form_2 = ConfirmServerListingDeleteForm(instance=item)
+
+    # Get images for server listings
+    # Makes sure they are status 1: approved.
+    query =  Q(listing_id=item.id)
+    listing_image = Images.objects.filter(query).first()
+
+    # Set status text based on image.status.
+    match listing_image.status:
+        case 0:
+            listing_image.status_txt = "Awaiting approval"
+        case 1:
+            listing_image.status_txt = "Image approved"
+        case 2:
+            listing_image.status_txt = "Image declined, User banned"
 
     context = {
-        "form": form,
-        "form_2": form_2,
+        "form": CreateServerListingForm(instance=item),
+        "form_2": ConfirmServerListingDeleteForm(instance=item),
         "item": item,
+        'image_form': ImageForm(),
+        'listing_image': listing_image,
     }
     return render(request, "server_edit.html", context)
 
@@ -249,13 +279,11 @@ def my_account(request):
         owner=username).order_by('-created_on')
     num_of_listings = queryset.count()
 
-
     # Get images for server listings
     # Makes sure they are status 1: approved.
     _list = [x[0] for x in queryset.values_list('id')]
     query =  Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
-
 
     # Pair images with server listing
     for index, value in enumerate(queryset):
