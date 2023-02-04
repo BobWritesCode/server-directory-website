@@ -237,6 +237,12 @@ def server_edit(request, item_pk):
 @login_required
 def server_delete(request, item_pk):
     item = get_object_or_404(ServerListing, pk=item_pk)
+
+    image = Images.objects.filter(listing_id = item_pk).first()
+    if image is not None:
+        # Delete listing image from Cloudinary server
+        uploader.destroy(image.public_id)
+
     item.delete()
     return redirect('my-account')
 
@@ -267,14 +273,25 @@ def my_account(request):
             ConfirmServerListingDeleteForm(request.POST, instance=request.user)
             and "server_listing_delete_confirm" in request.POST
         ):
+
             form_4 = ConfirmServerListingDeleteForm(request.POST)
+
             if (
                 form_4.is_valid()
                 and form_4.data["server_listing_delete_confirm"] == "delete"
             ):
                 item_pk = form_4.data["itemID"]
+
+                # Get current image for listing
                 item = get_object_or_404(ServerListing, pk=item_pk)
+                image = Images.objects.filter(listing_id=item_pk).first()
+                if image is not None:
+                    # Delete listing image from Cloudinary server
+                    uploader.destroy(image.public_id)
+
+                # Delete server listing from database
                 item.delete()
+
                 return redirect("my-account")
 
         # Let's see if the user is trying to delete there account.
@@ -296,7 +313,7 @@ def my_account(request):
     # Get images for server listings
     # Makes sure they are status 1: approved.
     _list = [x[0] for x in queryset.values_list('id')]
-    query =  Q(listing_id__in=_list)
+    query = Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
     # Pair images with server listing
@@ -323,24 +340,23 @@ def my_account(request):
             queryset[index].image_url = image
             queryset[index].image_status = status
 
-
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
     form_3 = UserUpdateEmailAddressForm(instance=request.user)
     form_4 = ConfirmServerListingDeleteForm(instance=request.user)
 
     # Get user bumped servers
-    query = Q(user = request.user)
+    query = Q(user=request.user)
     bumps_queryset = Bumps.objects.filter(query)
     # Get server queryset based on users bumped servers
-    query = Q(pk__in = bumps_queryset.values_list('listing_id'))
+    query = Q(pk__in=bumps_queryset.values_list('listing_id'))
     server_listings_queryset = ServerListing.objects.filter(query)
     # Add server listing slug to bumps queryset
     for index, value in enumerate(bumps_queryset):
-        bumps_queryset[index].url = server_listings_queryset.get(id=value.listing.id).slug
+        bumps_queryset[index].url = server_listings_queryset.get(
+            id=value.listing.id).slug
     # Calculate how many bumps the user has left to use
     bumps_left = 5 - len(bumps_queryset)
-
 
     return render(
         request,
