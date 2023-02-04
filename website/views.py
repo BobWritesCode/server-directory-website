@@ -112,6 +112,7 @@ def staff_image_review(request, item_pk: int = None):
 
 @login_required
 def server_create(request):
+
     if request.method == 'POST':
 
         form = CreateServerListingForm(request.POST)
@@ -119,17 +120,18 @@ def server_create(request):
 
         if form.is_valid() and image_form.is_valid():
 
-            if request.FILES:
-                image = uploader.upload(request.FILES['image'])
-                image_form.instance.image = image['url']
-                image_form.instance.public_id = image[['public_id']]
-                image_form.instance.user = request.user
-                image_form.instance.listing = get_object_or_404(ServerListing, pk=form.instance.id)
-                image_form.instance.approved_by = None
-                image_form.save()
-
             form.instance.owner = request.user
             form.save()
+
+            if request.FILES:
+                new_image = uploader.upload(request.FILES['image'])
+                image_form.instance.image = new_image['url']
+                image_form.instance.public_id = new_image['public_id']
+                image_form.instance.user = request.user
+                image_form.instance.listing = get_object_or_404(
+                    ServerListing, pk=form.instance.id)
+                image_form.instance.approved_by = None
+                image_form.save()
 
             return redirect('my-account')
 

@@ -11,9 +11,6 @@
         <h2>Create Listing</h2>
 
         <form method="post" enctype="multipart/form-data">
-            <div class="form-group">
-
-            </div>
             {% csrf_token %}
             <div class="mb-3">
                 {{ form.game | as_crispy_field}}
