@@ -10,13 +10,13 @@
             <p class="text-light">{{ server.game }}</p>
 
             <!-- Thumbnail-->
-            <div class="p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
+            <div class="col-12 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
                 {% if images.0.image %}
                 <img style="max-width: 100%; max-height: 50vh;" src=" {{ images.0.image }}"
                     alt="Image uploaded by for listing owner.">
                 {% else %}
-                <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 ps-2 pe-2"
-                    style="width: 100%; height: 50vh;">
+                <div class="no-gutter d-flex flex-column justify-content-center text-bg-secondary opacity-75"
+                    style="width: 100%; height: 20vh;">
                     <p class="mb-1 text-center" style="font-size: xxx-large;"><i class="bi bi-camera"></i></p>
                     <p class="mb-1 text-center" style="font-size: xx-large;">Awaiting Image</p>
                 </div>
