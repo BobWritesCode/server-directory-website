@@ -8,3 +8,5 @@ class WebsiteConfig(AppConfig):
     def ready(self):
         from website import updater
         updater.start()
+        from website import jobs
+        jobs.daily_jobs()

@@ -5,7 +5,6 @@ from django.contrib.auth.forms import (
 )
 from django.urls import path, reverse_lazy
 
-
 from . import views
 
 urlpatterns = [
