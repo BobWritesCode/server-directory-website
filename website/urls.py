@@ -29,8 +29,8 @@ urlpatterns = [
 
     path(
         'server/<slug>',
-        views.ServerDetail.as_view(),
-        name='server'
+        views.server_detail,
+        name='server_detail'
     ),
 
     path(

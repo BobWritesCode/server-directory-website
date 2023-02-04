@@ -429,21 +429,28 @@ def get_user_bumps(request):
     return _list
 
 
-class ServerDetail(View):
-    def get(self, request, slug, *args, **kwargs):
-        queryset = ServerListing.objects.filter(status=1)
-        server = get_object_or_404(queryset, slug=slug)
-        # Get user bumps
-        bumps_queryset = get_user_bumps(request)
+def server_detail(request, slug):
 
-        return render(
-            request,
-            "server_detail.html",
-            {
-                "server": server,
-                "bumps_queryset": bumps_queryset,
-            },
-        )
+    # Get correct listing, check if approved.
+    queryset = ServerListing.objects.filter(status=1)
+    server = get_object_or_404(queryset, slug=slug)
+
+    # Get user bumps.
+    bumps_queryset = get_user_bumps(request)
+
+    # Get listing approved images.
+    query = Q(status=1) & Q(listing_id=server.id)
+    images = Images.objects.filter(query).distinct()
+
+    return render(
+        request,
+        "server_detail.html",
+        {
+            "images": images,
+            "server": server,
+            "bumps_queryset": bumps_queryset,
+        },
+    )
 
 
 def send_email_verification(request, user, form):

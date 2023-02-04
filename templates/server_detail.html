@@ -7,11 +7,20 @@
 
         <h2 class="text-light">{{ server.title }}</h5>
         <p class="text-light">{{ server.game }}</p>
-        {% if "placeholder" in server.logo.url %}
-        <img class="img-fluid mb-3" src="https://codeinstitute.s3.amazonaws.com/fullstack/blog/default.jpg">
-        {% else %}
-        <img class="img-fluid mb-3" src=" {{ server.logo.url }}">
-        {% endif %}
+
+            <!-- Thumbnail-->
+        <div class="p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
+            {% if images.0.image %}
+            <img style="max-width: 100%; max-height: 50vh;" src=" {{ images.0.image }}" alt="Image uploaded by for listing owner.">
+            {% else %}
+            <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 ps-2 pe-2" style="width: 100%; height: 50vh;">
+                <p class="mb-1 text-center" style="font-size: xxx-large;"><i class="bi bi-camera"></i></p>
+                <p class="mb-1 text-center" style="font-size: xx-large;">Awaiting Image</p>
+            </div>
+            {% endif %}
+        </div>
+
+
         <p class="text-light mb-3">Tags:
             {% for tag in server.tags.all %}
             <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>

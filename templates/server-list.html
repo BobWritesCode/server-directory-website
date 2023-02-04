@@ -11,20 +11,21 @@
         </div>
         {% for item in server_listings %}
         <div class="d-flex p-1 m-3 bg-1 rounded-3">
+
             <!-- Thumbnail-->
             <div class="p-1 position-relative overflow-hidden d-flex flex-wrap">
                 {% if item.image_url %}
-                <img class="myimg" src=" {{ item.image_url }}">
+                <img class="myimg" src=" {{ item.image_url }}" alt="Image uploaded by for listing owner.">
                 {% else %}
                 <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 ps-2 pe-2">
                     <p class="mb-1 text-center"><i class="bi bi-camera"></i></p>
-                    <p class="mb-1">Awaiting Image</p>
+                    <p class="mb-1 text-center">Awaiting Image</p>
                 </div>
                 {% endif %}
             </div>
 
             <div class="p-1">
-                <a href="{% url 'server' item.slug %}" class="text-decoration-none">
+                <a href="{% url 'server_detail' item.slug %}" class="text-decoration-none">
                     <h5 class="text-light">{{ item.title }}</h5>
                 </a>
                 <p class="text-light">{{ item.short_description }}</p>
