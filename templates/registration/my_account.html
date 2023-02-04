@@ -35,7 +35,7 @@
             <tr>
                 <td>{{forloop.counter}}</td>
                 <td>{{bump.listing}}</td>
-                <td><a href="{% url 'server' bump.url %}" class="text-decoration-none">Go to listing...</a></td>
+                <td><a href="{% url 'server_detail' bump.url %}" class="text-decoration-none">Go to listing...</a></td>
                 <td>{{bump.expiry}}</td>
             </tr>
             {% endfor %}
@@ -55,7 +55,7 @@
                     {% endif %}
                 </div>
                 <div class="col-9 p-1">
-                    <a href="{% url 'server' item.slug %}">
+                    <a href="{% url 'server_detail' item.slug %}">
                         <h5 class="text-light">{{ item.title }}</h5>
                     </a>
                     <p class="text-light">{{ item.short_description }}</p>
