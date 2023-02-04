@@ -45,6 +45,7 @@
         <h3>Your Listings:</h3>
 
         {% for item in server_listing %}
+        <!-- Listing container got loop -->
         <div class="border border-light p-1 m-3">
             <div class="d-flex">
 
@@ -71,8 +72,6 @@
                         <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
                         {% endfor %}
                     </p>
-                    <p class="text-aqua"><i class="fas fa-heart text-aqua"></i> {{ item.number_of_likes }} <span
-                            class="visually-hidden">likes.</span></p>
                 </div>
             </div>
             <div>
@@ -89,6 +88,7 @@
             </div>
         </div>
         {% endfor %}
+
         {% if num_of_listings >= 3 %}
         <p>You cannot create any more listings, you have reach maximum number of listings for 1 account.</p>
         {% else %}
