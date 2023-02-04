@@ -3,9 +3,10 @@
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
-    <div class="col-8 d-flex flex-column align-items-center">
-        <h2 class="text-light">Log In</h2>
-        <form method="post" class="text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-center">
+        <h2 class="text-light text-center m-5">Login</h2>
+        <hr class="border border-light border-3 opacity-75 w-100">
+        <form method="post" class="w-100 mb-3 text-light">
             {% csrf_token %}
             {{ form|crispy }}
             {% if error_message %}
@@ -13,8 +14,9 @@
                 {{ error_message }}
             </div>
             {% endif %}
-            <button class="btn btn-primary" type="submit">Log In</button>
+            <button class="btn btn-primary w-100" type="submit">Log In</button>
         </form>
+        <a class="btn btn-success mb-3 w-100" href="{% url 'password_reset' %}">Forgotten Password</a>
     </div>
 </div>
 {% endblock %}
