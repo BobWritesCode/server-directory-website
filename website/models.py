@@ -100,6 +100,7 @@ class Bumps(models.Model):
 class Images(models.Model):
 
     image = CloudinaryField('image', default='placeholder')
+    public_id = models.CharField(max_length=50, unique=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_uploaded")
     reviewed_by = models.ForeignKey(
         CustomUser,

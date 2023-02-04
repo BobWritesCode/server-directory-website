@@ -122,14 +122,14 @@ def server_create(request):
             if request.FILES:
                 image = uploader.upload(request.FILES['image'])
                 image_form.instance.image = image['url']
+                image_form.instance.public_id = image[['public_id']]
+                image_form.instance.user = request.user
+                image_form.instance.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+                image_form.instance.approved_by = None
+                image_form.save()
 
             form.instance.owner = request.user
             form.save()
-
-            image_form.instance.user = request.user
-            image_form.instance.listing = get_object_or_404(ServerListing, pk=form.instance.id)
-            image_form.instance.approved_by = None
-            image_form.save()
 
             return redirect('my-account')
 
@@ -158,6 +158,7 @@ def server_edit(request, item_pk):
     item = get_object_or_404(ServerListing, pk=item_pk)
 
     if request.method == "POST":
+
         # Let's see if the user is trying to delete the listing.
         if (
             ConfirmServerListingDeleteForm(request.POST, instance=request.user)
@@ -178,37 +179,50 @@ def server_edit(request, item_pk):
         if form.is_valid() and image_form.is_valid():
 
             if request.FILES:
-                # Get instance from database.
-                image = Images.objects.get(listing_id=form.instance.id)
-                # Upload new imaged
-                new_image = uploader.upload(request.FILES['image'])
-                # Get image URL
-                image.image = new_image['url']
-                # Set new variables to instance
+
+                image = Images.objects.filter(listing_id = item_pk).first()
+
+                if image is not None:
+                    # Delete old image from Cloudinary server
+                    uploader.destroy(image.public_id)
+                    # Upload new imaged
+                    new_image = uploader.upload(request.FILES['image'])
+                else:
+                    # Upload new imaged
+                    new_image = uploader.upload(request.FILES['image'])
+                    image = image_form.instance
+                    image.user = request.user
+                    image.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+
                 image.date_added = date.today()
-                image.approved_by = None
                 image.status = 0
                 image.reviewed_by = None
+                image.image = new_image['url']
+                image.public_id = new_image['public_id']
+                image.approved_by = None
                 image.save()
+
 
             form.save()
 
             return redirect("my-account")
 
-
-    # Get images for server listings
-    # Makes sure they are status 1: approved.
-    query =  Q(listing_id=item.id)
-    listing_image = Images.objects.filter(query).first()
-
     # Set status text based on image.status.
-    match listing_image.status:
-        case 0:
-            listing_image.status_txt = "Awaiting approval"
-        case 1:
-            listing_image.status_txt = "Image approved"
-        case 2:
-            listing_image.status_txt = "Image declined, User banned"
+    try:
+        # Get images for server listings
+        # Makes sure they are status 1: approved.
+        query =  Q(listing_id=item.id)
+        listing_image = Images.objects.filter(query).first()
+
+        match listing_image.status:
+            case 0:
+                listing_image.status_txt = "Awaiting approval"
+            case 1:
+                listing_image.status_txt = "Image approved"
+            case 2:
+                listing_image.status_txt = "Image declined, User banned"
+    except AttributeError:
+        listing_image = None
 
     context = {
         "form": CreateServerListingForm(instance=item),
