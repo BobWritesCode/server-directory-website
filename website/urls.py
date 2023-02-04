@@ -38,13 +38,19 @@ urlpatterns = [
         name='my-account'
     ),
 
+    # path(
+    #     'accounts/login',
+    #     auth_views.LoginView.as_view(
+    #         template_name='registration/login.html',
+    #         authentication_form=AuthenticationForm,
+    #         success_url=reverse_lazy("home"),
+    #     ),
+    #     name='login'
+    # ),
+
     path(
         'accounts/login',
-        auth_views.LoginView.as_view(
-            template_name='registration/login.html',
-            authentication_form=AuthenticationForm,
-            success_url=reverse_lazy("home"),
-        ),
+        views.login_view,
         name='login'
     ),
 

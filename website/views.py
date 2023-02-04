@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
@@ -27,7 +27,7 @@ from .constants import DAYS_TO_EXPIRE_IMAGE
 from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
-    ImageForm
+    ImageForm, LoginForm
 )
 from .models import (
     CustomUser, ServerListing, Game, Tag, Bumps, Images
@@ -635,7 +635,7 @@ def call_server(request):
     '''
     Generic method for front end to call backend with a request.
     '''
-    print(request)
+
     if request.method == 'POST':
 
         body_unicode = request.body.decode('utf-8')
@@ -706,7 +706,6 @@ def ban_user(user_id):
     [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == user.id]
 
     user.is_banned = True
-    user.is_active = False
     user.save()
 
     # Unpublish all listings
@@ -717,3 +716,32 @@ def ban_user(user_id):
     query = Q(user_id = user_id)
     image_expire = date.today() + timedelta(days = DAYS_TO_EXPIRE_IMAGE)
     Images.objects.filter(query).update(status = 3, expiry = image_expire)
+
+
+def login_view(request):
+
+    error_message = None
+
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+        if user.is_banned:
+            error_message = "This account is banned."
+            user = None
+        elif user is not None:
+            login(request, user)
+            return redirect("my-account")
+        else:
+            error_message = "Either user does not exist or password does not match account."
+
+    form = LoginForm()
+
+    return render(
+        request,
+        "registration/login.html",
+        {
+            "form": form,
+            "error_message": error_message,
+        },
+    )

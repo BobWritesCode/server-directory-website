@@ -170,3 +170,13 @@ class ImageForm(forms.ModelForm):
     class Meta:
         model = Images
         fields = ['image']
+
+
+class LoginForm(forms.ModelForm):
+
+    email = forms.EmailField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password']

@@ -8,8 +8,17 @@
         <form method="post" class="text-light">
             {% csrf_token %}
             {{ form|crispy }}
+            {% if error_message %}
+            <div class='error-message alert alert-warning mt-1' role='alert'>
+                {{ error_message }}
+            </div>
+            {% endif %}
             <button class="btn btn-primary" type="submit">Log In</button>
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/script_login.js"></script>
 {% endblock %}
