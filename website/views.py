@@ -341,17 +341,6 @@ def server_listings(request, slug, tag_string=""):
     query = Q(status=1) & Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
-    # Pair images with server listing
-    for index, value in enumerate(listings_queryset):
-        # try to paid image with server listing, if image not available or does not
-        # exist then set as None so a placeholder can be shown instead.
-        try:
-            image = images_queryset.get(listing_id=listings_queryset[index].id).image
-        except ObjectDoesNotExist:
-            image = None
-        finally:
-            listings_queryset[index].image_url = image
-
     # Get user bumps
     bumps_queryset = get_user_bumps(request)
 
@@ -397,6 +386,17 @@ def server_listings(request, slug, tag_string=""):
         selected_tags = []
         # Get all available tags for game selected
         tags = game.tags.all()
+
+    # Pair images with server listing
+    for index, value in enumerate(listings_queryset):
+        # try to paid image with server listing, if image not available or does not
+        # exist then set as None so a placeholder can be shown instead.
+        try:
+            image = images_queryset.get(listing_id=listings_queryset[index].id).image
+        except ObjectDoesNotExist:
+            image = None
+        finally:
+            listings_queryset[index].image_url = image
 
     return render(
         request,
