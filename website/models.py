@@ -1,8 +1,9 @@
-from cloudinary.models import CloudinaryField
-from datetime import timedelta, date
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
+from cloudinary.models import CloudinaryField
+from datetime import timedelta, date
+import json
 
 from .constants import DAYS_TO_EXPIRE_BUMP
 
@@ -36,8 +37,13 @@ class Tag(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+            sort_keys=True, indent=4)
+
 
 class Game(models.Model):
+    id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=False)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
@@ -46,6 +52,10 @@ class Game(models.Model):
 
     def __str__(self):
         return f"{self.name}"
+
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+            sort_keys=True, indent=4)
 
 
 class ServerListing(models.Model):

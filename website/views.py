@@ -6,6 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sessions.models import Session
 from django.contrib.sites.shortcuts import get_current_site
+from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -27,7 +28,7 @@ from .constants import DAYS_TO_EXPIRE_IMAGE
 from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
-    ImageForm, LoginForm
+    ImageForm, LoginForm, GameManageForm, GameListForm
 )
 from .models import (
     CustomUser, ServerListing, Game, Tag, Bumps, Images
@@ -692,6 +693,18 @@ def call_server(request):
                         'text': f"/staff_image_review/{image.pk}",
                     }
 
+            case 'get_game_details':
+                game = get_object_or_404(Game, pk=content['1'])
+
+                query = Q(game=content['1'])
+                tags = Tag.objects.filter(query)
+
+                result = {
+                    'success': True,
+                    'game': game.toJSON(),
+                    'game_tags':serializers.serialize('json', tags),
+                }
+
         return HttpResponse(json.dumps({'result': result}))
 
 
@@ -743,5 +756,56 @@ def login_view(request):
         {
             "form": form,
             "error_message": error_message,
+        },
+    )
+
+def game_management(request):
+
+    if request.method == 'POST':
+
+        form = GameManageForm(request.POST)
+        image_form = GameManageForm(request.FILES)
+        print(form.data)
+
+        game = get_object_or_404(Game, pk=form.data['id'])
+        image = game.image
+
+        game.name = form.data['id']
+        # game.tags = form.data['tags']
+        game.status = form.data['status']
+
+        # game.save()
+
+        print(image)
+        print(form.data['image'])
+
+        if (game.image is not None and form.data['image']):
+            print("got here")
+            #     # Delete old image from Cloudinary server
+            #     uploader.destroy(image.public_id)
+            #     # Upload new imaged
+            #     new_image = uploader.upload(request.FILES['image'])
+            # else:
+            #     # Upload new imaged
+            #     new_image = uploader.upload(request.FILES['image'])
+            #     image = image_form.instance
+            #     image.user = request.user
+            #     image.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+
+        # image.date_added = date.today()
+        # image.status = 0
+        # image.reviewed_by = None
+        # image.image = new_image['url']
+        # image.public_id = new_image['public_id']
+        # image.approved_by = None
+        # image.save()
+
+    return render(
+        request,
+        "staff/staff_game_management.html",
+        {
+            "form": GameManageForm(),
+            "games": Game.objects.all(),
+            "tags": Tag.objects.all(),
         },
     )

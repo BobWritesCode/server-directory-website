@@ -169,4 +169,10 @@ urlpatterns = [
         views.call_server,
         name='call_server'
     ),
+
+    path(
+        'game_management',
+        views.game_management,
+        name='game_management'
+    ),
 ]

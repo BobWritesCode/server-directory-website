@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+{% endblock head %}
+
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-center">
+        <h2 class="text-light text-center m-5">Game Management</h2>
+        <hr class="border border-light border-3 opacity-75 w-100">
+
+        <form method="post" enctype="multipart/form-data" class="d-flex flex-column">
+            {% csrf_token %}
+            <p>Select Game:</p>
+
+            <select id="game-select-drop-down" class="game-select-drop-down" name="state">
+                {% for game in games %}
+                <option value="{{game.id}}">{{game.name}}</option>
+                {% endfor %}
+            </select>
+
+            <button type="button" id="btnLoadGame" class="btn btn-success pt-1 mt-3">Select game</button>
+        </form>
+
+        <hr class="border border-light border-3 opacity-75 w-100">
+        <form method="post" id='game-management-form' enctype="multipart/form-data" class="d-flex flex-column">
+            {% csrf_token %}
+            {{ form.id | as_crispy_field }}
+            {{ form.name | as_crispy_field }}
+            {{ form.slug | as_crispy_field }}
+
+            <label for="tag-select-drop-down-multiple">Tags:</label>
+            <select id="tag-select-drop-down-multiple" class="tag-select-drop-down-multiple" name="tags[]" multiple="multiple">
+                {% for tag in tags %}
+                <option value="{{tag.id}}">{{tag.name}}</option>
+                {% endfor %}
+            </select>
+
+            <img id="game_cover" src="" class="img-fluid" alt="Responsive image">
+            {{ form.image | as_crispy_field }}
+            {{ form.status | as_crispy_field }}
+            {% for choice in form.pc_type %}
+            {{ choice.choice_label }}
+            <span class="radio">{{ choice.tag }}</span>
+            {% endfor %}
+            <button type="button" class="btn btn-primary mb-3" disabled>Save changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="../static/js/script_game_management.js"></script>
+{% endblock %}

@@ -3,8 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML
+from crispy_forms.bootstrap import InlineRadios, Field
 
-from website.models import CustomUser, Game, Tag, ServerListing, Images
+from .constants import STATUS
+from .models import (
+    CustomUser, Game, Tag, ServerListing, Images
+)
 
 
 class ProfileForm(forms.ModelForm):
@@ -180,3 +184,50 @@ class LoginForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ['email', 'password']
+
+
+class GameListForm(forms.ModelForm):
+    name = forms.CharField()
+
+    class Meta:
+        model = Game
+        fields = ['name']
+
+
+class GameManageForm(forms.ModelForm):
+    id = forms.IntegerField(disabled=True)
+    name = forms.CharField(label="Game", max_length=50, required=True)
+    slug = forms.SlugField(max_length=50, disabled=True)
+    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), blank=False)
+    image = forms.ImageField(
+        label="Upload image:",
+        widget=forms.FileInput,
+        required=False,
+    )
+    status = forms.TypedChoiceField(
+        label="Set status as:",
+        choices=((0, "Unpublish"), (1, "Publish")),
+        coerce=lambda x: int(x),
+        widget=forms.RadioSelect,
+        required=True,
+    )
+
+    class Meta:
+        model = Game
+        fields = ['id', 'name', 'slug', 'tags', 'image', 'status']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                '',
+                'id',
+                'name',
+                'slug',
+                'tags,'
+                'image',
+                InlineRadios('status')
+            ),
+            Submit('submit', 'Submit', css_class='button white'),
+        )

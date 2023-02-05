@@ -2,6 +2,12 @@
 
 ## Full stack website
 
+### Features
+
+#### Select2
+
+[Select2](https://select2.org/)
+
 ### Required app
 
 #### datetime
