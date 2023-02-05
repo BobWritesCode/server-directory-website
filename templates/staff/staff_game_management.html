@@ -27,28 +27,34 @@
         </form>
 
         <hr class="border border-light border-3 opacity-75 w-100">
+
         <form method="post" id='game-management-form' enctype="multipart/form-data" class="d-flex flex-column">
             {% csrf_token %}
             {{ form.id | as_crispy_field }}
             {{ form.name | as_crispy_field }}
             {{ form.slug | as_crispy_field }}
 
-            <label for="tag-select-drop-down-multiple">Tags:</label>
-            <select id="tag-select-drop-down-multiple" class="tag-select-drop-down-multiple" name="tags[]" multiple="multiple">
+            <label for="tags-multiple">Tags:</label>
+            <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple">
                 {% for tag in tags %}
-                <option value="{{tag.id}}">{{tag.name}}</option>
+                <option value="{{tag.pk}}">{{tag.name}}</option>
                 {% endfor %}
             </select>
 
-            <img id="game_cover" src="" class="img-fluid" alt="Responsive image">
+            <!-- Game Cover-->
+            <div id="game-cover-container" class="d-none">
+
+            </div>
+            <div id="no-game-cover-container" class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 d-none mt-3 mb-2" style="width: 100%; height: 25vh;">
+                <p class="mb-1 text-center"><i class="bi bi-camera"></i></p>
+                <p class="mb-1 text-center">No Image</p>
+            </div>
+
             {{ form.image | as_crispy_field }}
             {{ form.status | as_crispy_field }}
-            {% for choice in form.pc_type %}
-            {{ choice.choice_label }}
-            <span class="radio">{{ choice.tag }}</span>
-            {% endfor %}
-            <button type="button" class="btn btn-primary mb-3" disabled>Save changes</button>
+            <button type="submit" class="btn btn-primary mb-3" disabled>Save changes</button>
         </form>
+
     </div>
 </div>
 {% endblock %}

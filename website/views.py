@@ -763,42 +763,35 @@ def game_management(request):
 
     if request.method == 'POST':
 
-        form = GameManageForm(request.POST)
-        image_form = GameManageForm(request.FILES)
-        print(form.data)
+        form = GameManageForm(
+            request.POST,
+            request.FILES,
+            instance=get_object_or_404(Game, pk=request.POST['id'])
+        )
+        print(form.files)
 
-        game = get_object_or_404(Game, pk=form.data['id'])
-        image = game.image
+        if form.is_valid():
+            game = get_object_or_404(Game, pk=form.data['id'])
+            game.name = form.data['name']
+            game.status = form.data['status']
+            query = Q(id__in=form.cleaned_data['tags'])
+            tags = Tag.objects.filter(query).all()
+            game.tags.set(tags)
+            print(game.image)
 
-        game.name = form.data['id']
-        # game.tags = form.data['tags']
-        game.status = form.data['status']
+            if (game.image is not None and form.files):
+                print("her3")
+                # Delete old image from Cloudinary server
+                uploader.destroy(game.image_public_id)
 
-        # game.save()
+            if (form.files):
+                print("her4")
+                # Upload new imaged
+                new_image = uploader.upload(request.FILES['image'])
+                game.image = new_image['url']
+                game.image_public_id = new_image['public_id']
 
-        print(image)
-        print(form.data['image'])
-
-        if (game.image is not None and form.data['image']):
-            print("got here")
-            #     # Delete old image from Cloudinary server
-            #     uploader.destroy(image.public_id)
-            #     # Upload new imaged
-            #     new_image = uploader.upload(request.FILES['image'])
-            # else:
-            #     # Upload new imaged
-            #     new_image = uploader.upload(request.FILES['image'])
-            #     image = image_form.instance
-            #     image.user = request.user
-            #     image.listing = get_object_or_404(ServerListing, pk=form.instance.id)
-
-        # image.date_added = date.today()
-        # image.status = 0
-        # image.reviewed_by = None
-        # image.image = new_image['url']
-        # image.public_id = new_image['public_id']
-        # image.approved_by = None
-        # image.save()
+            game.save()
 
     return render(
         request,

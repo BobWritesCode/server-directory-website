@@ -195,12 +195,12 @@ class GameListForm(forms.ModelForm):
 
 
 class GameManageForm(forms.ModelForm):
-    id = forms.IntegerField(disabled=True)
+    id = forms.IntegerField()
     name = forms.CharField(label="Game", max_length=50, required=True)
-    slug = forms.SlugField(max_length=50, disabled=True)
+    slug = forms.SlugField(max_length=50)
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), blank=False)
     image = forms.ImageField(
-        label="Upload image:",
+        label="Upload new image:",
         widget=forms.FileInput,
         required=False,
     )

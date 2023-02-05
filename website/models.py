@@ -47,7 +47,8 @@ class Game(models.Model):
     name = models.CharField(max_length=50, blank=False)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
-    image = CloudinaryField('image', default='placeholder', blank=False)
+    image = CloudinaryField('image', blank=True)
+    image_public_id = models.CharField(max_length=50, blank=True)
     status = models.IntegerField(choices=STATUS, default=0)
 
     def __str__(self):
@@ -56,6 +57,18 @@ class Game(models.Model):
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.slug = f'Game-{self.pk}'
+        else:
+            if Game.objects.count() == 0:
+                next_id = 1
+            else:
+                next_id = Game.objects.order_by('-id').first().id + 1
+
+            self.slug = f'Game-{next_id}'
+        super(Game, self).save(*args, **kwargs)
 
 
 class ServerListing(models.Model):
