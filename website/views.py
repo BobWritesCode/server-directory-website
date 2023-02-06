@@ -28,7 +28,7 @@ from .constants import DAYS_TO_EXPIRE_IMAGE
 from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
-    ImageForm, LoginForm, GameManageForm
+    ImageForm, LoginForm, GameManageForm, ConfirmGameDeleteForm
 )
 from .models import (
     CustomUser, ServerListing, Game, Tag, Bumps, Images
@@ -760,11 +760,13 @@ def login_view(request):
     )
 
 
+@staff_member_required
+@login_required
 def game_management(request: object):
     """
     request.GET: Loads html page using render().
 
-    request.POST: Processes adding or updating new game.
+    request.POST: Processes adding, updating and deleting games.
 
     Args:
         request (object): request data received from POST
@@ -778,8 +780,17 @@ def game_management(request: object):
         # New listing flag - default to False
         new_listing = False
 
+        # Let's see if the user is trying to delete a game.
+        if (
+            ConfirmGameDeleteForm(request.POST)
+            and "game_delete_confirm" in request.POST
+        ):
+            form = ConfirmGameDeleteForm(request.POST)
+            delete_game(form)
+            return redirect("game_management")
+
         # Checking if updating a current game
-        if request.POST["id"]:
+        elif request.POST["id"]:
             form = GameManageForm(
                 request.POST, instance=get_object_or_404(Game, pk=request.POST["id"])
             )
@@ -812,10 +823,30 @@ def game_management(request: object):
         "staff/staff_game_management.html",
         {
             "form": GameManageForm(),
+            "form_2": ConfirmGameDeleteForm(),
             "games": Game.objects.all(),
             "tags": Tag.objects.all(),
         },
     )
+
+
+def delete_game(form: object):
+    """
+    Delete game from the database, and if a image was supplied it will delete
+    the image from the server.
+
+    Parameters:
+    form : object
+    """
+    if form.data["game_delete_confirm"] == "delete" and form.data["id"]:
+        item_id = form.data["id"]
+        # Get current image for game
+        game = get_object_or_404(Game, id=item_id)
+        if game.image is not None:
+            # Delete listing image from Cloudinary server
+            uploader.destroy(game.image.public_id)
+        # Delete game from database
+        game.delete()
 
 
 def add_new_game(request: object, form: object):

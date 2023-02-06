@@ -66,6 +66,24 @@ class ConfirmServerListingDeleteForm(forms.ModelForm):
         model = ServerListing
         fields = ['id']
 
+
+class ConfirmGameDeleteForm(forms.ModelForm):
+    '''
+    A form for user to confirm deletion a game.
+    '''
+    game_delete_confirm = forms.CharField(
+        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        max_length=10,
+        error_messages={
+            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        required=True,
+    )
+
+    class Meta:
+        model = Game
+        fields = ['id']
+
+
 class UserUpdateEmailAddressForm(forms.ModelForm):
     '''
     A form for user to update their email address.

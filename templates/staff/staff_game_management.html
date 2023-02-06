@@ -2,8 +2,8 @@
 {% load crispy_forms_tags %}
 
 {% block head %}
-    <!-- Scripts / styles specific for this page -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<!-- Scripts / styles specific for this page -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock head %}
 
 {% block content %}
@@ -12,11 +12,11 @@
         <!-- Page header -->
         <h2 class="text-light text-center m-5">Game Management</h2>
         <hr class="border border-light border-3 opacity-75 w-100">
-
         <!-- Form used to select game or choose to add new game-->
         <form method="post" enctype="multipart/form-data" class="d-flex flex-column">
             {% csrf_token %}
-            <p>Select Game:</p>
+            <p>Select Game:
+            </p>
             <!-- Drop down using Select2 -->
             <select id="game-select-drop-down" class="game-select-drop-down" name="state">
                 {% for game in games %}
@@ -27,15 +27,12 @@
             <p>Or</p>
             <button type="button" id="btnNewGame" class="btn btn-primary">Add new game</button>
         </form>
-
         <hr class="border border-light border-3 opacity-75 w-100">
-
         <!-- Form header -->
         <h3 id="form-header"></h3>
-
         <!-- Form used to add or update game -->
         <form method="post" id='game-management-form' enctype="multipart/form-data" class="d-flex flex-column">
-            {% csrf_token %}
+            {%csrf_token %}
             <div id='form-internal-container' class="d-none d-flex flex-column">
                 {{ form.id | as_crispy_field }}
                 {{ form.name | as_crispy_field }}
@@ -52,16 +49,49 @@
                     <!-- JS will add div here with image if game image exists -->
                 </div>
                 <!-- JS will unhide if not game image exists -->
-                <div id="no-game-cover-container" class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 d-none mt-3 mb-2" style="width: 100%; height: 25vh;">
-                    <p class="mb-1 text-center"><i class="bi bi-camera"></i></p>
+                <div id="no-game-cover-container"
+                    class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 d-none mt-3 mb-2"
+                    style="width: 100%; height: 25vh;">
+                    <p class="mb-1 text-center">
+                        <i class="bi bi-camera"></i>
+                    </p>
                     <p class="mb-1 text-center">No Image</p>
                 </div>
                 {{ form.image | as_crispy_field }}
                 {{ form.status | as_crispy_field }}
                 <button type="submit" class="btn btn-primary mb-3" disabled></button>
+                <button type="button" id="btnDeleteGame" class="btn btn-danger m-1" data-toggle="modal"
+                    data-target="#game-delete-modal"> Delete Game </button>
             </div>
         </form>
-
+    </div>
+</div>
+<!-- Game delete Modal -->
+<div class="modal fade text-dark" id="game-delete-modal" tabindex="-1" role="dialog" aria-labelledby="Game Delete Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Delete Game Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="game-delete-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p> Deleting this game is permanent and irreversible.
+                        <br>It will also delete all listings that are linked to this game.
+                        <br>Please consider if to unpublish game would be enough.
+                    </p>
+                    {{ form_2|crispy }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" name="game-delete-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -3,9 +3,11 @@
 // Globals
 const btnLoadGame = $("#btnLoadGame");
 const btnNewGame = $("#btnNewGame");
+const btnDeleteGame = $("#btnDeleteGame");
 const form = $('#game-management-form');
 const btnSubmit = form.find('button[type="submit"]');
 const formInternalContainer = $('#form-internal-container');
+const btnGameDeleteConfirm = $("#game-delete-form").find("button[name='game-delete-confirm']");
 
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
@@ -31,20 +33,26 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    btnGameDeleteConfirm.on("click", function() {
+        GameDeleteConfirm();
+    });
+
 });
 
 // DOM Ready
-$(document)
-    .ready(function() {
-        $('.game-select-drop-down').select2();
-        $(".tags-multiple").select2({
-            placeholder: "Select tags",
-            allowClear: true,
-            closeOnSelect: false,
-        });
-        form.find('#id_id').prop("readonly", "readonly");
-        form.find('#id_slug').prop("readonly", "readonly");
+$(document).ready(function() {
+
+    $('.game-select-drop-down').select2();
+    $(".tags-multiple").select2({
+        placeholder: "Select tags",
+        allowClear: true,
+        closeOnSelect: false,
     });
+    form.find('#id_id').prop("readonly", "readonly");
+    form.find('#id_slug').prop("readonly", "readonly");
+    $("#game-delete-form").find("#div_id_id").addClass("d-none");
+
+});
 
 // Functions
 
@@ -53,6 +61,7 @@ $(document)
  * Shows errors to the user if any.
  */
 function validateForm() {
+
     // Clear any current error messages from screen.
     $(".error-message").remove();
 
@@ -92,7 +101,6 @@ function action(...args) {
             arguments: arguments
         })
         .then((data) => {
-
             if (data.result) {
                 if (arguments[0] == 'get_game_details') {
                     // Turn game json into object
@@ -116,7 +124,6 @@ function action(...args) {
                         $("#game-cover-container").html('');
                     }
                     form.find('input[name="status"][value="' + obj.status + '"]').prop("checked", true);
-
                     // Create an array from tags linked to game selected.
                     const tags = Array.from(Object.values(obj2), x => x.pk)
                     // Populate multi choice dropdown with correct tags
@@ -149,6 +156,8 @@ function prepareFormForNewGame() {
     form.find("#div_id_slug").addClass("d-none");
     btnSubmit.text("Add new game");
     btnSubmit.prop("disabled", false);
+    btnDeleteGame.addClass("d-none");
+    btnDeleteGame.prop("disabled", true);
 }
 
 /**
@@ -161,6 +170,8 @@ function prepareFormForUpdateGame() {
     form.find("#div_id_slug").removeClass("d-none");
     btnSubmit.text("Save Changes");
     btnSubmit.prop("disabled", false);
+    btnDeleteGame.removeClass("d-none");
+    btnDeleteGame.prop("disabled", false);
 }
 
 /**
@@ -168,6 +179,29 @@ function prepareFormForUpdateGame() {
  */
 function submitForm() {
     form.submit();
+}
+
+/**
+ * Check user input matches expected input
+ * @return {None} No  return
+ */
+function GameDeleteConfirm() {
+    // Clear any current error messages from screen.
+    $(".error-message").remove();
+
+    // Check user has input correct string.
+    if ($("#id_game_delete_confirm").val() != "delete") {
+        $("#id_game_delete_confirm")
+            .after(
+                "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>"
+            );
+    }
+
+    // If no error messages then send request to server.
+    if ($(".error-message").length == 0) {
+        $("#game-delete-form").find("#id_id").removeClass("d-none").val(form.find("#id_id").val());
+        $("#game-delete-form").submit();
+    }
 }
 
 /**
