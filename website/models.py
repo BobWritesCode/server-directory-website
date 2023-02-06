@@ -47,8 +47,7 @@ class Game(models.Model):
     name = models.CharField(max_length=50, blank=False)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
-    image = CloudinaryField('image', blank=True)
-    image_public_id = models.CharField(max_length=50, blank=True)
+    image = CloudinaryField('image', null=True, default=None, blank=True)
     status = models.IntegerField(choices=STATUS, default=0)
 
     def __str__(self):

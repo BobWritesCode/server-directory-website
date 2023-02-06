@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
+from cloudinary.forms import CloudinaryFileField
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML
 from crispy_forms.bootstrap import InlineRadios, Field
@@ -193,15 +195,25 @@ class GameListForm(forms.ModelForm):
         model = Game
         fields = ['name']
 
+# class GameImageForm(forms.ModelForm):
+
+#     image = CloudinaryFileField(
+#         label="Upload new image:",
+#         required=False,
+#     )
+
+#     class Meta:
+#         model = Game
+#         fields = ['image']
+
 
 class GameManageForm(forms.ModelForm):
     id = forms.IntegerField()
     name = forms.CharField(label="Game", max_length=50, required=True)
     slug = forms.SlugField(max_length=50)
     tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), blank=False)
-    image = forms.ImageField(
+    image = CloudinaryFileField(
         label="Upload new image:",
-        widget=forms.FileInput,
         required=False,
     )
     status = forms.TypedChoiceField(
@@ -225,7 +237,7 @@ class GameManageForm(forms.ModelForm):
                 'id',
                 'name',
                 'slug',
-                'tags,'
+                'tags',
                 'image',
                 InlineRadios('status')
             ),
