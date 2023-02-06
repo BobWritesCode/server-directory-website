@@ -58,18 +58,6 @@ class Game(models.Model):
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
 
-    def save(self, *args, **kwargs):
-        if self.id:
-            self.slug = f'Game-{self.id}'
-        else:
-            if Game.objects.count() == 0:
-                next_id = 1
-            else:
-                next_id = Game.objects.order_by('-id').first().id + 1
-
-            self.slug = f'Game-{next_id}'
-        super(Game, self).save(*args, **kwargs)
-
 
 class ServerListing(models.Model):
     game = models.ForeignKey(

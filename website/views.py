@@ -816,7 +816,7 @@ def game_management(request: object):
             request.POST._mutable = True
             # Get next ID and assign slug
             form.data["id"] = Game.objects.order_by("-id").first().id + 1
-            form.data["slug"] = "Game-" + str(form.data["id"])
+            form.data["slug"] = form.data["slug"]
             # Restrict object from being edited
             request.POST._mutable = False
 
@@ -839,8 +839,7 @@ def game_management(request: object):
         },
     )
 
-@staff_member_required
-@login_required
+
 def delete_game(form: object):
     """
     Delete game from the database, and if a image was supplied it will delete
@@ -859,8 +858,7 @@ def delete_game(form: object):
         # Delete game from database
         game.delete()
 
-@staff_member_required
-@login_required
+
 def add_new_game(request: object, form: object):
     """
     Saves new game to database, and if a image was supplied it will upload
@@ -879,8 +877,7 @@ def add_new_game(request: object, form: object):
         game.image = new_image["url"]
         game.save()
 
-@staff_member_required
-@login_required
+
 def update_game(request: object, form: object):
     """
     Updates game to database, and if a image was supplied it will upload
@@ -895,6 +892,7 @@ def update_game(request: object, form: object):
     # Update values
     game.name = form.data["name"]
     game.status = form.data["status"]
+    game.slug = form.data["slug"]
 
     # Get tags selected from the form
     query = Q(id__in=form.cleaned_data["tags"])
@@ -971,7 +969,7 @@ def tag_management(request: object):
             request.POST._mutable = True
             # Get next ID and assign slug
             form.data["id"] = Tag.objects.order_by("-id").first().id + 1
-            # form.data["slug"] = "Tag-" + str(form.data["id"])
+            form.data["slug"] = "Tag-" + str(form.data["id"])
             # Restrict object from being edited
             request.POST._mutable = False
 
@@ -993,8 +991,7 @@ def tag_management(request: object):
         },
     )
 
-@staff_member_required
-@login_required
+
 def delete_tag(form: object):
     """
     Delete tag from the database.
@@ -1009,8 +1006,7 @@ def delete_tag(form: object):
         # Delete tag from database
         tag.delete()
 
-@staff_member_required
-@login_required
+
 def add_new_tag(form: object):
     """
     Saves new tag to database.
@@ -1021,8 +1017,7 @@ def add_new_tag(form: object):
     # Save form to database as a new tag
     form.save()
 
-@staff_member_required
-@login_required
+
 def update_tag(form: object):
     """
     Updates tag to database.

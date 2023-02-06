@@ -12,7 +12,7 @@ const btnGameDeleteConfirm = $("#game-delete-form").find("button[name='game-dele
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
 
-    btnLoadGame.on("click", function() {
+    $('#game-select-drop-down').on("select2:select", function(e) {
         clearForm();
         $(".error-message").remove();
         prepareFormForUpdateGame();
@@ -39,17 +39,21 @@ window.addEventListener("DOMContentLoaded", function() {
 
 });
 
+
+window.addEventListener("keyup", (e) => {
+    form.find('#id_slug').val(form.find('#id_name').val().replace(/\s+/g, '-').toLowerCase())
+});
+
 // DOM Ready
 $(document).ready(function() {
-
-    $('.game-select-drop-down').select2();
+    $('.game-select-drop-down').select2().val(null).trigger('change');;
     $(".tags-multiple").select2({
         placeholder: "Select tags",
         allowClear: true,
         closeOnSelect: false,
     });
-    form.find('#id_id').prop("readonly", "readonly");
-    form.find('#id_slug').prop("readonly", "readonly");
+    form.find('#id_id').prop("readonly", "readonly").addClass("form-control-plaintext text-light border border-light ps-2").css('pointer-events', 'none');
+    form.find('#id_slug').prop("readonly", "readonly").addClass("form-control-plaintext text-light border border-light ps-2").css('pointer-events', 'none');
     $("#game-delete-form").find("#div_id_id").addClass("d-none");
 
 });
@@ -153,7 +157,6 @@ function prepareFormForNewGame() {
     $('#form-header').text('Adding New Game');
     formInternalContainer.removeClass('d-none');
     form.find("#div_id_id").addClass("d-none");
-    form.find("#div_id_slug").addClass("d-none");
     btnSubmit.text("Add new game");
     btnSubmit.prop("disabled", false);
     btnDeleteGame.addClass("d-none");

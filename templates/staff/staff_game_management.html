@@ -13,7 +13,7 @@
         <h2 class="text-light text-center m-5">Game Management</h2>
         <hr class="border border-light border-3 opacity-75 w-100">
         <!-- Form used to select game or choose to add new game-->
-        <form method="post" enctype="multipart/form-data" class="d-flex flex-column">
+        <form method="post" enctype="multipart/form-data" class="d-flex flex-column w-100">
             {% csrf_token %}
             <p>Select Game:
             </p>
@@ -23,15 +23,14 @@
                 <option value="{{game.id}}">{{game.name}}</option>
                 {% endfor %}
             </select>
-            <button type="button" id="btnLoadGame" class="btn btn-success pt-1 mt-3 mb-3">Select game</button>
-            <p>Or</p>
+            <p class="mt-3">Or</p>
             <button type="button" id="btnNewGame" class="btn btn-primary">Add new game</button>
         </form>
         <hr class="border border-light border-3 opacity-75 w-100">
         <!-- Form header -->
         <h3 id="form-header"></h3>
         <!-- Form used to add or update game -->
-        <form method="post" id='game-management-form' enctype="multipart/form-data" class="d-flex flex-column">
+        <form method="post" id='game-management-form' enctype="multipart/form-data" class="d-flex flex-column w-100">
             {%csrf_token %}
             <div id='form-internal-container' class="d-none d-flex flex-column">
                 {{ form.id | as_crispy_field }}
@@ -59,8 +58,8 @@
                 </div>
                 {{ form.image | as_crispy_field }}
                 {{ form.status | as_crispy_field }}
-                <button type="submit" class="btn btn-primary mb-3" disabled></button>
-                <button type="button" id="btnDeleteGame" class="btn btn-danger m-1" data-toggle="modal"
+                <button type="submit" class="btn btn-success mb-3" disabled></button>
+                <button type="button" id="btnDeleteGame" class="btn btn-danger mb-3" data-toggle="modal"
                     data-target="#game-delete-modal"> Delete Game </button>
             </div>
         </form>
