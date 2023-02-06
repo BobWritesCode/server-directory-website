@@ -175,4 +175,11 @@ urlpatterns = [
         views.game_management,
         name='game_management'
     ),
+
+    path(
+        'tag_management',
+        views.tag_management,
+        name='tag_management'
+    ),
+
 ]

@@ -249,3 +249,42 @@ class GameManageForm(forms.ModelForm):
             ),
             Submit('submit', 'Submit', css_class='button white'),
         )
+
+class TagsManageForm(forms.ModelForm):
+    id = forms.IntegerField()
+    name = forms.CharField(label="Tag", max_length=50, required=True)
+    slug = forms.SlugField(max_length=50)
+
+    class Meta:
+        model = Tag
+        fields = ['id', 'name', 'slug']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            Fieldset(
+                '',
+                'id',
+                'name',
+                'slug',
+            ),
+            Submit('submit', 'Submit', css_class='button white'),
+        )
+
+
+class ConfirmTagDeleteForm(forms.ModelForm):
+    '''
+    A form for user to confirm deletion a tag.
+    '''
+    tag_delete_confirm = forms.CharField(
+        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        max_length=10,
+        error_messages={
+            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        required=True,
+    )
+
+    class Meta:
+        model = Tag
+        fields = ['id']

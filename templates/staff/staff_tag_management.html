@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block head %}
+<!-- Scripts / styles specific for this page -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock head %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-center">
+        <!-- Page header -->
+        <h2 class="text-light text-center m-5">Tag Management</h2>
+        <hr class="border border-light border-3 opacity-75 w-100">
+        <!-- Form used to select tag or choose to add new tag-->
+        <form method="post" enctype="multipart/form-data" class="d-flex flex-column w-100">
+            {% csrf_token %}
+            <p>Select Tag:
+            </p>
+            <!-- Drop down using Select2 -->
+            <select id="tag-select-drop-down" class="tag-select-drop-down" name="state">
+                {% for tag in tags %}
+                <option value="{{tag.id}}">{{tag.name}}</option>
+                {% endfor %}
+            </select>
+            <p class="mt-2">Or</p>
+            <button type="button" id="btnNewTag" class="btn btn-primary">Add new tag</button>
+        </form>
+        <hr class="border border-light border-3 opacity-75 w-100">
+        <!-- Form header -->
+        <h3 id="form-header"></h3>
+        <!-- Form used to add or update tag -->
+        <form method="post" id='tag-management-form' enctype="multipart/form-data" class="d-flex flex-column w-100">
+            {%csrf_token %}
+            <div id='form-internal-container' class="d-none d-flex flex-column">
+                {{ form.id | as_crispy_field }}
+                {{ form.name | as_crispy_field }}
+                {{ form.slug | as_crispy_field }}
+                <button type="submit" class="btn btn-success mb-3" disabled></button>
+                <button type="button" id="btnDeleteTag" class="btn btn-danger mb-3" data-toggle="modal"
+                    data-target="#tag-delete-modal"> Delete Tag </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- tag delete Modal -->
+<div class="modal fade text-dark" id="tag-delete-modal" tabindex="-1" role="dialog" aria-labelledby="tag Delete Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Delete tag Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="tag-delete-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p> Deleting this tag is permanent and irreversible.
+                    </p>
+                    {{ form_2|crispy }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" name="tag-delete-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<!-- Scripts specific for this page -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="../static/js/script_tag_management.js"></script>
+{% endblock %}

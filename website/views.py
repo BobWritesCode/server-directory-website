@@ -28,7 +28,8 @@ from .constants import DAYS_TO_EXPIRE_IMAGE
 from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
-    ImageForm, LoginForm, GameManageForm, ConfirmGameDeleteForm
+    ImageForm, LoginForm, GameManageForm, ConfirmGameDeleteForm,
+    ConfirmTagDeleteForm, TagsManageForm
 )
 from .models import (
     CustomUser, ServerListing, Game, Tag, Bumps, Images
@@ -705,9 +706,18 @@ def call_server(request):
                     'game_tags':serializers.serialize('json', tags),
                 }
 
+            case 'get_tag_details':
+                tag = get_object_or_404(Tag, pk=content['1'])
+
+                result = {
+                    'success': True,
+                    'tag': tag.toJSON(),
+                }
+
         return HttpResponse(json.dumps({'result': result}))
 
-
+@staff_member_required
+@login_required
 def ban_user(user_id):
     '''
     Prevents user login, rejects all images for deletion, unpublish listings.
@@ -829,7 +839,8 @@ def game_management(request: object):
         },
     )
 
-
+@staff_member_required
+@login_required
 def delete_game(form: object):
     """
     Delete game from the database, and if a image was supplied it will delete
@@ -848,7 +859,8 @@ def delete_game(form: object):
         # Delete game from database
         game.delete()
 
-
+@staff_member_required
+@login_required
 def add_new_game(request: object, form: object):
     """
     Saves new game to database, and if a image was supplied it will upload
@@ -867,7 +879,8 @@ def add_new_game(request: object, form: object):
         game.image = new_image["url"]
         game.save()
 
-
+@staff_member_required
+@login_required
 def update_game(request: object, form: object):
     """
     Updates game to database, and if a image was supplied it will upload
@@ -914,3 +927,115 @@ def update_game(request: object, form: object):
 
     # Save game object
     game.save()
+
+
+@staff_member_required
+@login_required
+def tag_management(request: object):
+    """
+    request.GET: Loads html page using render().
+
+    request.POST: Processes adding, updating and deleting tags.
+
+    Args:
+        request (object): request data received from POST
+
+    Returns:
+        render: Loads html page
+    """
+
+    if request.method == "POST":
+        # New listing flag - default to False
+        new_listing = False
+
+        # Let's see if the user is trying to delete a tag.
+        if ConfirmTagDeleteForm(request.POST) and "tag_delete_confirm" in request.POST:
+            form = ConfirmTagDeleteForm(request.POST)
+            delete_tag(form)
+            return redirect("tag_management")
+
+        # Checking if updating a current tag
+        elif request.POST["id"]:
+            form = TagsManageForm(
+                request.POST, instance=get_object_or_404(Tag, pk=request.POST["id"])
+            )
+            # New listing flag - False
+            new_listing = False
+
+        # Or if inputting a new tag
+        else:
+            form = TagsManageForm(request.POST)
+            # New listing flag - True
+            new_listing = True
+            # Allow object to the edited
+            request.POST._mutable = True
+            # Get next ID and assign slug
+            form.data["id"] = Tag.objects.order_by("-id").first().id + 1
+            # form.data["slug"] = "Tag-" + str(form.data["id"])
+            # Restrict object from being edited
+            request.POST._mutable = False
+
+        # Check form is valid and if so call next method.
+        if form.is_valid():
+            if new_listing:
+                add_new_tag(form)
+            else:
+                update_tag(form)
+
+    # Render page
+    return render(
+        request,
+        "staff/staff_tag_management.html",
+        {
+            "form": TagsManageForm(),
+            "form_2": ConfirmTagDeleteForm(),
+            "tags": Tag.objects.all(),
+        },
+    )
+
+@staff_member_required
+@login_required
+def delete_tag(form: object):
+    """
+    Delete tag from the database.
+
+    Parameters:
+    form : object
+    """
+    if form.data["tag_delete_confirm"] == "delete" and form.data["id"]:
+        item_id = form.data["id"]
+        # Get tag object
+        tag = get_object_or_404(Tag, id=item_id)
+        # Delete tag from database
+        tag.delete()
+
+@staff_member_required
+@login_required
+def add_new_tag(form: object):
+    """
+    Saves new tag to database.
+
+    Parameters:
+    form : object
+    """
+    # Save form to database as a new tag
+    form.save()
+
+@staff_member_required
+@login_required
+def update_tag(form: object):
+    """
+    Updates tag to database.
+
+    Parameters:
+    request : object.
+    form : object
+    """
+    # Get correct tag from database
+    tag = get_object_or_404(Tag, pk=form.data["id"])
+    # Update values
+    tag.name = form.data["name"]
+    tag.slug = form.data["slug"]
+
+    # Save tag object
+    tag.save()
