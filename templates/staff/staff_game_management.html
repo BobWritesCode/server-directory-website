@@ -23,36 +23,42 @@
                 {% endfor %}
             </select>
 
-            <button type="button" id="btnLoadGame" class="btn btn-success pt-1 mt-3">Select game</button>
+            <button type="button" id="btnLoadGame" class="btn btn-success pt-1 mt-3 mb-3">Select game</button>
+            <p>Or</p>
+            <button type="button" id="btnNewGame" class="btn btn-primary">Add new game</button>
         </form>
 
         <hr class="border border-light border-3 opacity-75 w-100">
 
+        <h3 id="form-header"></h3>
+
         <form method="post" id='game-management-form' enctype="multipart/form-data" class="d-flex flex-column">
             {% csrf_token %}
-            {{ form.id | as_crispy_field }}
-            {{ form.name | as_crispy_field }}
-            {{ form.slug | as_crispy_field }}
+            <div id='form-internal-container' class="d-none d-flex flex-column">
+                {{ form.id | as_crispy_field }}
+                {{ form.name | as_crispy_field }}
+                {{ form.slug | as_crispy_field }}
 
-            <label for="tags-multiple">Tags:</label>
-            <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple">
-                {% for tag in tags %}
-                <option value="{{tag.pk}}">{{tag.name}}</option>
-                {% endfor %}
-            </select>
+                <label for="tags-multiple" class="mb-1">Tags:</label>
+                <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple">
+                    {% for tag in tags %}
+                    <option value="{{tag.pk}}">{{tag.name}}</option>
+                    {% endfor %}
+                </select>
 
-            <!-- Game Cover-->
-            <div id="game-cover-container" class="d-none">
+                <!-- Game Cover-->
+                <div id="game-cover-container" class="d-none">
 
+                </div>
+                <div id="no-game-cover-container" class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 d-none mt-3 mb-2" style="width: 100%; height: 25vh;">
+                    <p class="mb-1 text-center"><i class="bi bi-camera"></i></p>
+                    <p class="mb-1 text-center">No Image</p>
+                </div>
+
+                {{ form.image | as_crispy_field }}
+                {{ form.status | as_crispy_field }}
+                <button type="submit" class="btn btn-primary mb-3" disabled></button>
             </div>
-            <div id="no-game-cover-container" class="d-flex flex-column justify-content-center text-bg-secondary opacity-75 d-none mt-3 mb-2" style="width: 100%; height: 25vh;">
-                <p class="mb-1 text-center"><i class="bi bi-camera"></i></p>
-                <p class="mb-1 text-center">No Image</p>
-            </div>
-
-            {{ form.image | as_crispy_field }}
-            {{ form.status | as_crispy_field }}
-            <button type="submit" class="btn btn-primary mb-3" disabled>Save changes</button>
         </form>
 
     </div>

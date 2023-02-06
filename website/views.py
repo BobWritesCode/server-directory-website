@@ -761,37 +761,62 @@ def login_view(request):
 
 def game_management(request):
 
-    if request.method == 'POST':
+    def update_game(form):
+        game = get_object_or_404(Game, pk=form.data['id'])
+        game.name = form.data['name']
+        game.status = form.data['status']
+        query = Q(id__in=form.cleaned_data['tags'])
+        tags = Tag.objects.filter(query).all()
+        game.tags.set(tags)
+        if (
+            game.image is not None
+            and form.files
+            and game.image_public_id
+            ):
+            # Delete old image from Cloudinary server
+            uploader.destroy(game.image_public_id)
+        if (form.files):
+            # Upload new image
+            new_image = uploader.upload(request.FILES['image'])
+            game.image = new_image['url']
+            game.image_public_id = new_image['public_id']
+        game.save()
 
-        form = GameManageForm(
-            request.POST,
-            request.FILES,
-            instance=get_object_or_404(Game, pk=request.POST['id'])
-        )
-        print(form.files)
+
+    def add_new_game(form):
+        form.save()
+        # if (form.files):
+        #     # Upload image
+        #     new_image = uploader.upload(request.FILES['image'])
+        #     form.instance.image = new_image['url']
+        #     form.instance.image_public_id = new_image['public_id']
+        #     form.save()
+
+
+    if request.method == 'POST':
+        if request.POST['id']:
+            request.POST._mutable = True
+            form = GameManageForm(
+                request.POST,
+                request.FILES,
+                instance=get_object_or_404(Game, pk=request.POST['id'])
+                )
+            form.data['new'] = False
+        else:
+            request.POST._mutable = True
+            form = GameManageForm(
+                request.POST,
+                request.FILES
+                )
+            form.data['id'] = Game.objects.order_by('-id').first().id + 1
+            form.data['slug'] = "Game-" + str(form.data['id'])
+            form.data['new'] = True
 
         if form.is_valid():
-            game = get_object_or_404(Game, pk=form.data['id'])
-            game.name = form.data['name']
-            game.status = form.data['status']
-            query = Q(id__in=form.cleaned_data['tags'])
-            tags = Tag.objects.filter(query).all()
-            game.tags.set(tags)
-            print(game.image)
-
-            if (game.image is not None and form.files):
-                print("her3")
-                # Delete old image from Cloudinary server
-                uploader.destroy(game.image_public_id)
-
-            if (form.files):
-                print("her4")
-                # Upload new imaged
-                new_image = uploader.upload(request.FILES['image'])
-                game.image = new_image['url']
-                game.image_public_id = new_image['public_id']
-
-            game.save()
+            if form.data['new']:
+                add_new_game(form)
+            else:
+                update_game(form)
 
     return render(
         request,

@@ -59,8 +59,8 @@ class Game(models.Model):
             sort_keys=True, indent=4)
 
     def save(self, *args, **kwargs):
-        if self.pk:
-            self.slug = f'Game-{self.pk}'
+        if self.id:
+            self.slug = f'Game-{self.id}'
         else:
             if Game.objects.count() == 0:
                 next_id = 1
