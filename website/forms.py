@@ -213,18 +213,6 @@ class GameListForm(forms.ModelForm):
         model = Game
         fields = ['name']
 
-# class GameImageForm(forms.ModelForm):
-
-#     image = CloudinaryFileField(
-#         label="Upload new image:",
-#         required=False,
-#     )
-
-#     class Meta:
-#         model = Game
-#         fields = ['image']
-
-
 class GameManageForm(forms.ModelForm):
     id = forms.IntegerField()
     name = forms.CharField(label="Game", max_length=50, required=True)
