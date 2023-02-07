@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block head %}
+{% load static %}
+<link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
+{% endblock head %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
     <!-- Main content -->
@@ -26,7 +30,7 @@
                 <a href="{% url 'server_detail' item.slug %}" class="text-decoration-none">
                     <h5 class="text-light">{{ item.title }}</h5>
                 </a>
-                <p class="text-light">{{ item.short_description }}</p>
+                <p class="text-light">{{ item.short_description|safe }}</p>
                 <p class="text-light">Tags:
                     {% for tag in item.tags.all %}
                     <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
@@ -64,5 +68,6 @@
 {%endblock%}
 {% block scripts %}
 <!-- Scripts specific for this page -->
+<script src="{% static 'tinymce/js/prism.js' %}"></script>
 <script src="../static/js/script_bumps.js"></script>
 {% endblock %}

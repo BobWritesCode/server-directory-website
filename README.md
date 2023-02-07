@@ -10,6 +10,10 @@
 
 ### Required app
 
+####  tinyMCE
+
+[tinyMCE](https://django-tinymce.readthedocs.io/en/latest/)
+
 #### datetime
 
 pip install datetime

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
+from tinymce.widgets import TinyMCE
+
 from cloudinary.forms import CloudinaryFileField
 
 from crispy_forms.helper import FormHelper
@@ -131,14 +133,14 @@ class CreateServerListingForm(forms.ModelForm):
     short_description = forms.CharField(
         label="Short description:",
         max_length=200,
-        widget=forms.Textarea,
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
         required=True,
     )
 
     long_description = forms.CharField(
         label="Long description:",
         max_length=2000,
-        widget=forms.Textarea,
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
         required=True,
     )
 

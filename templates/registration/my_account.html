@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% block head %}
+{% load static %}
+<link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
+{% endblock head %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
     <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
@@ -70,7 +74,7 @@
                     <a href="{% url 'server_detail' item.slug %}">
                         <h5 class="text-light">{{ item.title }}</h5>
                     </a>
-                    <p class="text-light">{{ item.short_description }}</p>
+                    <p class="text-light">{{ item.short_description|safe }}</p>
                     <p class="text-light">Tags:
                         {% for tag in item.tags.all %}
                         <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
@@ -205,5 +209,6 @@
 
 {% block scripts %}
 <!-- Scripts specific for this page -->
+<script src="{% static 'tinymce/js/prism.js' %}"></script>
 <script src="../static/js/script_my_account.js"></script>
 {% endblock %}

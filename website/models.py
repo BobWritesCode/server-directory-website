@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 
 from cloudinary.models import CloudinaryField
 from datetime import timedelta, date
+from tinymce import models as tinymce_models
 import json
 
 from .constants import DAYS_TO_EXPIRE_BUMP
@@ -69,7 +70,7 @@ class ServerListing(models.Model):
     logo = CloudinaryField('image', default='placeholder')
     tags = models.ManyToManyField(Tag, blank=True)
     short_description = models.TextField(max_length=200)
-    long_description = models.TextField(max_length=2000)
+    long_description = tinymce_models.HTMLField(max_length=2000)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     discord = models.CharField(max_length=50)
