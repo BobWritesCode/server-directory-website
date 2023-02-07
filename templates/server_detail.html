@@ -1,14 +1,9 @@
 {% extends "base.html" %}
-
 {% block content %}
-
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
     <div class="col-8">
-
         <h2 class="text-light">{{ server.title }}</h5>
-
             <p class="text-light">{{ server.game }}</p>
-
             <!-- Thumbnail-->
             <div class="col-12 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
                 {% if images.0.image %}
@@ -22,17 +17,14 @@
                 </div>
                 {% endif %}
             </div>
-
             <p class="text-light mb-3">Tags:
                 {% for tag in server.tags.all %}
                 <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
                 {% endfor %}
             </p>
-
             <a class="btn btn-discord text-light mb-3" href="https://discord.com/invite/{{ server.discord }}"
                 target="_blank" title="Link to discord server"><i class="fab fa-discord"></i> Join the discord
                 server</a>
-
             {% if server.id in bumps_queryset %}
             <button type="button" class="btn btn-success mb-3" disabled name="" data-item="{{ server.pk }}"
                 data-name='Bump Button'>Already bumped!</button>
@@ -43,12 +35,12 @@
             <button type="button" class="btn btn-primary mb-3" name="" data-item="{{ server.pk }}"
                 data-name='Bump Button'>Bump this server</button>
             {% endif %}
-
             <p class="text-light">{{ server.short_description }}</p>
             <p class="text-light">{{ server.long_description }}</p>
-
     </div>
-
 </div>
-
 {%endblock%}
+{% block scripts %}
+<!-- Scripts specific for this page -->
+<script src="../static/js/script_bumps.js"></script>
+{% endblock %}
