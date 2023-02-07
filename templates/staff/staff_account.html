@@ -10,13 +10,15 @@
         <h3>Image approval</h3>
         <p>Image currently awaiting review: {{ img_need_review_count }}</p>
         {% if img_need_review_count > 0 %}
-        <a class="btn btn-primary mb-3" href="{% url 'staff_image_review' %}">Go to image review >></a>
+        <a class="btn btn-primary mb-3" href="{% url 'staff_image_review' %}" aria-label="Link: Go to image review page.">Go to image review >></a>
         {% else %}
-        <a class="btn btn-primary mb-3 disabled" href="{% url 'staff_image_review' %}">Go to image review >></a>
+        <a class="btn btn-primary mb-3 disabled" href="{% url 'staff_image_review' %}" aria-label="Disabled link: Go to image review page.">Go to image review >></a>
         {% endif %}
         <hr class="border border-light border-3 opacity-75">
-        <a class="btn btn-primary mb-3" href="{% url 'game_management' %}">Manage Games>></a>
-        <a class="btn btn-primary mb-3" href="{% url 'tag_management' %}">Manage Tags>></a>
+        <h3>Management</h3>
+        <a class="btn btn-primary mb-3" href="{% url 'user_management' %}" aria-label="Link: Go to user management page.">Manage Users</a>
+        <a class="btn btn-primary mb-3" href="{% url 'game_management' %}" aria-label="Link: Go to game management page.">Manage Games</a>
+        <a class="btn btn-primary mb-3" href="{% url 'tag_management' %}" aria-label="Link: Go to tag management page.">Manage Tags</a>
     </div>
 </div>
 {% endblock %}

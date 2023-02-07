@@ -65,10 +65,8 @@ $(document).ready(function() {
  * Shows errors to the user if any.
  */
 function validateForm() {
-
     // Clear any current error messages from screen.
     $(".error-message").remove();
-
     // Check game name field is not black.
     if (!form.find("#id_name").val()) {
         form.find("#id_name")
@@ -76,7 +74,6 @@ function validateForm() {
                 "<div class='error-message alert alert-warning mt-1' role='alert'>Must not be blank</div>"
             );
     }
-
     // Check at least 1 tag is selected.
     if ($(".select2-selection__choice").length == 0) {
         form.find(".select2-container")
@@ -84,7 +81,6 @@ function validateForm() {
                 "<div class='error-message alert alert-warning mt-1' role='alert'>Select at least 1 tag</div>"
             );
     }
-
     // Check user has chosen a status.
     if (!form.find("input[type='radio']:checked").val()) {
         form.find("#div_id_status")
@@ -92,7 +88,6 @@ function validateForm() {
                 "<div class='error-message alert alert-warning mt-1' role='alert'>Must select 1 option</div>"
             );
     }
-
 }
 
 /**

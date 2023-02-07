@@ -732,6 +732,16 @@ def call_server(request):
                     'tag': tag.toJSON(),
                 }
 
+            case 'search_users':
+                query = Q(username__contains=content['1'])
+                users = CustomUser.objects.filter(query)
+                print(users)
+
+                result = {
+                    'success': True,
+                    'users': serializers.serialize('json', users),
+                }
+
         return HttpResponse(json.dumps({'result': result}))
 
 @staff_member_required
@@ -1052,3 +1062,31 @@ def update_tag(form: object):
 
     # Save tag object
     tag.save()
+
+
+@staff_member_required
+@login_required
+def user_management(request: object):
+    """
+    request.GET: Loads html page using render().
+
+    request.POST: Processes adding, updating and deleting user.
+
+    Args:
+        request (object): request data received from POST
+
+    Returns:
+        render: Loads html page
+    """
+
+    if request.method == "POST":
+        pass
+
+    # Render page
+    return render(
+        request,
+        "staff/staff_user_management.html",
+        {
+
+        },
+    )

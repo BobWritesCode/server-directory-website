@@ -30,6 +30,10 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.email}"
 
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+            sort_keys=True, indent=4)
+
 
 class Tag(models.Model):
     id = models.BigIntegerField(primary_key=True)
