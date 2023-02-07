@@ -1,19 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Verify Email address{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
-    <div class="col-8 d-flex flex-column align-items-center">
-        <h2>Verify Email Address</h2>
-
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
+        <!-- Page header -->
+        <h2 class="text-light text-center m-5">Verify Email Address</h2>
+        <hr class="border border-light border-3 opacity-75 w-100 mt-0">
         <p>
             You will need to verify your email address before you can login.
             <br>
             <br>Please click on the link sent to the email you used to register.
         </p>
-
         <a href="{% url 'home' %}" class="btn btn-primary">Homepage</a>
-
     </div>
 </div>
 {% endblock %}
