@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block head %}
+<!-- Scripts / styles specific for this page -->
+{% endblock head %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-center">
+        <!-- Page header -->
+        <h2 class="text-light text-center m-5">Contact Us</h2>
+        <hr class="border border-light border-3 opacity-75 w-100 mt-0">
+        <p>
+            This is the place for information the visitor to be able to contact the site owner and staff.
+        </p>
+        <a class="" href="{% url 'home' %}" aria-label="Link: Go to the homepage.">Return home.</a>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<!-- Scripts specific for this page -->
+{% endblock %}

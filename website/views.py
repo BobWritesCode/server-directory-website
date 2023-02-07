@@ -60,6 +60,18 @@ def email_address_verified(request):
     return render(request, "registration/email_address_verified.html")
 
 
+def terms_and_conditions(request):
+    return render(request, "terms_and_conditions.html")
+
+
+def privacy_policy(request):
+    return render(request, "privacy_policy.html")
+
+
+def contact_us(request):
+    return render(request, "contact_us.html")
+
+
 @login_required
 @staff_member_required
 def staff_account(request):

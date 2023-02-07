@@ -2,12 +2,8 @@
 
 // Global HTML Elements
 const btnDeleteAccount = $("button[data-target='#delete-account-modal']");
-const btnEmailUpdateConfirm = $("#email-update-form").find(
-    "button[name='email-address-update-confirm']"
-);
-const btnServerListingDeleteConfirm = $("#server-listing-delete-form").find(
-    "button[name='server-listing-delete-confirm']"
-);
+const btnEmailUpdateConfirm = $("#email-update-form").find("button[name='email-address-update-confirm']");
+const btnServerListingDeleteConfirm = $("#server-listing-delete-form").find("button[name='server-listing-delete-confirm']");
 
 let lastIDBtn = 0;
 
@@ -35,6 +31,10 @@ window.addEventListener("DOMContentLoaded", function () {
     btnServerListingDeleteConfirm.on("click", function () {
         ServerListingDeleteConfirm();
     });
+});
+
+$(document).ready(function() {
+    $('#footer-year').text((new Date). getFullYear());
 });
 
 /**

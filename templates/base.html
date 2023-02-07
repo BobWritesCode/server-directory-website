@@ -82,8 +82,33 @@
     </main>
 
     <!-- Footer -->
-    <footer class="flex-shrink-0 bg-secondary">
-        Footer
+    <footer class="flex-shrink-0 bg-secondary pt-3 pb-3 text-light">
+        <div class="container">
+            <div class="row text-center mb-1">
+                <a class="navbar-brand" href="{% url 'home' %}"><i class="fa-solid fa-gamepad"></i> Gamer's-verse</a>
+                <p class="mt-0 mb-1">Copyright &copy <span id="footer-year"></span></p>
+            </div>
+            <div class="row text-center mt-2">
+                <p class="m-0">Socials</p>
+                <div class="d-flex flex-row justify-content-center">
+                    <a href="www.facebook.com" target="_blank" aria-label="Link: Go to Facebook: Opens in new tab." class="text-decoration-none text-light"><i class="bi bi-facebook m-1"></i></a>
+                    <a href="www.twitter.com" target="_blank" aria-label="Link: Go to Twitter: Opens in new tab." class="text-decoration-none text-light"><i class="bi bi-twitter m-1"></i></a>
+                    <a href="www.discord.com" target="_blank" aria-label="Link: Go to Discord: Opens in new tab." class="text-decoration-none text-light"><i class="bi bi-discord m-1"></i></a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="d-flex flex-row justify-content-center">
+                    <a class="m-1 text-decoration-none text-light" href="{% url 'terms_and_conditions' %}" aria-label="Link: Go to terms and conditions page.">Terms and Conditions</a>
+                    <span class="m-1">|</span>
+                    <a class="m-1 text-decoration-none text-light" href="{% url 'privacy_policy' %}" aria-label="Link: Go to privacy policy page.">Privacy Policy</a>
+                    <span class="m-1">|</span>
+                    <a class="m-1 text-decoration-none text-light" href="{% url 'contact_us' %}" aria-label="Link: Go to Contact Us page.">Contact Us</a>
+                    <span class="m-1">|</span>
+                    <a class="m-1 text-decoration-none text-light" href="{% url 'my-account' %}" aria-label="Link: Go to My Account page.">My Account</a>
+                </div>
+
+            </div>
+        </div>
     </footer>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
