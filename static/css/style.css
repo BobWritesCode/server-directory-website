@@ -59,3 +59,13 @@
     bottom: 8px;
     padding: 0 10px 0 10px;
 }
+
+/* -------- SELECT2 */
+.select2-selection__choice__display {
+    color: black;
+}
+
+/* -------- tinyMCE */
+.tox .tox-edit-area__iframe {
+    background-color: rgba(255,255,255,0) !important;
+}

@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% load cloudinary %}
+
 {% block head %}
 {{ form.media }}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock head %}
 
 {% block content %}
@@ -11,25 +13,41 @@
         <!-- Page header -->
         <h2 class="text-light text-center m-5">Create Listing</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
-        <form method="post" enctype="multipart/form-data" class="w-100">
+        <form method="post" enctype="multipart/form-data" id="listing-form" class="w-100 d-flex flex-column mb-3">
             {% csrf_token %}
-            <div class="mb-3">
-                {{ form.game | as_crispy_field}}
-                {{ form.title | as_crispy_field}}
-                {{ image_form.image | as_crispy_field}}
-                {{ form.tags | as_crispy_field}}
-                {{ form.short_description | as_crispy_field}}
-                {{ form.long_description | as_crispy_field}}
-                {{ form.status | as_crispy_field}}
-                {{ form.discord | as_crispy_field}}
-            </div>
+            {{ form.game | as_crispy_field}}
+            {{ form.title | as_crispy_field}}
+            {{ image_form.image | as_crispy_field}}
+            <!-- Tag selection using Select2 -->
+            <label for="tags-multiple" class="mb-1">Choose tags: (max: 10)*</label>
+            <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple">
+                {% for tag in tags %}
+                <option value="{{tag.pk}}">{{tag.name}}</option>
+                {% endfor %}
+            </select>
+            {{ form.short_description | as_crispy_field}}
+            {{ form.long_description | as_crispy_field}}
+            {{ form.status | as_crispy_field}}
+            {{ form.discord | as_crispy_field}}
             <button type="submit" class="btn btn-primary">Create Listing</button>
         </form>
     </div>
 </div>
-
 {% endblock %}
-
-
 {% block scripts %}
+<!-- Scripts specific for this page -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="../static/js/script_server_create.js"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        plugins: 'emoticons wordcount lists',
+        menubar: false,
+        statusbar: true,
+        branding: true,
+        elementpath: false,
+        toolbar: 'wordcount | emoticons | blocks fontsize | hr | bold italic underline strikethrough | backcolor | alignleft aligncenter alignright alignjustify | indent outdent | numlist bullist| removeformat',
+        content_css: '/static/css/tinymce.css'  // resolved to http://domain.mine/mysite/mycontent.css
+    });
+</script>
 {% endblock %}

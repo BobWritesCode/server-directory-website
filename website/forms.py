@@ -119,7 +119,7 @@ class CreateServerListingForm(forms.ModelForm):
     )
 
     tags = forms.ModelMultipleChoiceField(
-        label="Choose tags:",
+        label="Choose tags:  (max: 10)",
         queryset=Tag.objects.order_by('name'),
         required=True,
     )
@@ -131,16 +131,18 @@ class CreateServerListingForm(forms.ModelForm):
     )
 
     short_description = forms.CharField(
-        label="Short description:",
+        label="Short description: (min: 100, max: 200 characters)",
+        min_length=100,
         max_length=200,
-        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 2}),
         required=True,
     )
 
     long_description = forms.CharField(
-        label="Long description:",
+        label="Long description: (min: 200, max: 2000 characters)",
+        min_length=200,
         max_length=2000,
-        widget=TinyMCE(attrs={'cols': 80, 'rows': 30}),
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 30, }),
         required=True,
     )
 

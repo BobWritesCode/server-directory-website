@@ -85,6 +85,10 @@ class ServerListing(models.Model):
     def number_of_tags(self):
         return self.tags.count()
 
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__,
+            sort_keys=True, indent=4)
+
     def save(self, *args, **kwargs):
         if self.pk:
             self.slug = f'Listing-{self.pk}'

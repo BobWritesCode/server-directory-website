@@ -166,6 +166,7 @@ def server_create(request):
         {
             'form': CreateServerListingForm(),
             'image_form': ImageForm(),
+            'tags': Tag.objects.all(),
         }
     )
 
@@ -173,6 +174,9 @@ def server_create(request):
 @login_required
 def server_edit(request, item_pk):
     item = get_object_or_404(ServerListing, pk=item_pk)
+
+    query = Q(serverlisting=item)
+    selected_tags = Tag.objects.filter(query)
 
     if request.method == "POST":
 
@@ -247,6 +251,8 @@ def server_edit(request, item_pk):
         "item": item,
         'image_form': ImageForm(),
         'listing_image': listing_image,
+        'tags': Tag.objects.all(),
+        'selected_tags': serializers.serialize('json', selected_tags),
     }
     return render(request, "server_edit.html", context)
 
