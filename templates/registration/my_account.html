@@ -1,25 +1,29 @@
 {% extends "base.html" %}
-{% block title %}User Profile{% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100">
-    <div class="col-8 align-items-center text-light">
-        <h2 class="text-center">My Account</h2>
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
+        <!-- Page header -->
+        <h2 class="text-light text-center m-5">My Account</h2>
+        <hr class="border border-light border-3 opacity-75 w-100">
         <h3>Profile</h3>
-
-        <form method="post">
+        <form method="post" id="profile-form" class="w-100">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input id="username" class="form-control" type="text" value="{{ user.username }}"
+                <input id="username" class="form-control-plaintext text-light border border-light ps-2" type="text" value="{{ user.username }}"
                     aria-label="disable input for username" disabled>
             </div>
             <div class="mb-3">
                 {{ form|crispy }}
             </div>
         </form>
-
-        <hr class="border border-primary border-3 opacity-75">
+        <button type="button" class="btn btn-success mb-3" data-toggle="modal"
+            data-target="#email-address-update-modal">
+            Update Email address
+        </button>
+        <a class="btn btn-success mb-3" href="{% url 'password_change' %}">Change Password</a>
+        <hr class="border border-light border-3 opacity-75 w-100">
         <h3>Bumps</h3>
         <p>Bumping a server will push it higher in the listings</p>
         <p>You have {{ bumps_left }} bumps remaining.</p>
@@ -41,8 +45,8 @@
             {% endfor %}
         </table>
 
-        <hr class="border border-primary border-3 opacity-75">
-        <h3>Your Listings:</h3>
+        <hr class="border border-light border-3 opacity-75 w-100">
+        <h3>Your Listings</h3>
 
         {% for item in server_listing %}
         <!-- Listing container got loop -->
@@ -94,13 +98,8 @@
         {% else %}
         <a class="btn btn-success" href="{% url 'server_create' %}">Create listing</a>
         {% endif %}
-        <hr class="border border-primary border-3 opacity-75">
-        <h3>Manage account</h3>
-        <button type="button" class="btn btn-success mb-3" data-toggle="modal"
-            data-target="#email-address-update-modal">
-            Update Email address
-        </button>
-        <a class="btn btn-success mb-3" href="{% url 'password_change' %}">Change Password</a>
+        <hr class="border border-light border-3 opacity-75 w-100">
+        <h3>Delete account</h3>
         <button type="button" class="btn btn-danger mb-3" data-toggle="modal" data-target="#delete-account-modal">
             Delete Account
         </button>
@@ -202,4 +201,9 @@
 
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Scripts specific for this page -->
+<script src="../static/js/script_my_account.js"></script>
 {% endblock %}

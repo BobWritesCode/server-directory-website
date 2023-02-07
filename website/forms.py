@@ -17,7 +17,7 @@ class ProfileForm(forms.ModelForm):
     '''
     A form that allows the user to update their profile information.
     '''
-    email = forms.EmailField(label=("Email address"), required=True, disabled=True)
+    email = forms.EmailField(label=("Email address"), required=True)
     email_verified = forms.BooleanField(label=("Verified?"), disabled=True)
 
     class Meta:
