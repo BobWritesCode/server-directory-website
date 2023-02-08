@@ -1127,6 +1127,8 @@ def staff_user_management_user(request: object, _id: int):
         render(): Loads html page
     """
     user = get_object_or_404(CustomUser, id=_id)
+    server_listings = ServerListing.objects.filter(
+        owner=user.id).order_by('-created_on')
 
     if request.method == "POST":
         # Let's see if the user is trying to delete a user.
@@ -1140,13 +1142,44 @@ def staff_user_management_user(request: object, _id: int):
             update_user(form)
             return HttpResponse('Data Saved!')
 
+    # Get images for server listings
+    # Makes sure they are status 1: approved.
+    _list = [x[0] for x in server_listings.values_list('id')]
+    query = Q(listing_id__in=_list)
+    images_queryset = Images.objects.filter(query).distinct()
+
+    # Pair images with server listing
+    for index, value in enumerate(server_listings):
+        # try to pair image with server listing, if image not available or does not
+        # exist then set as None so a placeholder can be shown instead.
+        try:
+            image = images_queryset.get(listing_id=server_listings[index].id).image
+
+            match images_queryset.get(listing_id=server_listings[index].id).status:
+                case 0:
+                    status = "Awaiting review"
+                case 1:
+                    status = "Approved"
+                case 2:
+                    status = "Rejected"
+                case 3:
+                    status = "Banned"
+
+        except ObjectDoesNotExist:
+            image = None
+            status = None
+        finally:
+            server_listings[index].image_url = image
+            server_listings[index].image_status = status
+
     # Render page
     return render(
         request,
         "staff/staff_user_management_user.html",
         {
             "form": UserForm(instance=user),
-            "form_2": DeleteConfirmForm()
+            "form_2": DeleteConfirmForm(),
+            "server_listings": server_listings
         },
     )
 
