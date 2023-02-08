@@ -732,10 +732,18 @@ def call_server(request):
                     'tag': tag.toJSON(),
                 }
 
-            case 'search_users':
+            case 'search_users-username':
                 query = Q(username__contains=content['1'])
                 users = CustomUser.objects.filter(query)
-                print(users)
+
+                result = {
+                    'success': True,
+                    'users': serializers.serialize('json', users),
+                }
+
+            case 'search_users-email':
+                query = Q(email__contains=content['1'])
+                users = CustomUser.objects.filter(query)
 
                 result = {
                     'success': True,

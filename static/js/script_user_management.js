@@ -1,16 +1,25 @@
 "use strict";
 
-const btnUserSearch = $("#btnUserSearch");
+const btnUsernameSearch = $("#btnUserSearch");
+const btnEmailSearch = $("#btnEmailSearch");
 const userSearchForm = $("#user-search-form")
 
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
 
-    btnUserSearch.on("click", function(e) {
+    btnUsernameSearch.on("click", function(e) {
         e.preventDefault()
         validateForm()
         if ($(".error-message").length == 0) {
-            action('search_users', $('#search-name').val());
+            action('search_users-username', $('#search-name').val());
+        }
+    });
+
+    btnEmailSearch.on("click", function(e) {
+        e.preventDefault()
+        validateForm()
+        if ($(".error-message").length == 0) {
+            action('search_users-email', $('#search-name').val());
         }
     });
 });
@@ -39,9 +48,7 @@ function action(...args) {
         })
         .then((data) => {
             if (data.result) {
-                if (arguments[0] == 'search_users') {
-                    displayUsers(JSON.parse(data.result.users));
-                };
+                displayUsers(JSON.parse(data.result.users));
             };
         });
 }
