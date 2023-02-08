@@ -164,7 +164,7 @@
                                 means features like forgotten password will no longer work until your verify the new
                                 email address.
                             </p>
-                            {{ form_3|crispy }}
+                            {{ email_form|crispy }}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger"
@@ -206,6 +206,19 @@
             </div>
         </div>
 
+    </div>
+</div>
+<!-- Toast -->
+<div class="position-absolute top-50 start-50 translate-middle p-3" style="z-index: 11">
+    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-light">
+            <strong class="me-auto">SAVED</strong>
+            <small></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            User have been saved to the database.
+        </div>
     </div>
 </div>
 {% endblock %}

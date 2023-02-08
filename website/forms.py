@@ -101,7 +101,7 @@ class ConfirmGameDeleteForm(forms.ModelForm):
         fields = ['id']
 
 
-class UserUpdateEmailAddressForm(forms.ModelForm):
+class UserUpdateEmailAddressForm(forms.Form):
     '''
     A form for user to update their email address.
     '''
@@ -116,10 +116,6 @@ class UserUpdateEmailAddressForm(forms.ModelForm):
         error_messages={'required': f'Required'},
         required=True,
     )
-
-    class Meta:
-        model = CustomUser
-        fields = ['id']
 
 
 class CreateServerListingForm(forms.ModelForm):

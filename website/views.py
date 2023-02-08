@@ -277,22 +277,6 @@ def my_account(request):
 
     if request.method == 'POST':
 
-        # Check to see if the user is trying to update there email address.
-        if (
-            UserUpdateEmailAddressForm(request.POST, instance=request.user)
-            and 'email_confirm' in request.POST
-        ):
-            form_3 = UserUpdateEmailAddressForm(request.POST)
-            if form_3.is_valid():
-                user = CustomUser.objects.get(email=request.user)
-                # Flag email address as unverified
-                user.email_verified = False
-                # Save to database.
-                user.save()
-                # Send verification email to the user.
-                send_email_verification(request, user, form_3)
-                return redirect('signup_verify_email')
-
         # Let's see if the user is trying to delete a listing.
         if (
             ConfirmServerListingDeleteForm(request.POST, instance=request.user)
@@ -367,7 +351,7 @@ def my_account(request):
 
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
-    form_3 = UserUpdateEmailAddressForm(instance=request.user)
+    email_form = UserUpdateEmailAddressForm()
     form_4 = ConfirmServerListingDeleteForm(instance=request.user)
 
     # Get user bumped servers
@@ -389,7 +373,7 @@ def my_account(request):
         {
             'form': form,
             'form_2': form_2,
-            'form_3': form_3,
+            'email_form': email_form,
             'form_4': form_4,
             'server_listings': server_listings,
             'num_of_listings': num_of_listings,
@@ -416,7 +400,8 @@ def sign_up_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            send_email_verification(request, user, form)
+            _email = form.cleaned_data.get('email')
+            send_email_verification(request, user, _email)
             return redirect('signup_verify_email')
     else:
         form = SignupForm()
@@ -571,7 +556,7 @@ def server_detail(request, slug):
     )
 
 
-def send_email_verification(request, user, form):
+def send_email_verification(request, user, _email):
     '''
     Send email address verification to user
     '''
@@ -583,13 +568,13 @@ def send_email_verification(request, user, form):
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
         'token': default_token_generator.make_token(user),
     })
-    to_email = form.cleaned_data.get('email')
+
     # Send email to user.
     send_mail(
         subject=mail_subject,
         message=message,
         from_email='contact@warwickhart.com',
-        recipient_list=[to_email]
+        recipient_list=[_email]
     )
 
 
@@ -762,7 +747,15 @@ def call_server(request):
                     'reason': success['reason']
                 }
 
+            case 'update_email':
+                success = update_email(request, content['1'])
+                result = {
+                    'success': success['result'],
+                    'reason': success['reason']
+                }
+
         return HttpResponse(json.dumps({'result': result}))
+
 
 @staff_member_required
 @login_required
@@ -1216,7 +1209,6 @@ def update_user(_form: dict):
     try:
         user.save()
     except IntegrityError as e:
-        print(e.args)
         if 'UNIQUE constraint failed: auth_user.username' in e.args:
             return { 'result': False, 'reason': "Username already taken"}
         if 'UNIQUE constraint failed: auth_user.email' in e.args:
@@ -1275,8 +1267,43 @@ def check_email(email):
         {result (bool), reason (string)}
 
     """
-    pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
+    pat = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
     if re.match(pat,email) is None:
         return { 'result': False, 'reason': "Email address not valid"}
+    return { 'result': True, 'reason': ""}
+
+
+def update_email(request, _obj):
+    """
+    Update user email after checking it conforms.
+
+    Args:
+        request (object)
+        _obj (string): username given
+
+    Returns:
+        {result (bool), reason (string)}
+
+    """
+    result = check_email(_obj['email1'])
+    if not result['result']:
+        return result
+
+    if _obj['email1'] != _obj['email2']:
+        return { 'result': False, 'reason': "Does not match"}
+
+    # Get correct user from database
+    user = get_object_or_404(CustomUser, id=request.user.id)
+    user.email = _obj['email1']
+    user.email_verified = False
+    # Save user object
+    try:
+        user.save()
+    except IntegrityError as e:
+        if 'UNIQUE constraint failed: auth_user.email' in e.args:
+            return { 'result': False, 'reason': "Email address already taken"}
+
+    # Send verification email to the user.
+    send_email_verification(request, user, _obj['email1'])
 
     return { 'result': True, 'reason': ""}

@@ -1,6 +1,7 @@
 "use strict";
 
 // Global HTML Elements
+const emailForm = $('#email-update-form')
 const btnDeleteAccount = $("button[data-target='#delete-account-modal']");
 const btnEmailUpdateConfirm = $("#email-update-form").find("button[name='email-address-update-confirm']");
 const btnServerListingDeleteConfirm = $("#server-listing-delete-form").find("button[name='server-listing-delete-confirm']");
@@ -17,7 +18,9 @@ window.addEventListener("DOMContentLoaded", function() {
     btnDeleteAccount.on("click", function() {
         clearRemoveInput();
     });
-    btnEmailUpdateConfirm.on("click", function() {
+    btnEmailUpdateConfirm.on("click", function(e) {
+        e.preventDefault()
+        $(".error-message").remove();
         userEmailUpdate();
     });
     btnServerListingDeleteConfirm.on("click", function(e) {
@@ -29,6 +32,16 @@ window.addEventListener("DOMContentLoaded", function() {
 $(document).ready(function() {
     $('#profile-form').find('#id_email').prop("readonly", "readonly").addClass("form-control-plaintext text-light border border-light ps-2").css('pointer-events', 'none');
 });
+
+/**
+ * Call BootStrap toast to show
+ */
+function showToast() {
+    $("#liveToast").toast({
+        delay: 3000
+    });
+    $("#liveToast").toast("show");
+}
 
 /**
  * Check user input matches expected input
@@ -70,43 +83,10 @@ function clearRemoveInput() {
  * Validation to see both vales are valid emails addresses and match.
  */
 function userEmailUpdate() {
-    const val1 = $("#email-update-form").find("#id_email").val();
-    const val2 = $("#email-update-form").find("#id_email_confirm").val();
-    $(".error-message").remove();
-    // Check if email is correct format.
-    if (!validateEmail(val1)) {
-        $("#email-update-form")
-            .find("#id_email")
-            .after(
-                "<div class='error-message alert alert-warning mt-1' role='alert'> Not a valid email address </div>"
-            );
-        return;
-    }
-    // Check if both inputs match.
-    if (val1 !== val2) {
-        $("#email-update-form")
-            .find("#id_email_confirm")
-            .after(
-                "<div class='error-message alert alert-warning mt-1' role='alert'> Must match. </div>"
-            );
-        return;
-    }
-    // If no error messages then send request to server to check input email address does not already exist.
-    if ($(".error-message").length == 0) {
-        checkEmailInUse("/request", {
-            email: val1
-        }).then((data) => {
-            if (data.result) {
-                $("#email-update-form")
-                    .find("#id_email")
-                    .after(
-                        "<div class='error-message alert alert-warning mt-1' role='alert'> Email address already registered </div>"
-                    );
-            } else {
-                $("#email-update-form").submit();
-            }
-        });
-    }
+    const formData = {}
+    formData.email1 = $("#email-update-form").find("#id_email").val();
+    formData.email2 = $("#email-update-form").find("#id_email_confirm").val();
+    action("update_email", formData);
 }
 
 /**
@@ -130,6 +110,76 @@ async function checkEmailInUse(url = "", data = {}) {
     const csrftoken = document.querySelector(
         "[name=csrfmiddlewaretoken]"
     ).value;
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data),
+    });
+    return response.json();
+}
+
+
+/**
+ * Performs a promise using askServer() to return a json.
+ * @param {string} arg [1] The action you wish to call. See website.views.py
+ * call_server(). Currently on set up to use 'get_tag_details'
+ * @param {*} arg... [...] Any other data you wish to send to server.
+ */
+function action(...args) {
+    askServer("/call_server", {
+            arguments: arguments
+        })
+        .then((data) => {
+            if (data.result.success) {
+                // Show BootStrap toast
+                window.location.href = "my_account"
+            } else {
+                switch (data.result.reason) {
+
+                    case "Email address not valid":
+                        emailForm.find('#id_email')
+                            .after(
+                                "<div class='error-message alert alert-danger mt-1' role='alert'>Email address not valid</div>"
+                            );
+                        break
+
+                    case "Does not match":
+                        emailForm.find('#id_email_confirm')
+                            .after(
+                                "<div class='error-message alert alert-danger mt-1' role='alert'>Email does not match</div>"
+                            );
+                        break
+
+                        case "Email address already taken":
+                            emailForm.find('#id_email')
+                                .after(
+                                    "<div class='error-message alert alert-danger mt-1' role='alert'>Email address already taken</div>"
+                                );
+                            break
+                };
+            };
+        });
+}
+
+/**
+ * Performs callback from server
+ * @async
+ * @param  {string} url URL to call in website.urls.py
+ * @param  {object} data Check  website.views.py call_server() for options
+ * @returns {json}
+ */
+async function askServer(url = "", data = {}) {
+    const csrftoken = document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        )
+        .value;
     const response = await fetch(url, {
         method: "POST",
         mode: "cors",
