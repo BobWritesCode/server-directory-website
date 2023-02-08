@@ -183,9 +183,9 @@ urlpatterns = [
     ),
 
     path(
-        'user_management',
-        views.user_management,
-        name='user_management'
+        'staff_user_management_search',
+        views.staff_user_management_search,
+        name='staff_user_management_search'
     ),
 
     path(

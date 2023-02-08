@@ -1077,7 +1077,7 @@ def update_tag(form: object):
 
 @staff_member_required
 @login_required
-def user_management(request: object):
+def staff_user_management_search(request: object):
     """
     request.GET: Loads html page using render().
 
@@ -1096,7 +1096,7 @@ def user_management(request: object):
     # Render page
     return render(
         request,
-        "staff/staff_user_management.html",
+        "staff/staff_user_management_search.html",
         {
 
         },
