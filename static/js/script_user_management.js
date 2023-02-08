@@ -33,11 +33,13 @@ window.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-
+/**
+ * Validates the form and provides error messages to the user if any.
+ */
 function validateForm() {
     // Clear any current error messages from screen.
     $(".error-message").remove();
-    // Check game name field is not black.
+    // Check game name field is not blank.
     if (!userSearchForm.find("#search-name").val()) {
         userSearchForm.find("#search-name")
             .after(
@@ -62,18 +64,22 @@ function action(...args) {
         });
 }
 
+/**
+ * Performs a promise using askServer() to return a json.
+ * @param {object} obj Receives users as an object from action(). Then converts
+ * them into rows and appends them into a html table
+ */
 function displayUsers(obj) {
     $('#user-search-display-table').find('tbody').html('')
     for (let i = 0; i < obj.length; i++) {
         let newTr = document.createElement("tr")
-        $(newTr).append('<th scope="row">'+(i+1)+'</th>')
-            .append('<td>'+obj[i].pk+'</td>')
-            .append('<td>'+obj[i].fields.username+'</td>')
-            .append('<td>'+obj[i].fields.email+'</td>');
+        $(newTr).append('<th scope="row">' + (i + 1) + '</th>')
+            .append('<td>' + obj[i].pk + '</td>')
+            .append('<td>' + obj[i].fields.username + '</td>')
+            .append('<td>' + obj[i].fields.email + '</td>');
         $('#user-search-display-table').find('tbody').append(newTr)
     }
 }
-
 
 /**
  * Performs callback from server
