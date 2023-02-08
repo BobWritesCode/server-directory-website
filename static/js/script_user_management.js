@@ -2,6 +2,7 @@
 
 const btnUsernameSearch = $("#btnUserSearch");
 const btnEmailSearch = $("#btnEmailSearch");
+const btnIDSearch = $("#btnIDSearch");
 const userSearchForm = $("#user-search-form")
 
 // Listeners
@@ -20,6 +21,14 @@ window.addEventListener("DOMContentLoaded", function() {
         validateForm()
         if ($(".error-message").length == 0) {
             action('search_users-email', $('#search-name').val());
+        }
+    });
+
+    btnIDSearch.on("click", function(e) {
+        e.preventDefault()
+        validateForm()
+        if ($(".error-message").length == 0) {
+            action('search_users-id', $('#search-name').val());
         }
     });
 });

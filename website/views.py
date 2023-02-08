@@ -714,10 +714,8 @@ def call_server(request):
 
             case 'get_game_details':
                 game = get_object_or_404(Game, pk=content['1'])
-
                 query = Q(game=content['1'])
                 tags = Tag.objects.filter(query)
-
                 result = {
                     'success': True,
                     'game': game.toJSON(),
@@ -726,7 +724,6 @@ def call_server(request):
 
             case 'get_tag_details':
                 tag = get_object_or_404(Tag, pk=content['1'])
-
                 result = {
                     'success': True,
                     'tag': tag.toJSON(),
@@ -735,7 +732,6 @@ def call_server(request):
             case 'search_users-username':
                 query = Q(username__contains=content['1'])
                 users = CustomUser.objects.filter(query)
-
                 result = {
                     'success': True,
                     'users': serializers.serialize('json', users),
@@ -744,7 +740,14 @@ def call_server(request):
             case 'search_users-email':
                 query = Q(email__contains=content['1'])
                 users = CustomUser.objects.filter(query)
+                result = {
+                    'success': True,
+                    'users': serializers.serialize('json', users),
+                }
 
+            case 'search_users-id':
+                query = Q(id__contains=int(content['1']))
+                users = CustomUser.objects.filter(query)
                 result = {
                     'success': True,
                     'users': serializers.serialize('json', users),

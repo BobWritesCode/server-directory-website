@@ -9,21 +9,19 @@
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
         <h3>Search</h3>
         <form method="post" id="user-search-form" class="w-100 d-flex flex-column">
+            {% csrf_token %}
             <label>Name / Email</label>
             <input type="text" id="search-name" class="mb-3">
             <div class="row g-3 mb-3">
                 <div class="col">
-                    <!-- <button type="submit" id="btnIDSearch" name="search-users-id" class="btn btn-success w-100">ID</button> -->
+                    <button type="submit" id="btnIDSearch" name="search-users-id" class="btn btn-success w-100">ID</button>
                 </div>
-
                 <div class="col">
                     <button type="submit" id="btnUserSearch" name="search-users-username" class="btn btn-success w-100">Username</button>
                 </div>
                 <div class="col">
                     <button type="submit" id="btnEmailSearch" name="search-users-email" class="btn btn-success w-100">Email</button>
                 </div>
-
-
             </div>
         </form>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
@@ -32,7 +30,7 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Id</th>
+                    <th scope="col">ID</th>
                     <th scope="col">Username</th>
                     <th scope="col">Email</th>
                 </tr>
