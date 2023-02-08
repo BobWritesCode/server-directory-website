@@ -331,24 +331,24 @@ def my_account(request):
                 return redirect(to='account_deleted')
 
     username = request.user
-    queryset = ServerListing.objects.filter(
+    server_listings = ServerListing.objects.filter(
         owner=username).order_by('-created_on')
-    num_of_listings = queryset.count()
+    num_of_listings = server_listings.count()
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
-    _list = [x[0] for x in queryset.values_list('id')]
+    _list = [x[0] for x in server_listings.values_list('id')]
     query = Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
     # Pair images with server listing
-    for index, value in enumerate(queryset):
+    for index, value in enumerate(server_listings):
         # try to pair image with server listing, if image not available or does not
         # exist then set as None so a placeholder can be shown instead.
         try:
-            image = images_queryset.get(listing_id=queryset[index].id).image
+            image = images_queryset.get(listing_id = server_listings[index].id).image
 
-            match images_queryset.get(listing_id=queryset[index].id).status:
+            match images_queryset.get(listing_id = server_listings[index].id).status:
                 case 0:
                     status = "Awaiting review"
                 case 1:
@@ -362,8 +362,8 @@ def my_account(request):
             image = None
             status = None
         finally:
-            queryset[index].image_url = image
-            queryset[index].image_status = status
+            server_listings[index].image_url = image
+            server_listings[index].image_status = status
 
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
@@ -391,7 +391,7 @@ def my_account(request):
             'form_2': form_2,
             'form_3': form_3,
             'form_4': form_4,
-            'server_listing': queryset,
+            'server_listings': server_listings,
             'num_of_listings': num_of_listings,
             'bumps': bumps_queryset,
             'bumps_left': bumps_left,

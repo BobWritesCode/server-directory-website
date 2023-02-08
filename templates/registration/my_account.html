@@ -52,16 +52,19 @@
         <hr class="border border-light border-3 opacity-75 w-100">
         <h3>Your Listings</h3>
 
-        {% for item in server_listing %}
-        <!-- Listing container got loop -->
-        <div class="border border-light p-1 m-3">
-            <div class="d-flex">
+        {% if server_listings|length == 0 %}
+        <p>User has no listings</p>
+        {% endif %}
 
+        {% for listing in server_listings %}
+        <!-- Listing container got loop -->
+        <div class="border border-light p-1 mb-3">
+            <div class="d-flex">
                 <!-- Thumbnail-->
-                <div class="col-3 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center" style="max-width: 100%; max-height: 25vh;">
-                    {% if item.image_url %}
-                    <img class="img-cover" style="height: 25vh;" src="{{ item.image_url }}" alt="Image uploaded by for listing owner.">
-                    <div class="bottom-center">{{ item.image_status }}</div>
+                <div class="col-3 mb-1 position-relative overflow-hidden d-flex flex-wrap justify-content-center" style="max-width: 100%; max-height: 25vh;">
+                    {% if listing.image_url %}
+                    <img class="img-cover" style="height: 25vh;" src="{{ listing.image_url }}" alt="Image uploaded by for listing owner.">
+                    <div class="bottom-center">{{ listing.image_status }}</div>
                     {% else %}
                     <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75" style="width: 100%; height: 25vh;">
                         <p class="mb-1 text-center" style="font-size: xx-large;"><i class="bi bi-camera"></i></p>
@@ -70,26 +73,26 @@
                     {% endif %}
                 </div>
 
-                <div class="col-9 p-1">
-                    <a href="{% url 'server_detail' item.slug %}">
-                        <h5 class="text-light">{{ item.title }}</h5>
+                <div class="col-9 ps-1">
+                    <a href="{% url 'server_detail' listing.slug %}">
+                        <h5 class="text-light">{{ listing.title }}</h5>
                     </a>
-                    <p class="text-light">{{ item.short_description|safe }}</p>
-                    <p class="text-light">Tags:
-                        {% for tag in item.tags.all %}
-                        <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
+                    {% if listing.status == 1 %}
+                    <div class='error-message alert alert-success mt-1 mb-1 p-1' role='alert'>Status: Published</div>
+                    {% else %}
+                    <div class='error-message alert alert-danger mt-1 mb-1 p-1' role='alert'>Status: Unpublished</div>
+                    {% endif %}
+                    <p class="text-light"><span class="fw-bold">Tags:</span>
+                        {% for tag in listing.tags.all %}
+                        <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
                         {% endfor %}
                     </p>
+                    <p class="text-light">{{ listing.short_description|safe }}</p>
                 </div>
             </div>
-            <div>
-                <a class="btn btn-primary mb-1" href="/server_edit/{{item.pk}}">Edit</a>
-                {% if item.status == 0 %}
-                <button type="button" class="btn btn-danger mb-1">Disable</button>
-                {% else %}
-                <button type="button" class="btn btn-success mb-1">Enable</button>
-                {% endif %}
-                <button type="button" class="btn btn-danger mb-1" data-item="{{item.pk}}" data-toggle="modal"
+            <div class="p-1 bg-secondary bg-opacity-25">
+                <a class="btn btn-primary" href="/server_edit/{{listing.pk}}">Edit</a>
+                <button type="button" class="btn btn-danger" data-item="{{listing.pk}}" data-toggle="modal"
                     data-target="#server-listing-delete-modal">
                     Delete Listing
                 </button>
