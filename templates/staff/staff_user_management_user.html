@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load cloudinary %}
+{% block head %}
+{% endblock head %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
+        <!-- Page header -->
+        <h2 class="text-light text-center m-5">User Management</h2>
+        <hr class="border border-light border-3 opacity-75 w-100 mt-0">
+        <form method="post" enctype="multipart/form-data" id="update-user-form" class="d-flex flex-column w-100">
+            {% csrf_token %}
+            {{ form.id | as_crispy_field }}
+            {{ form.username | as_crispy_field }}
+            {{ form.first_name | as_crispy_field }}
+            {{ form.email | as_crispy_field }}
+            {{ form.email_verified | as_crispy_field }}
+            {{ form.is_staff | as_crispy_field }}
+            {{ form.is_active | as_crispy_field }}
+            {{ form.is_banned | as_crispy_field }}
+        </form>
+        <button type="button" id="btnUpdate" name="user_management_save" class="btn btn-success w-100 mb-3">Save
+            Updates</button>
+        <button type="button" id="btnDelete" class="btn btn-danger mb-3" data-toggle="modal"
+            data-target="#user-delete-modal"> Delete User </button>
+    </div>
+</div>
+<!-- user delete Modal -->
+<div class="modal fade text-dark" id="user-delete-modal" tabindex="-1" role="dialog" aria-labelledby="User Delete Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-title">Delete user Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="user-delete-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p> Deleting this user is permanent and irreversible.
+                    </p>
+                    {{ form_2|crispy }}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" name="user-delete-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Toast -->
+<div class="position-absolute top-50 start-50 translate-middle p-3" style="z-index: 11">
+    <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-light">
+            <strong class="me-auto">SAVED</strong>
+            <small></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-light">
+            User have been saved to the database.
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="../static/js/script_user_management_user.js"></script>
+{% endblock %}

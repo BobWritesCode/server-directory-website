@@ -9,6 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
+from django.db import IntegrityError
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -21,6 +22,7 @@ from django.views import View, generic
 from cloudinary import uploader
 from datetime import timedelta, date
 import json
+import re
 
 
 from .constants import DAYS_TO_EXPIRE_IMAGE
@@ -29,7 +31,7 @@ from .forms import (
     ProfileForm, CreateServerListingForm, ConfirmAccountDeleteForm,
     SignupForm, UserUpdateEmailAddressForm, ConfirmServerListingDeleteForm,
     ImageForm, LoginForm, GameManageForm, ConfirmGameDeleteForm,
-    ConfirmTagDeleteForm, TagsManageForm
+    ConfirmTagDeleteForm, TagsManageForm, UserForm, DeleteConfirmForm
 )
 from .models import (
     CustomUser, ServerListing, Game, Tag, Bumps, Images
@@ -753,6 +755,13 @@ def call_server(request):
                     'users': serializers.serialize('json', users),
                 }
 
+            case 'user_management_save':
+                success = update_user(content['1'])
+                result = {
+                    'success': success['result'],
+                    'reason': success['reason']
+                }
+
         return HttpResponse(json.dumps({'result': result}))
 
 @staff_member_required
@@ -1081,13 +1090,13 @@ def staff_user_management_search(request: object):
     """
     request.GET: Loads html page using render().
 
-    request.POST: Processes adding, updating and deleting user.
+    request.POST: Processes updating and deleting user.
 
     Args:
         request (object): request data received from POST
 
     Returns:
-        render: Loads html page
+        render(): Loads html page
     """
 
     if request.method == "POST":
@@ -1101,3 +1110,140 @@ def staff_user_management_search(request: object):
 
         },
     )
+
+@staff_member_required
+@login_required
+def staff_user_management_user(request: object, _id: int):
+    """
+    request.GET: Loads html page using render().
+
+    request.POST: Processes adding, updating and deleting user.
+
+    Args:
+        request (object): request data received from POST
+        _id (int): Received user ID
+
+    Returns:
+        render(): Loads html page
+    """
+    user = get_object_or_404(CustomUser, id=_id)
+
+    if request.method == "POST":
+        # Let's see if the user is trying to delete a user.
+        if "delete_confirm" in request.POST:
+            form = DeleteConfirmForm(request.POST)
+            delete_user(form)
+            return redirect("staff_user_management_search")
+
+        else:
+            form = UserForm(request.POST)
+            update_user(form)
+            return HttpResponse('Data Saved!')
+
+    # Render page
+    return render(
+        request,
+        "staff/staff_user_management_user.html",
+        {
+            "form": UserForm(instance=user),
+            "form_2": DeleteConfirmForm()
+        },
+    )
+
+def update_user(_form: dict):
+    """
+    Updates user to database.
+
+    Parameters:
+    request : object
+    form : dict
+    """
+    # Get correct user from database
+    user = get_object_or_404(CustomUser, pk=_form["id"])
+
+    # Validate user inputs conform
+    result = check_username(_form["username"])
+    if not result['result']:
+        return result
+
+    result = check_email(_form["email"])
+    if not result['result']:
+        return result
+
+    # Update values
+    user.username = _form["username"]
+    user.first_name = _form["first_name"]
+    user.email = _form["email"]
+    user.email_verified = _form["email_verified"]
+    user.is_staff = _form["is_staff"]
+    user.is_active = _form["is_active"]
+    user.is_banned = _form["is_banned"]
+
+    # Save user object
+    try:
+        user.save()
+    except IntegrityError as e:
+        print(e.args)
+        if 'UNIQUE constraint failed: auth_user.username' in e.args:
+            return { 'result': False, 'reason': "Username already taken"}
+        if 'UNIQUE constraint failed: auth_user.email' in e.args:
+            return { 'result': False, 'reason': "Email address already taken"}
+
+    return { 'result': True, 'reason': "No problems"}
+
+
+def delete_user(form: object):
+    """
+    Delete user from the database.
+
+    Parameters:
+    form : object
+    """
+    if form.data["delete_confirm"] == "delete" and form.data["id"]:
+        item_id = form.data["id"]
+        # Get user object
+        user = get_object_or_404(CustomUser, id=item_id)
+        # Delete user from database
+        user.delete()
+
+
+def check_username(username: str):
+    """
+    Checks username given conforms to rules
+
+    Args:
+        username (string): username given
+
+    Returns:
+        {result (bool), reason (string)}
+
+    """
+
+    if " " in username:
+        return { 'result': False, 'reason': "No spaces allowed"}
+
+    if len(username) < 5:
+        return { 'result': False, 'reason': "Must be at least 5 characters long"}
+
+    if len(username) > 20:
+        return { 'result': False, 'reason': "Must be at 20 characters or less"}
+
+    return { 'result': True, 'reason': ""}
+
+
+def check_email(email):
+    """
+    Checks email address given conforms to rules
+
+    Args:
+        email (string): username given
+
+    Returns:
+        {result (bool), reason (string)}
+
+    """
+    pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
+    if re.match(pat,email) is None:
+        return { 'result': False, 'reason': "Email address not valid"}
+
+    return { 'result': True, 'reason': ""}

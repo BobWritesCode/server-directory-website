@@ -15,6 +15,21 @@ from .models import (
 )
 
 
+class UserForm(forms.ModelForm):
+    '''A for to load the user profile'''
+    id = forms.IntegerField(label="ID")
+    username = forms.CharField(label="Username", max_length=20, required=True)
+    first_name = forms.CharField(label="First name", max_length=20)
+    email = forms.EmailField(label="Email", required=True)
+    email_verified = forms.BooleanField(label="Email verified?")
+    is_staff = forms.BooleanField(label="Is Staff?")
+    is_active = forms.BooleanField(label="Account Active?")
+    is_banned = forms.BooleanField(label="Is Banned?")
+
+    class Meta:
+        model = CustomUser
+        fields = ['id', 'username', 'first_name', 'email', 'email_verified', 'is_staff', 'is_active', 'is_banned']
+
 class ProfileForm(forms.ModelForm):
     '''
     A form that allows the user to update their profile information.
@@ -292,3 +307,16 @@ class ConfirmTagDeleteForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ['id']
+
+
+class DeleteConfirmForm(forms.Form):
+    '''
+    A form for user to confirm deletion.
+    '''
+    delete_confirm = forms.CharField(
+        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        max_length=10,
+        error_messages={
+            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        required=True,
+    )

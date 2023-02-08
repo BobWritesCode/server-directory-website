@@ -13,7 +13,8 @@
         <!-- Form used to select tag or choose to add new tag-->
         <form method="post" enctype="multipart/form-data" class="d-flex flex-column w-100">
             {% csrf_token %}
-            <p>Select Tag:
+            <p>
+                Select Tag:
             </p>
             <!-- Drop down using Select2 -->
             <select id="tag-select-drop-down" class="tag-select-drop-down" name="state">

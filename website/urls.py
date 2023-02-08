@@ -189,6 +189,12 @@ urlpatterns = [
     ),
 
     path(
+        'staff_user_management_user/<_id>',
+        views.staff_user_management_user,
+        name='staff_user_management_user'
+    ),
+
+    path(
         'terms_and_conditions',
         views.terms_and_conditions,
         name='terms_and_conditions'
