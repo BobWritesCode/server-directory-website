@@ -12,14 +12,7 @@ $(document).ready(function() {
         allowClear: true,
         closeOnSelect: false,
         theme: "classic"});
-    get_tags();
-    // Parse selected tags twice to create JS object.
-    const obj = JSON.parse($('#selected_tags').text());
-    const obj2 = JSON.parse(obj)
-    // Create an array from tags linked to game selected.
-    const tags = Array.from(obj2, x => x.pk)
-    // Populate multi choice dropdown with correct tags
-    $('#tags-multiple').val(tags).trigger('change');
+    setUp()
 });
 
 // Listeners
@@ -31,29 +24,42 @@ window.addEventListener("DOMContentLoaded", function() {
             submitForm();
         }
     });
-
     dropDownGame.on("input", function(e) {
         $('#tags-multiple').val(null)
             .trigger('change')
             .html("");
-
         $("#tags-multiple").select2({
             placeholder: "Choose game first"})
             .prop("disabled", true);
-
         if (dropDownGame.val() != 0) {
             get_tags();
         }
     });
 });
 
-async function get_tags() {
-    action('get_game_tags', dropDownGame.val());
-    $("#tags-multiple").select2({
-        placeholder: "Select tags"})
-        .prop("disabled", false);
-    return true
+async function setUp () {
+    await get_tags()
+    // Parse selected tags twice to create JS object.
+    const obj = JSON.parse($('#selected_tags').text());
+    const obj2 = JSON.parse(obj)
+    // Create an array from tags linked to game selected.
+    const tags = Array.from(obj2, x => x.pk)
+    // Populate multi choice dropdown with correct tags
+    $('#tags-multiple').val(tags);
+    $('#tags-multiple').trigger('change');
 }
+
+function get_tags() {
+    return new Promise((res)=>{
+        action('get_game_tags', dropDownGame.val())
+        $("#tags-multiple").select2({
+            placeholder: "Select tags"})
+            .prop("disabled", false);
+        setTimeout(()=>{
+            res();
+        },500);
+    });
+};
 
 /**
  * Validates the form.
@@ -150,19 +156,21 @@ function submitForm() {
  * call_server(). Currently on set up to use 'get_tag_details'
  * @param {*} arg... [...] Any other data you wish to send to server.
  */
-function action(...args) {
+async function action(...args) {
     askServer("/call_server", {
             arguments: arguments
         })
         .then((data) => {
             if (data.result.success == "tags") {
-                    const tags = data.result.reason
-                    for (const tag of tags) {
-                        let newOption = new Option(tag[1], tag[0], false, false);
-                        $('#tags-multiple').append(newOption).trigger('change');
-                    }
+                const tags = data.result.reason
+                for (const tag of tags) {
+                    let newOption = new Option(tag[1], tag[0], false, false);
+                    $('#tags-multiple').append(newOption).trigger('change');
+                };
             };
+            return true
         });
+    return true
 }
 
 /**
