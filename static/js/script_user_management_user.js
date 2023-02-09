@@ -3,9 +3,12 @@
 // Globals
 const form = $('#update-user-form');
 const deleteForm = $("#user-delete-form")
+const banForm =$('#user-ban-form')
 const btnUpdate = $('button[name="user_management_save"]');
 const btnDelete = $('button[name="btnDelete"]');
+const btnBan = $('button[name="user_management_ban"]');
 const btnDeleteConfirm = deleteForm.find('button[name="user-delete-confirm"]');
+const btnBanConfirm = banForm.find('button[name="user-ban-confirm"]');
 
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
@@ -27,6 +30,9 @@ window.addEventListener("DOMContentLoaded", function() {
     });
     btnDeleteConfirm.on("click", function(e) {
         UserDeleteConfirm()
+    });
+    btnBanConfirm.on("click", function(e) {
+        UserBanConfirm()
     });
 });
 
@@ -53,7 +59,32 @@ function hideToast() {
 }
 
 /**
- * Check user input matches expected input
+ * Check user input matches expected input before ban, then bans user.
+ */
+function UserBanConfirm() {
+    // Clear any current error messages from screen.
+    $(".error-message").remove();
+    // Check user has input correct string.
+    if ($("#ban_confirm").val() != "ban") {
+        $("#ban_confirm")
+            .after(
+                "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>"
+            );
+    }
+    // If no error messages then send request to server.
+    if ($(".error-message").length == 0) {
+        let input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "id")
+            .val(form.find('#id_id').val());
+        banForm.append(input);
+        banForm.submit();
+    }
+}
+
+
+/**
+ * Check user input matches expected input before deletion, then deletes user.
  */
 function UserDeleteConfirm() {
     // Clear any current error messages from screen.

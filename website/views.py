@@ -759,12 +759,15 @@ def call_server(request):
 
 @staff_member_required
 @login_required
-def ban_user(user_id):
-    '''
-    Prevents user login, rejects all images for deletion, unpublish listings.
-    '''
+def ban_user(_id: int):
+    """
+    Bans user and prevents user login, rejects all images for deletion, unpublish listings.
+
+    Args:
+        _id (int): user id to ban
+    """
     # Set user to is banned.
-    user = get_object_or_404(CustomUser, pk=user_id)
+    user = get_object_or_404(CustomUser, pk=_id)
 
     # Delete all current user sessions (in case logged in on multiple devices)
     [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == user.id]
@@ -773,11 +776,11 @@ def ban_user(user_id):
     user.save()
 
     # Unpublish all listings
-    query = Q(owner_id = user_id)
+    query = Q(owner_id = _id)
     ServerListing.objects.filter(query).update(status=0)
 
     # Unpublish all images and set for deletion
-    query = Q(user_id = user_id)
+    query = Q(user_id = _id)
     image_expire = date.today() + timedelta(days = DAYS_TO_EXPIRE_IMAGE)
     Images.objects.filter(query).update(status = 3, expiry = image_expire)
 
@@ -1113,21 +1116,25 @@ def staff_user_management_user(request: object, _id: int):
     request.POST: Processes adding, updating and deleting user.
 
     Args:
-        request (object): request data received from POST
+        request (object): request data received
         _id (int): Received user ID
 
     Returns:
-        render(): Loads html page
+        render (function): Loads html page
     """
     user = get_object_or_404(CustomUser, id=_id)
     server_listings = ServerListing.objects.filter(
         owner=user.id).order_by('-created_on')
-
     if request.method == "POST":
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
             form = DeleteConfirmForm(request.POST)
             delete_user(form)
+            return redirect("staff_user_management_search")
+
+        elif "ban_confirm" in request.POST:
+            _id = request.POST['id']
+            ban_user(_id)
             return redirect("staff_user_management_search")
 
         else:
@@ -1200,10 +1207,8 @@ def update_user(_form: dict):
     user.username = _form["username"]
     user.first_name = _form["first_name"]
     user.email = _form["email"]
-    user.email_verified = _form["email_verified"]
     user.is_staff = _form["is_staff"]
     user.is_active = _form["is_active"]
-    user.is_banned = _form["is_banned"]
 
     # Save user object
     try:

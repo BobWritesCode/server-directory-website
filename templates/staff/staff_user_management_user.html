@@ -23,6 +23,8 @@
         </form>
         <button type="button" id="btnUpdate" name="user_management_save" class="btn btn-success w-100 mb-3">Save
             Updates</button>
+        <button type="button" id="btnBan" class="btn btn-warning mb-3" data-toggle="modal"
+            data-target="#user-ban-modal"> Ban User </button>
         <button type="button" id="btnDelete" class="btn btn-danger mb-3" data-toggle="modal"
             data-target="#user-delete-modal"> Delete User </button>
 
@@ -83,8 +85,8 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-title">Delete user Confirmation</h5>
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-light" id="modal-title">Delete User Confirmation</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -98,6 +100,32 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" name="user-delete-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- user Ban Modal -->
+<div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="User Ban Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="modal-title">Ban User Confirmation</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post" id="user-ban-form">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>All listings will be deleted permanently and user will not be able to log back in.</p>
+                    <p>Type 'ban' in box to confirm ban.</p>
+                    <input type="text" name="ban_confirm" id="ban_confirm" class="form-control w-100">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" name="user-ban-confirm">Confirm</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
