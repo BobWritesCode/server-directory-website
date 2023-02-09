@@ -222,6 +222,7 @@ def server_edit(request: object, _pk: int):
         if form.is_valid() and image_form.is_valid():
 
             image = Images.objects.filter(listing_id = _pk).first()
+
             if image is not None and request.FILES:
                 # Delete old image from Cloudinary server
                 uploader.destroy(image.public_id)
@@ -235,13 +236,14 @@ def server_edit(request: object, _pk: int):
                 image.user = request.user
                 image.listing = get_object_or_404(ServerListing, pk=_pk)
 
-            image.date_added = date.today()
-            image.status = 0
-            image.reviewed_by = None
-            image.image = new_image['url']
-            image.public_id = new_image['public_id']
-            image.approved_by = None
-            image.save()
+            if request.FILES:
+                image.date_added = date.today()
+                image.status = 0
+                image.reviewed_by = None
+                image.image = new_image['url']
+                image.public_id = new_image['public_id']
+                image.approved_by = None
+                image.save()
 
         # Get tags selected from the form
         query = Q(id__in=form.cleaned_data["tags"])
