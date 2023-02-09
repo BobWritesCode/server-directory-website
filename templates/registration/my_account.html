@@ -22,11 +22,18 @@
                 {{ form|crispy }}
             </div>
         </form>
-        <button type="button" class="btn btn-success mb-3" data-toggle="modal"
-            data-target="#email-address-update-modal">
-            Update Email address
-        </button>
-        <a class="btn btn-success mb-3" href="{% url 'password_change' %}">Change Password</a>
+
+        <div class="d-flex mb-3 border rounded">
+            <button type="button" class="btn btn-dark w-100" data-toggle="modal"
+                data-target="#email-address-update-modal"  data-bs-toggle="tooltip" title="Update email address">
+                <i class="bi bi-envelope-at"></i> Update email address
+            </button>
+        </div>
+
+        <div class="d-flex mb-3 border rounded">
+            <a href="{% url 'password_change' %}" class="btn btn-dark w-100"  data-bs-toggle="tooltip" title="Change password"><i class="bi bi-pencil-square"></i> Change password</a>
+        </div>
+
         <hr class="border border-light border-3 opacity-75 w-100">
         <h3>Bumps</h3>
         <p>Bumping a server will push it higher in the listings</p>
@@ -73,29 +80,27 @@
                     {% endif %}
                 </div>
 
-                <div class="col-9 ps-1">
+                <div class="col-9 ps-1 position-relative">
                     <a href="{% url 'server_detail' listing.slug %}">
                         <h5 class="text-light">{{ listing.title }}</h5>
                     </a>
                     {% if listing.status == 1 %}
-                    <div class='error-message alert alert-success mt-1 mb-1 p-1' role='alert'>Status: Published</div>
+                    <div class='error-message alert alert-success mt-1 mb-1 p-1 position-absolute top-0 end-0' role='alert'>Published</div>
                     {% else %}
-                    <div class='error-message alert alert-danger mt-1 mb-1 p-1' role='alert'>Status: Unpublished</div>
+                    <div class='error-message alert alert-danger mt-1 mb-1 p-1 position-absolute top-0 end-0' role='alert'>Unpublished</div>
                     {% endif %}
-                    <p class="text-light"><span class="fw-bold">Tags:</span>
+                    <p class="text-light">
                         {% for tag in listing.tags.all %}
-                        <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
+                        <span class="badge rounded-pill bg-info text-dark"><i class="bi bi-tag"></i>{{ tag }}</span>
                         {% endfor %}
                     </p>
                     <p class="text-light">{{ listing.short_description|safe }}</p>
+                    <div class="d-flex border rounded position-absolute bottom-0 end-0">
+                        <a href="/server_edit/{{listing.pk}}" class="btn btn-dark"  data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
+                        <button type="button" class="btn btn-dark" data-item="{{listing.pk}}" data-toggle="modal" data-target="#server-listing-delete-modal"  data-bs-toggle="tooltip" title="Delete Listing">
+                            <i class="bi bi-trash"></i></button>
+                    </div>
                 </div>
-            </div>
-            <div class="p-1 bg-secondary bg-opacity-25">
-                <a class="btn btn-primary" href="/server_edit/{{listing.pk}}">Edit</a>
-                <button type="button" class="btn btn-danger" data-item="{{listing.pk}}" data-toggle="modal"
-                    data-target="#server-listing-delete-modal">
-                    Delete Listing
-                </button>
             </div>
         </div>
         {% endfor %}
@@ -103,110 +108,105 @@
         {% if num_of_listings >= 3 %}
         <p>You cannot create any more listings, you have reach maximum number of listings for 1 account.</p>
         {% else %}
-        <a class="btn btn-success" href="{% url 'server_create' %}">Create listing</a>
+        <div class="d-flex mb-3 border rounded">
+            <a href="{% url 'server_create' %}" class="btn btn-dark w-100"  data-bs-toggle="tooltip" title="Create listing"><i class="bi bi-pencil-square"></i></a>
+        </div>
         {% endif %}
         <hr class="border border-light border-3 opacity-75 w-100">
         <h3>Delete account</h3>
-        <button type="button" class="btn btn-danger mb-3" data-toggle="modal" data-target="#delete-account-modal">
-            Delete Account
-        </button>
-
-        <!-- Delete Account Modal -->
-        <div class="modal fade text-dark" id="delete-account-modal" tabindex="-1" role="dialog"
-            aria-labelledby="Delete Account Modal" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modal-title">Delete Account Confirmation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="modal-body">
-                            <p>
-                                Deleting your account is permanent and irreversible.
-                                <br>
-                                <br>All information linked to the account will also be deleted including any listings.
-                            </p>
-                            {{ form_2|crispy }}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger" name="account-delete-confirm">Confirm</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div class="d-flex mb-3 border rounded">
+            <button type="button" class="btn btn-dark w-100" data-toggle="modal" data-target="#delete-account-modal" data-bs-toggle="tooltip" title="Delete account"><i class="bi bi-trash"></i></button>
         </div>
-
-        <!-- Email Address Update Modal -->
-        <div class="modal fade text-dark" id="email-address-update-modal" tabindex="-1" role="dialog"
-            aria-labelledby="Email Address Update Modal" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modal-title">Email Address Update</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post" id="email-update-form">
-                        {% csrf_token %}
-                        <div class="modal-body">
-                            <p>
-                                Please provide your updated email address.
-                                <br>
-                                <br>You will be sent an email to verify your new email address before it can be used.
-                                <br>
-                                <br>Your previous email address will become inactive when click confirm below. This
-                                means features like forgotten password will no longer work until your verify the new
-                                email address.
-                            </p>
-                            {{ email_form|crispy }}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger"
-                                name="email-address-update-confirm">Confirm</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Listing delete Modal -->
-        <div class="modal fade text-dark" id="server-listing-delete-modal" tabindex="-1" role="dialog"
-            aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="modal-title">Delete Listing Confirmation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post" id="server-listing-delete-form">
-                        {% csrf_token %}
-                        <div class="modal-body">
-                            <p>
-                                Deleting this listing is permanent and irreversible.
-                            </p>
-                            {{ form_4|crispy }}
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger"
-                                name="server-listing-delete-confirm">Confirm</button>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade text-dark" id="delete-account-modal" tabindex="-1" role="dialog"
+aria-labelledby="Delete Account Modal" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header bg-danger">
+            <h5 class="modal-title text-light" id="modal-title">Delete Account Confirmation</h5>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>
+                    Deleting your account is permanent and irreversible.
+                    <br>
+                    <br>All information linked to the account will also be deleted including any listings.
+                </p>
+                {{ form_2|crispy }}
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" name="account-delete-confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<!-- Email Address Update Modal -->
+<div class="modal fade text-dark" id="email-address-update-modal" tabindex="-1" role="dialog"
+aria-labelledby="Email Address Update Modal" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header bg-light">
+            <h5 class="modal-title" id="modal-title">Email Address Update</h5>
+        </div>
+        <form method="post" id="email-update-form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>
+                    Please provide your updated email address.
+                    <br>
+                    <br>You will be sent an email to verify your new email address before it can be used.
+                    <br>
+                    <br>Your previous email address will become inactive when click confirm below. This
+                    means features like forgotten password will no longer work until your verify the new
+                    email address.
+                </p>
+                {{ email_form|crispy }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success"
+                    name="email-address-update-confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+
+<!-- Listing delete Modal -->
+<div class="modal fade text-dark" id="server-listing-delete-modal" tabindex="-1" role="dialog"
+aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="modal-title">Delete Listing Confirmation</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form method="post" id="server-listing-delete-form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>
+                    Deleting this listing is permanent and irreversible.
+                </p>
+                {{ form_4|crispy }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger"
+                    name="server-listing-delete-confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 <!-- Toast -->
 <div class="position-absolute top-50 start-50 translate-middle p-3" style="z-index: 11">

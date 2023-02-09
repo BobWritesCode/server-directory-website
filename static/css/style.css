@@ -69,3 +69,8 @@
 .tox .tox-edit-area__iframe {
     background-color: rgba(255,255,255,0) !important;
 }
+
+/* -------- tooltip */
+.custom-tooltip {
+    --bs-tooltip-arrow-width: 0;
+}

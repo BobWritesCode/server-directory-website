@@ -3,6 +3,7 @@
 // Global HTML Elements
 const form = $('#listing-form');
 const btnSubmit = form.find('button[type="submit"]');
+const dropDownGame = form.find('#id_game');
 
 // DOM Ready
 $(document).ready(function() {
@@ -10,26 +11,49 @@ $(document).ready(function() {
         placeholder: "Select tags",
         allowClear: true,
         closeOnSelect: false,
-    });
+        theme: "classic"});
+    get_tags();
     // Parse selected tags twice to create JS object.
     const obj = JSON.parse($('#selected_tags').text());
     const obj2 = JSON.parse(obj)
     // Create an array from tags linked to game selected.
     const tags = Array.from(obj2, x => x.pk)
     // Populate multi choice dropdown with correct tags
-    $('#tags-multiple').val(tags).trigger('change')
+    $('#tags-multiple').val(tags).trigger('change');
 });
 
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
     btnSubmit.on("click", function(e) {
         e.preventDefault()
-        validateForm()
+        validateForm();
         if ($(".error-message").length == 0) {
             submitForm();
         }
     });
+
+    dropDownGame.on("input", function(e) {
+        $('#tags-multiple').val(null)
+            .trigger('change')
+            .html("");
+
+        $("#tags-multiple").select2({
+            placeholder: "Choose game first"})
+            .prop("disabled", true);
+
+        if (dropDownGame.val() != 0) {
+            get_tags();
+        }
+    });
 });
+
+async function get_tags() {
+    action('get_game_tags', dropDownGame.val());
+    $("#tags-multiple").select2({
+        placeholder: "Select tags"})
+        .prop("disabled", false);
+    return true
+}
 
 /**
  * Validates the form.
@@ -118,4 +142,52 @@ function validateForm() {
  */
 function submitForm() {
     form.submit();
+}
+
+/**
+ * Performs a promise using askServer() to return a json.
+ * @param {string} arg [1] The action you wish to call. See website.views.py
+ * call_server(). Currently on set up to use 'get_tag_details'
+ * @param {*} arg... [...] Any other data you wish to send to server.
+ */
+function action(...args) {
+    askServer("/call_server", {
+            arguments: arguments
+        })
+        .then((data) => {
+            if (data.result.success == "tags") {
+                    const tags = data.result.reason
+                    for (const tag of tags) {
+                        let newOption = new Option(tag[1], tag[0], false, false);
+                        $('#tags-multiple').append(newOption).trigger('change');
+                    }
+            };
+        });
+}
+
+/**
+ * Performs callback from server
+ * @async
+ * @param  {string} url URL to call in website.urls.py
+ * @param  {object} data Check  website.views.py call_server() for options
+ * @returns {json}
+ */
+async function askServer(url = "", data = {}) {
+    const csrftoken = document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        )
+        .value;
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data),
+    });
+    return response.json();
 }

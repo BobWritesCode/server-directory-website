@@ -36,19 +36,18 @@
             <!-- Tag selection using Select2 -->
             <label for="tags-multiple" class="mb-1">Choose tags: (max: 10)*</label>
             <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple">
-                {% for tag in tags %}
-                <option value="{{tag.pk}}">{{tag.name}}</option>
-                {% endfor %}
             </select>
             {{ form.short_description | as_crispy_field}}
             {{ form.long_description | as_crispy_field}}
             {{ form.status | as_crispy_field}}
             {{ form.discord | as_crispy_field}}
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <div class="d-flex mb-3 border rounded">
+                <button type="submit" class="btn btn-dark" aria-label="Save" data-bs-toggle="tooltip" title="Save"><i class="bi bi-save"></i></button>
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#server-listing-delete-modal" aria-label="Delete" data-bs-toggle="tooltip" title="Delete">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
         </form>
-        <button type="button" class="btn btn-danger mt-3 mb-3" data-toggle="modal" data-target="#server-listing-delete-modal">
-            Delete Listing
-        </button>
     </div>
 </div>
 <!-- Listing delete Modal -->
