@@ -24,7 +24,7 @@ window.addEventListener("DOMContentLoaded", function () {
 });
 
 function action(arg) {
-    addBump("/call_server", { arguments: arguments }).then((data) => {
+    askServer("/call_server", { arguments: arguments }).then((data) => {
         if (data.result) {
             if (arguments[0]=='image_approval_next'){
                 window.location.href = String(data.result.text);
@@ -36,7 +36,6 @@ function action(arg) {
         };
     });
 }
-
 
 async function askServer(url = "", data = {}) {
     const csrftoken = document.querySelector(
