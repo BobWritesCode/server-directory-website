@@ -3,23 +3,42 @@
 // Global HTML Elements
 const form = $('#listing-form');
 const btnSubmit = form.find('button[type="submit"]');
+const dropDownGame = form.find('#id_game');
 
 // DOM Ready
 $(document).ready(function() {
     $("#tags-multiple").select2({
-        placeholder: "Select tags",
+        placeholder: "Select game first",
         allowClear: true,
         closeOnSelect: false,
-    });
+        theme: "classic"})
+        .prop("disabled", true);
 });
 
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
+
     btnSubmit.on("click", function(e) {
         e.preventDefault()
         validateForm()
         if ($(".error-message").length == 0) {
             submitForm();
+        }
+    });
+
+    dropDownGame.on("input", function(e) {
+        $('#tags-multiple').val(null)
+            .trigger('change');
+        if (dropDownGame.val() == 0) {
+            $("#tags-multiple").select2({
+                placeholder: "Choose game first"})
+                .prop("disabled", true);
+        } else {
+            action('get_game_tags', dropDownGame.val());
+            // populate Select2
+            $("#tags-multiple").select2({
+                placeholder: "Select tags"})
+                .prop("disabled", false);
         }
     });
 });
@@ -111,4 +130,52 @@ function validateForm() {
  */
 function submitForm() {
     form.submit();
+}
+
+/**
+ * Performs a promise using askServer() to return a json.
+ * @param {string} arg [1] The action you wish to call. See website.views.py
+ * call_server(). Currently on set up to use 'get_tag_details'
+ * @param {*} arg... [...] Any other data you wish to send to server.
+ */
+function action(...args) {
+    askServer("/call_server", {
+            arguments: arguments
+        })
+        .then((data) => {
+            if (data.result.success == "tags") {
+                    const tags = data.result.reason
+                    for (const tag of tags) {
+                        let newOption = new Option(tag[1], tag[0], false, false);
+                        $('#tags-multiple').append(newOption).trigger('change');
+                    }
+            };
+        });
+}
+
+/**
+ * Performs callback from server
+ * @async
+ * @param  {string} url URL to call in website.urls.py
+ * @param  {object} data Check  website.views.py call_server() for options
+ * @returns {json}
+ */
+async function askServer(url = "", data = {}) {
+    const csrftoken = document.querySelector(
+            "[name=csrfmiddlewaretoken]"
+        )
+        .value;
+    const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+            "X-CSRFToken": csrftoken
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data),
+    });
+    return response.json();
 }

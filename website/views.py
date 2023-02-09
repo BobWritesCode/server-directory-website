@@ -783,6 +783,19 @@ def call_server(request):
                     'reason': success['reason']
                 }
 
+            case 'get_game_tags':
+                game = get_object_or_404(Game, id=content['1'])
+                tags = game.tags.all()
+
+                all_tags_for_game = []
+                for x in tags:
+                    all_tags_for_game.append([x.id, x.name])
+
+                result = {
+                    'success': "tags",
+                    'reason': all_tags_for_game
+                }
+
         return HttpResponse(json.dumps({'result': result}))
 
 
