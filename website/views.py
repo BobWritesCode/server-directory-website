@@ -707,7 +707,7 @@ def call_server(request):
                 item.expiry = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
                 item.reviewed_by = request.user
                 item.save()
-                ban_user(item.user_id)
+                ban_user(request, item.user_id)
                 result = {
                     'success': True,
                     'text': "Rejected and user banned"
@@ -801,7 +801,7 @@ def call_server(request):
 
 @staff_member_required
 @login_required
-def ban_user(_id: int):
+def ban_user(request, _id: int):
     """
     Bans user and prevents user login, rejects all images for deletion, unpublish listings.
 
@@ -809,7 +809,7 @@ def ban_user(_id: int):
         _id (int): user id to ban
     """
     # Set user to is banned.
-    user = get_object_or_404(CustomUser, pk=_id)
+    user = get_object_or_404(CustomUser, id=_id)
 
     # Delete all current user sessions (in case logged in on multiple devices)
     [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == user.id]
@@ -1169,7 +1169,6 @@ def staff_user_management_user(request: object, _id: int):
         owner=user.id).order_by('-created_on')
 
     if request.method == "POST":
-        print(request.POST)
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
             form = DeleteConfirmForm(request.POST)
@@ -1178,8 +1177,8 @@ def staff_user_management_user(request: object, _id: int):
 
         elif "ban_confirm" in request.POST:
             _id = request.POST['id']
-            ban_user(_id)
-            return redirect("staff_user_management_search")
+            ban_user(request, _id)
+            return redirect("staff_user_management_user", _id=request.POST['id'])
 
         elif "delete_listing_confirm" in request.POST:
             # Let's see if the user is trying to delete the listing.
