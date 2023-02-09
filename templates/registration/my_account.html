@@ -96,6 +96,7 @@
                     </p>
                     <p class="text-light">{{ listing.short_description|safe }}</p>
                     <div class="d-flex border rounded position-absolute bottom-0 end-0">
+                        <a href="{% url 'server_detail' listing.slug %}" class="btn btn-dark"  data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
                         <a href="/server_edit/{{listing.pk}}" class="btn btn-dark"  data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
                         <button type="button" class="btn btn-dark" data-item="{{listing.pk}}" data-toggle="modal" data-target="#server-listing-delete-modal"  data-bs-toggle="tooltip" title="Delete Listing">
                             <i class="bi bi-trash"></i></button>
