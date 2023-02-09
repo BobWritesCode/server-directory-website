@@ -1167,7 +1167,9 @@ def staff_user_management_user(request: object, _id: int):
     user = get_object_or_404(CustomUser, id=_id)
     server_listings = ServerListing.objects.filter(
         owner=user.id).order_by('-created_on')
+
     if request.method == "POST":
+        print(request.POST)
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
             form = DeleteConfirmForm(request.POST)
@@ -1178,6 +1180,13 @@ def staff_user_management_user(request: object, _id: int):
             _id = request.POST['id']
             ban_user(_id)
             return redirect("staff_user_management_search")
+
+        elif "delete_listing_confirm" in request.POST:
+            # Let's see if the user is trying to delete the listing.
+            if request.POST["delete_listing_confirm"] == "delete":
+                item = get_object_or_404(ServerListing, id=request.POST['id'])
+                item.delete()
+                return redirect("staff_user_management_user", _id=request.POST['user_id'])
 
         else:
             form = UserForm(request.POST)

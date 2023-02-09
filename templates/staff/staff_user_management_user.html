@@ -52,34 +52,59 @@
                     {% endif %}
                 </div>
 
-                <div class="col-9 ps-1">
+                <div class="col-9 ps-1 position-relative">
                     <a href="{% url 'server_detail' listing.slug %}">
                         <h5 class="text-light">{{ listing.title }}</h5>
                     </a>
                     {% if listing.status == 1 %}
-                    <div class='error-message alert alert-success mt-1 mb-1 p-1' role='alert'>Status: Published</div>
+                    <div class='error-message alert alert-success mt-1 mb-1 p-1 position-absolute top-0 end-0' role='alert'>Published</div>
                     {% else %}
-                    <div class='error-message alert alert-danger mt-1 mb-1 p-1' role='alert'>Status: Unpublished</div>
+                    <div class='error-message alert alert-danger mt-1 mb-1 p-1 position-absolute top-0 end-0' role='alert'>Unpublished</div>
                     {% endif %}
-                    <p class="text-light"><span class="fw-bold">Tags:</span>
+                    <p class="text-light">
                         {% for tag in listing.tags.all %}
-                        <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
+                        <span class="badge rounded-pill bg-info text-dark"><i class="bi bi-tag"></i>{{ tag }}</span>
                         {% endfor %}
                     </p>
                     <p class="text-light">{{ listing.short_description|safe }}</p>
+                    <div class="d-flex border rounded position-absolute bottom-0 end-0">
+                        <a href="{% url 'server_detail' listing.slug %}" class="btn btn-dark"  data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
+                        <a href="/server_edit/{{listing.pk}}" class="btn btn-dark"  data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
+                        <button type="button" class="btn btn-dark" data-item="{{listing.pk}}" data-toggle="modal" data-target="#listing-delete-modal"  data-bs-toggle="tooltip" title="Delete Listing">
+                            <i class="bi bi-trash"></i></button>
+                    </div>
                 </div>
-            </div>
-            <div class="p-1 bg-secondary bg-opacity-25">
-                <a class="btn btn-primary" href="/server_edit/{{listing.pk}}">Edit</a>
-                <button type="button" class="btn btn-danger" data-item="{{listing.pk}}" data-toggle="modal"
-                    data-target="#server-listing-delete-modal">
-                    Delete Listing
-                </button>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<!-- Listing delete Modal -->
+<div class="modal fade text-dark" id="listing-delete-modal" tabindex="-1" role="dialog"
+aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header bg-danger">
+            <h5 class="modal-title text-light" id="modal-title">Delete Listing Confirmation</h5>
+        </div>
+        <form method="post" id="listing-delete-form">
+            {% csrf_token %}
+            <div class="modal-body">
+                <p>Deleting listing is permanent and irreversible.</p>
+                <p>Type 'delete' in box to confirm deletion.</p>
+                <input type="text" name="delete_listing_confirm" id="delete_listing_confirm" class="form-control w-100">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger"
+                    name="listing-delete-confirm">Confirm</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
 <!-- user delete Modal -->
 <div class="modal fade text-dark" id="user-delete-modal" tabindex="-1" role="dialog" aria-labelledby="User Delete Modal"
     aria-hidden="true">
@@ -87,9 +112,6 @@
         <div class="modal-content">
             <div class="modal-header bg-danger">
                 <h5 class="modal-title text-light" id="modal-title">Delete User Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <form method="post" id="user-delete-form">
                 {% csrf_token %}
@@ -106,6 +128,7 @@
         </div>
     </div>
 </div>
+
 <!-- user Ban Modal -->
 <div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="User Ban Modal"
     aria-hidden="true">
@@ -113,9 +136,6 @@
         <div class="modal-content">
             <div class="modal-header bg-warning">
                 <h5 class="modal-title" id="modal-title">Ban User Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <form method="post" id="user-ban-form">
                 {% csrf_token %}

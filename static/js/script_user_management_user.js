@@ -2,16 +2,28 @@
 
 // Globals
 const form = $('#update-user-form');
-const deleteForm = $("#user-delete-form")
+const userDeleteForm = $("#user-delete-form")
+const listingDeleteForm = $("#listing-delete-form")
 const banForm =$('#user-ban-form')
+
 const btnUpdate = $('button[name="user_management_save"]');
 const btnDelete = $('button[name="btnDelete"]');
 const btnBan = $('button[name="user_management_ban"]');
-const btnDeleteConfirm = deleteForm.find('button[name="user-delete-confirm"]');
+
+const btnDeleteConfirm = userDeleteForm.find('button[name="user-delete-confirm"]');
+const btnListingDeleteConfirm = listingDeleteForm.find('button[name="listing-delete-confirm"]');
 const btnBanConfirm = banForm.find('button[name="user-ban-confirm"]');
+
+let lastDeleteBtnID = null
 
 // Listeners
 window.addEventListener("DOMContentLoaded", function() {
+    // Keep track of last item id pressed.
+    $("button[data-target='#listing-delete-modal']").on("click", function() {
+        if ($(this).attr("data-item")) {
+            lastDeleteBtnID = $(this).attr("data-item");
+        }
+    });
     btnUpdate.on("click", function(e) {
         e.preventDefault()
         $(".error-message").remove();
@@ -27,6 +39,9 @@ window.addEventListener("DOMContentLoaded", function() {
             }
             action("user_management_save", formData);
         }
+    });
+    btnListingDeleteConfirm.on("click", function(e) {
+        ListingDeleteConfirm()
     });
     btnDeleteConfirm.on("click", function(e) {
         UserDeleteConfirm()
@@ -56,6 +71,33 @@ function showToast() {
  */
 function hideToast() {
     $("#liveToast").toast("hide");
+}
+
+/**
+ * Check user input matches expected input before deletion, then deletes listing.
+ */
+function ListingDeleteConfirm() {
+    // Clear any current error messages from screen.
+    $(".error-message").remove();
+    // Check user has input correct string.
+    if ($("#delete_listing_confirm").val() != "delete") {
+        $("#delete_listing_confirm")
+            .after(
+                "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>"
+            );
+    }
+    // If no error messages then send request to server.
+    if ($(".error-message").length == 0) {
+        let input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "id")
+            .val(lastDeleteBtnID);
+        let input2 = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "user_id")
+            .val(form.find('#id_id').val());
+        listingDeleteForm.append(input).append(input2).submit();
+    }
 }
 
 /**
@@ -102,8 +144,8 @@ function UserDeleteConfirm() {
             .attr("type", "hidden")
             .attr("name", "id")
             .val(form.find('#id_id').val());
-        deleteForm.append(input);
-        deleteForm.submit();
+        userDeleteForm.append(input);
+        userDeleteForm.submit();
     }
 }
 
