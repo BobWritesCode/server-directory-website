@@ -21,10 +21,10 @@ class UserForm(forms.ModelForm):
     username = forms.CharField(label="Username", max_length=20, required=True)
     first_name = forms.CharField(label="First name", max_length=20)
     email = forms.EmailField(label="Email", required=True)
-    email_verified = forms.BooleanField(label="Email verified?")
+    email_verified = forms.BooleanField(label="Email verified?", disabled=True)
     is_staff = forms.BooleanField(label="Is Staff?")
     is_active = forms.BooleanField(label="Account Active?")
-    is_banned = forms.BooleanField(label="Is Banned?")
+    is_banned = forms.BooleanField(label="Is Banned?", disabled=True)
 
     class Meta:
         model = CustomUser
