@@ -21,12 +21,12 @@
             {{ form.is_active | as_crispy_field }}
             {{ form.is_banned | as_crispy_field }}
         </form>
-        <button type="button" id="btnUpdate" name="user_management_save" class="btn btn-success w-100 mb-3">Save
-            Updates</button>
-        <button type="button" id="btnBan" class="btn btn-warning mb-3" data-toggle="modal"
-            data-target="#user-ban-modal"> Ban User </button>
-        <button type="button" id="btnDelete" class="btn btn-danger mb-3" data-toggle="modal"
-            data-target="#user-delete-modal"> Delete User </button>
+        <div class="row d-flex border rounded w-100 mb-3 ms-0">
+            <button type="button" id="btnUpdate" name="user_management_save" class="col btn btn-dark" data-bs-toggle="tooltip" title="Save"><i class="bi bi-save"></i></button>
+            <button type="button" id="btnBan" class="col btn btn-dark" data-toggle="modal" data-target="#user-ban-modal" data-bs-toggle="tooltip" title="Ban user"><i class="bi bi-slash-circle"></i></button>
+            <button type="button" id="btnDelete" class="col btn btn-dark" data-toggle="modal" data-target="#user-delete-modal" data-bs-toggle="tooltip" title="Delete user"><i class="bi bi-trash"></i></button>
+        </div>
+
 
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
 
@@ -68,8 +68,8 @@
                     </p>
                     <p class="text-light">{{ listing.short_description|safe }}</p>
                     <div class="d-flex border rounded position-absolute bottom-0 end-0">
-                        <a href="{% url 'server_detail' listing.slug %}" class="btn btn-dark"  data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
-                        <a href="/server_edit/{{listing.pk}}" class="btn btn-dark"  data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
+                        <a href="{% url 'server_detail' listing.slug %}" class="btn btn-dark" data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
+                        <a href="/server_edit/{{listing.pk}}" class="btn btn-dark" data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
                         <button type="button" class="btn btn-dark" data-item="{{listing.pk}}" data-toggle="modal" data-target="#listing-delete-modal"  data-bs-toggle="tooltip" title="Delete Listing">
                             <i class="bi bi-trash"></i></button>
                     </div>
@@ -158,7 +158,6 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
         <div class="toast-header bg-success text-light">
             <strong class="me-auto">SAVED</strong>
             <small></small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
         <div class="toast-body bg-light">
             User have been saved to the database.
