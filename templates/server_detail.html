@@ -34,6 +34,7 @@
             <a class="btn btn-discord text-light mb-3" href="https://discord.com/invite/{{ server.discord }}"
                 target="_blank" title="Link to discord server"><i class="fab fa-discord"></i> Join the discord
                 server</a>
+            {% if user.is_authenticated %}
             {% if server.id in bumps_queryset %}
             <button type="button" class="btn btn-success mb-3" disabled name="" data-item="{{ server.pk }}"
                 data-name='Bump Button'>Already bumped!</button>
@@ -43,6 +44,9 @@
             {% else %}
             <button type="button" class="btn btn-primary mb-3" name="" data-item="{{ server.pk }}"
                 data-name='Bump Button'>Bump this server</button>
+            {% endif %}
+            {% else %}
+            <button type="button" class="btn btn-primary mb-3" name="" disabled>Log in to bump server</button>
             {% endif %}
             <p class="text-light">{{ server.short_description|safe }}</p>
             <p class="text-light">{{ server.long_description|safe }}</p>

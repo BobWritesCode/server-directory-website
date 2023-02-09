@@ -38,6 +38,7 @@
                     <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
                     {% endfor %}
                 </p>
+                {% if user.is_authenticated %}
                 {% if item.id in bumps_queryset %}
                 <button type="button" class="btn btn-success" disabled name="" data-item="{{ item.pk }}"
                     data-name='Bump Button'>Already bumped!</button>
@@ -47,6 +48,9 @@
                 {% else %}
                 <button type="button" class="btn btn-primary" name="" data-item="{{ item.pk }}"
                     data-name='Bump Button'>Bump this server</button>
+                {% endif %}
+                {% else %}
+                <button type="button" class="btn btn-primary" name="" disabled>Login to bump server</button>
                 {% endif %}
             </div>
         </div>
