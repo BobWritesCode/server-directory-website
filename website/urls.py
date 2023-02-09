@@ -212,4 +212,10 @@ urlpatterns = [
         name='contact_us'
     ),
 
+    path(
+        'unauthorized',
+        views.unauthorized,
+        name='unauthorized'
+    ),
+
 ]

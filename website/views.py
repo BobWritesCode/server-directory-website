@@ -74,6 +74,10 @@ def contact_us(request):
     return render(request, "contact_us.html")
 
 
+def unauthorized(request):
+    return render(request, "unauthorized.html")
+
+
 @login_required
 @staff_member_required
 def staff_account(request):
@@ -174,8 +178,21 @@ def server_create(request):
 
 
 @login_required
-def server_edit(request, item_pk):
-    item = get_object_or_404(ServerListing, pk=item_pk)
+def server_edit(request: object, _pk: int):
+    """
+    Update listing.
+
+    Args:
+        request (object)
+        _pk (string): primary key for server that is being updated
+
+    Returns:
+        redirect (function): My account page
+        redirect (function): My account page
+        render (function): Loads html page
+
+    """
+    item = get_object_or_404(ServerListing, pk=_pk)
 
     query = Q(serverlisting=item)
     selected_tags = Tag.objects.filter(query)
@@ -196,39 +213,46 @@ def server_edit(request, item_pk):
                 return redirect("my-account")
 
         # If user is trying to update the listing
-        form = CreateServerListingForm(request.POST, instance=item)
+        form = CreateServerListingForm(request.POST)
         image_form = ImageForm(request.FILES)
 
         if form.is_valid() and image_form.is_valid():
 
-            if request.FILES:
+            image = Images.objects.filter(listing_id = _pk).first()
+            if image is not None and request.FILES:
+                # Delete old image from Cloudinary server
+                uploader.destroy(image.public_id)
+                # Upload new imaged
+                new_image = uploader.upload(request.FILES['image'])
 
-                image = Images.objects.filter(listing_id = item_pk).first()
+            if image is None and request.FILES:
+                # Upload new imaged
+                new_image = uploader.upload(request.FILES['image'])
+                image = image_form.instance
+                image.user = request.user
+                image.listing = get_object_or_404(ServerListing, pk=form.instance.id)
 
-                if image is not None:
-                    # Delete old image from Cloudinary server
-                    uploader.destroy(image.public_id)
-                    # Upload new imaged
-                    new_image = uploader.upload(request.FILES['image'])
-                else:
-                    # Upload new imaged
-                    new_image = uploader.upload(request.FILES['image'])
-                    image = image_form.instance
-                    image.user = request.user
-                    image.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+            image.date_added = date.today()
+            image.status = 0
+            image.reviewed_by = None
+            image.image = new_image['url']
+            image.public_id = new_image['public_id']
+            image.approved_by = None
+            image.save()
 
-                image.date_added = date.today()
-                image.status = 0
-                image.reviewed_by = None
-                image.image = new_image['url']
-                image.public_id = new_image['public_id']
-                image.approved_by = None
-                image.save()
+        # Get tags selected from the form
+        query = Q(id__in=form.cleaned_data["tags"])
+        tags = Tag.objects.filter(query).all()
 
+        item.title = form.data['title']
+        item.tags.set(tags)
+        item.short_description = form.data['short_description']
+        item.long_description = form.data['long_description']
+        item.status = form.data['status']
+        item.discord = form.data['discord']
+        item.save()
 
-            form.save()
-
-            return redirect("my-account")
+        return redirect("my-account")
 
     # Set status text based on image.status.
     try:
