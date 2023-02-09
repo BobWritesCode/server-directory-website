@@ -28,7 +28,8 @@ window.addEventListener("DOMContentLoaded", function() {
 
     dropDownGame.on("input", function(e) {
         $('#tags-multiple').val(null)
-            .trigger('change');
+            .trigger('change')
+            .html("");
         if (dropDownGame.val() == 0) {
             $("#tags-multiple").select2({
                 placeholder: "Choose game first"})
