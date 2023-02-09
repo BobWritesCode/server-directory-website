@@ -123,7 +123,7 @@ urlpatterns = [
     ),
 
     path(
-        'server_edit/<item_pk>',
+        'server_edit/<_pk>',
         views.server_edit,
         name='server_edit'
     ),
