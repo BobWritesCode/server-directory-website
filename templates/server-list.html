@@ -33,7 +33,7 @@
                 <p class="text-light">{{ item.short_description|safe }}</p>
                 <p class="text-light">Tags:
                     {% for tag in item.tags.all %}
-                    <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
+                    <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
                     {% endfor %}
                 </p>
                 {% if item.id in bumps_queryset %}
