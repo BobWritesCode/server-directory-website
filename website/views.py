@@ -801,14 +801,15 @@ def call_server(request):
 
 @staff_member_required
 @login_required
-def ban_user(request, _id: int):
+def ban_user(request: object, _id: int):
     """
     Bans user and prevents user login, rejects all images for deletion, unpublish listings.
 
     Args:
+        request (object): request received from user
         _id (int): user id to ban
     """
-    # Set user to is banned.
+    # Get target user.
     user = get_object_or_404(CustomUser, id=_id)
 
     # Delete all current user sessions (in case logged in on multiple devices)
@@ -826,6 +827,25 @@ def ban_user(request, _id: int):
     image_expire = date.today() + timedelta(days = DAYS_TO_EXPIRE_IMAGE)
     Images.objects.filter(query).update(status = 3, expiry = image_expire)
 
+
+@staff_member_required
+@login_required
+def unban_user(request: object, _id: int):
+    """
+    Unbans target user.
+
+    Args:
+        request (object): request received from user
+        _id (int): user id to ban
+    """
+    # Get target user.
+    user = get_object_or_404(CustomUser, id=_id)
+    user.is_banned = False
+    user.save()
+
+    # Un-expire all images
+    query = Q(user_id = _id)
+    Images.objects.filter(query).update(status = 0, expiry = None)
 
 def login_view(request):
 
@@ -1180,17 +1200,22 @@ def staff_user_management_user(request: object, _id: int):
             ban_user(request, _id)
             return redirect("staff_user_management_user", _id=request.POST['id'])
 
+        elif "unban" in request.POST:
+            _id = request.POST['id']
+            unban_user(request, _id)
+            return redirect("staff_user_management_user", _id=request.POST['id'])
+
         elif "delete_listing_confirm" in request.POST:
             # Let's see if the user is trying to delete the listing.
             if request.POST["delete_listing_confirm"] == "delete":
                 item = get_object_or_404(ServerListing, id=request.POST['id'])
                 item.delete()
-                return redirect("staff_user_management_user", _id=request.POST['user_id'])
+                return redirect("staff_user_management_user", _id=request.POST['id'])
 
         else:
             form = UserForm(request.POST)
             update_user(form)
-            return HttpResponse('Data Saved!')
+            return redirect("staff_user_management_user", _id=request.POST['id'])
 
     # Get images for server listings
     # Makes sure they are status 1: approved.

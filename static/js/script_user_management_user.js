@@ -9,6 +9,7 @@ const banForm =$('#user-ban-form')
 const btnUpdate = $('button[name="user_management_save"]');
 const btnDelete = $('button[name="btnDelete"]');
 const btnBan = $('button[name="user_management_ban"]');
+const btnUnban = $('#btnUnban');
 
 const btnDeleteConfirm = userDeleteForm.find('button[name="user-delete-confirm"]');
 const btnListingDeleteConfirm = listingDeleteForm.find('button[name="listing-delete-confirm"]');
@@ -23,6 +24,16 @@ window.addEventListener("DOMContentLoaded", function() {
         if ($(this).attr("data-item")) {
             lastDeleteBtnID = $(this).attr("data-item");
         }
+    });
+    btnUnban.on("click", function(e) {
+        e.preventDefault()
+        console.log("pressed");
+        let input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "unban")
+            .val(true);
+        form.append(input).append(input).submit();
+
     });
     btnUpdate.on("click", function(e) {
         e.preventDefault()
