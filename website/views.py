@@ -219,7 +219,6 @@ def server_edit(request: object, _pk: int):
         # If user is trying to update the listing
         form = CreateServerListingForm(request.POST)
         image_form = ImageForm(request.FILES)
-
         if form.is_valid() and image_form.is_valid():
 
             image = Images.objects.filter(listing_id = _pk).first()
@@ -234,7 +233,7 @@ def server_edit(request: object, _pk: int):
                 new_image = uploader.upload(request.FILES['image'])
                 image = image_form.instance
                 image.user = request.user
-                image.listing = get_object_or_404(ServerListing, pk=form.instance.id)
+                image.listing = get_object_or_404(ServerListing, pk=_pk)
 
             image.date_added = date.today()
             image.status = 0
@@ -256,7 +255,7 @@ def server_edit(request: object, _pk: int):
         item.discord = form.data['discord']
         item.save()
 
-        return redirect("my-account")
+        # return redirect("my-account")
 
     # Set status text based on image.status.
     try:
