@@ -187,12 +187,16 @@ def server_edit(request: object, _pk: int):
         _pk (string): primary key for server that is being updated
 
     Returns:
+        redirect (function): Unauthorized page
         redirect (function): My account page
         redirect (function): My account page
         render (function): Loads html page
 
     """
     item = get_object_or_404(ServerListing, pk=_pk)
+
+    if (item.owner != request.user and not request.user.is_staff):
+        return redirect("unauthorized")
 
     query = Q(serverlisting=item)
     selected_tags = Tag.objects.filter(query)
