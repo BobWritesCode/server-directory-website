@@ -27,6 +27,7 @@
                 {% else %}
                 <button type="button" id="btnBan" class="col btn btn-dark" data-toggle="modal" data-target="#user-ban-modal" data-bs-toggle="tooltip" title="Ban user"><i class="bi bi-slash-circle"></i></button>
                 {% endif %}
+                <button type="button" id="btnVerify" class="col btn btn-dark" data-toggle="modal" data-target="#user-verify-modal" data-bs-toggle="tooltip" title="Send verification email"><i class="bi bi-envelope-exclamation"></i></button>
                 <button type="button" id="btnDelete" class="col btn btn-dark" data-toggle="modal" data-target="#user-delete-modal" data-bs-toggle="tooltip" title="Delete user"><i class="bi bi-trash"></i></button>
             </div>
         </form>
@@ -131,7 +132,27 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
         </div>
     </div>
 </div>
-
+<!-- user Verify Confirm Modal -->
+<div class="modal fade text-dark" id="user-verify-modal" tabindex="-1" role="dialog" aria-labelledby="User Verify Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-light" id="modal-title">Verify Confirmation</h5>
+            </div>
+            <form method="post" id="user-verify-form" name="email-verify">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Please confirm you wish to send user verification email.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" name="user-verify-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- user Ban Modal -->
 <div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="User Ban Modal"
     aria-hidden="true">

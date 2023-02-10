@@ -429,8 +429,7 @@ def sign_up_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.save()
-            _email = form.cleaned_data.get('email')
-            send_email_verification(request, user, _email)
+            send_email_verification(request, user)
             return redirect('signup_verify_email')
     else:
         form = SignupForm()
@@ -585,9 +584,13 @@ def server_detail(request, slug):
     )
 
 
-def send_email_verification(request, user, _email):
+def send_email_verification(request: object, user: object):
     '''
-    Send email address verification to user
+    Send email address verification to user.
+
+    Parameters:
+        request (object): The server request.
+        user (object): Target user model object
     '''
     current_site = get_current_site(request)
     mail_subject = 'Verify your email address.'
@@ -603,7 +606,7 @@ def send_email_verification(request, user, _email):
         subject=mail_subject,
         message=message,
         from_email='contact@warwickhart.com',
-        recipient_list=[_email]
+        recipient_list=[user.email]
     )
 
 
@@ -1187,7 +1190,6 @@ def staff_user_management_user(request: object, _id: int):
     user = get_object_or_404(CustomUser, id=_id)
     server_listings = ServerListing.objects.filter(
         owner=user.id).order_by('-created_on')
-
     if request.method == "POST":
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
@@ -1211,6 +1213,11 @@ def staff_user_management_user(request: object, _id: int):
                 item = get_object_or_404(ServerListing, id=request.POST['id'])
                 item.delete()
                 return redirect("staff_user_management_user", _id=request.POST['id'])
+
+        elif "email-verify" in request.POST:
+            # Send email verification to the user
+            send_email_verification(request, user)
+            return redirect("staff_user_management_user", _id=request.POST['id'])
 
         else:
             form = UserForm(request.POST)
@@ -1384,6 +1391,6 @@ def update_email(request, _obj):
             return { 'result': False, 'reason': "Email address already taken"}
 
     # Send verification email to the user.
-    send_email_verification(request, user, _obj['email1'])
+    send_email_verification(request, user)
 
     return { 'result': True, 'reason': ""}

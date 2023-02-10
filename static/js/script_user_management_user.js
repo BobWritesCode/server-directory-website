@@ -5,6 +5,7 @@ const form = $('#update-user-form');
 const userDeleteForm = $("#user-delete-form")
 const listingDeleteForm = $("#listing-delete-form")
 const banForm =$('#user-ban-form')
+const verifyForm =$('#user-ban-form')
 
 const btnUpdate = $('button[name="user_management_save"]');
 const btnDelete = $('button[name="btnDelete"]');
@@ -14,6 +15,7 @@ const btnUnban = $('#btnUnban');
 const btnDeleteConfirm = userDeleteForm.find('button[name="user-delete-confirm"]');
 const btnListingDeleteConfirm = listingDeleteForm.find('button[name="listing-delete-confirm"]');
 const btnBanConfirm = banForm.find('button[name="user-ban-confirm"]');
+const btnVerifyConfirm =$('button[name="user-verify-confirm"]')
 
 let lastDeleteBtnID = null
 
@@ -27,12 +29,21 @@ window.addEventListener("DOMContentLoaded", function() {
     });
     btnUnban.on("click", function(e) {
         e.preventDefault()
-        console.log("pressed");
         let input = $("<input>")
             .attr("type", "hidden")
             .attr("name", "unban")
             .val(true);
-        form.append(input).append(input).submit();
+        form.append(input).submit();
+
+    });
+    btnVerifyConfirm.on("click", function(e) {
+        e.preventDefault()
+
+        let input = $("<input>")
+            .attr("type", "hidden")
+            .attr("name", "email-verify")
+            .val(true);
+        form.append(input).submit();
 
     });
     btnUpdate.on("click", function(e) {
