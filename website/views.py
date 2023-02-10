@@ -183,7 +183,7 @@ def server_edit(request: object, _pk: int):
     Update listing.
 
     Args:
-        request (object)
+        request (object): GET/POST request from user.
         _pk (string): primary key for server that is being updated
 
     Returns:
@@ -302,7 +302,24 @@ def server_delete(request, item_pk):
 
 
 @login_required
-def my_account(request):
+def my_account(request: object):
+    """
+    My account view.
+
+    Decorator:
+        @login_required
+
+    Args:
+        request (object): GET/POST request from user.
+        _pk (string): primary key for server that is being updated
+
+    Returns:
+        redirect (function): Unauthorized page
+        redirect (function): My account page
+        redirect (function): My account page
+        render (function): Loads html page
+
+    """
 
     if request.method == 'POST':
 
@@ -377,6 +394,8 @@ def my_account(request):
         finally:
             server_listings[index].image_url = image
             server_listings[index].image_status = status
+
+        server_listings[index].bump_count = server_listings[index].bumpCount()
 
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
@@ -1423,7 +1442,7 @@ def update_email(request, _obj):
     Update user email after checking it conforms.
 
     Args:
-        request (object)
+        request (object): GET/POST request from user.
         _obj (string): username given
 
     Returns:
