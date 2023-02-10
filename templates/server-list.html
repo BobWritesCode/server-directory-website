@@ -33,14 +33,14 @@
                 <a href="{% url 'server_detail' item.slug %}" class="text-decoration-none">
                     <h5 class="text-light">{{ item.title }}</h5>
                 </a>
-                <!-- Listing short decryption -->
-                <p class="text-light">{{ item.short_description|safe }}</p>
                 <!-- Listing tags -->
-                <p class="text-light">Tags:
+                <p>
                     {% for tag in item.tags.all %}
-                    <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
+                    <span class="badge rounded-pill bg-info text-dark"><i class="bi bi-tag"></i>{{ tag }}</span>
                     {% endfor %}
                 </p>
+                <!-- Listing short decryption -->
+                <p class="text-light">{{ item.short_description|safe }}</p>
                 <!-- Listing bump counter and bump button -->
                 <div class="d-flex position-absolute bottom-0 end-0">
                     <p class="mb-0 align-self-center me-1">{{item.bump_count}}</p>
@@ -66,17 +66,27 @@
     </div>
     <!-- Sidebar -->
     <div class="col-4 bg-3 me-0 text-light ps-3 pt-3">
-        <h3>Filter search</h3>
-        <h4>Tag selected</h4>
-        {% for selected_tag in selected_tags %}
-        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'R%'|add:selected_tag|add:tag_string %}"
-            role="button">{{ selected_tag }}</a>
-        {% endfor %}
-        <h4>Select Tags</h4>
-        {% for tag in tags %}
-        <a class="btn btn-primary m-1" href="{% url 'server-list-wth-tags' slug 'A%'|add:tag.name|add:tag_string %}"
-            role="button">{{ tag.name }}</a>
-        {% endfor %}
+        <h3 class="mb-3">Filter search</h3>
+        <hr class="border border-light border-2 opacity-75 mt-0 ms-2 me-3">
+        <div class="mb-3">
+            <h5>Tags selected:</h5>
+            {% if selected_tags|length == 0 %}
+            <p>None</p>
+            {% endif %}
+            {% for selected_tag in selected_tags %}
+            <a class="btn btn-info m-1" href="{% url 'server-list-wth-tags' slug 'R%'|add:selected_tag|add:tag_string %}"
+                role="button">{{ selected_tag }} <i class="bi bi-x"></i></a>
+            {% endfor %}
+        </div>
+        <hr class="border border-light border-2 opacity-75 mt-0 ms-3 me-3">
+        <div>
+            <h5>Tags to choose from:</h5>
+            {% for tag in tags %}
+            <a class="btn btn-info m-1" href="{% url 'server-list-wth-tags' slug 'A%'|add:tag.name|add:tag_string %}"
+                role="button">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+
     </div>
 </div>
 {%endblock%}

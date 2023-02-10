@@ -9,7 +9,7 @@
         <!-- Page header -->
         <h2 class="text-light text-center m-5">{{ server.title }}</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
-            <p class="text-light">{{ server.game }}</p>
+            <p class="text-light text-center">{{ server.game }}</p>
             <!-- Image -->
             <div class="col-12 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
                 {% if images.0.image %}
@@ -23,35 +23,44 @@
                 </div>
                 {% endif %}
             </div>
-            <!-- Tags -->
-            <p class="text-light mb-3">Tags:
+            <!-- Listing tags -->
+            <p>
                 {% for tag in server.tags.all %}
-                <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
+                <span class="badge rounded-pill bg-info text-dark"><i class="bi bi-tag"></i>{{ tag }}</span>
                 {% endfor %}
             </p>
+            <!-- Bumps -->
+            <div class="d-flex mb-3">
+                {% if user.is_authenticated %}
+                {% if server.id in bumps_queryset %}
+                <button type="button" class="btn btn-light" data-item="{{ server.pk }}"
+                    data-name='Bump Button' data-bs-toggle="tooltip" title="Bumped!"><i class="fa-solid fa-hand-fist"></i></button>
+                {% elif bumps_queryset|length > 4 %}
+                <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
+                    data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
+                {% else %}
+                <button type="button" class="btn btn-dark" data-item="{{ server.pk }}"
+                    data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
+                {% endif %}
+                {% else %}
+                <button type="button" class="btn btn-dangeropacity-50" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
+                {% endif %}
+                <p class="mb-0 align-self-center ms-1">{{server.bump_count}}</p>
+            </div>
+
+            <div class="d-flex border rounded">
+                <a class="btn btn-dark text-light w-100" href="https://discord.com/invite/{{ server.discord }}"
+                target="_blank" data-bs-toggle="tooltip" title="Join the discord."><i class="fab fa-discord"></i> Discord</a>
+                {% if server.tiktok%}
+                <a class="btn btn-dark text-light w-100" href="https://www.tiktok.com/{{ server.tiktok }}"
+                target="_blank" data-bs-toggle="tooltip" title="Check out the TikTok." disabled><i class="bi bi-tiktok"></i> TikTok</a>
+                {% endif %}
+            </div>
             <!-- Discord button -->
-            <a class="btn btn-discord text-light mb-3" href="https://discord.com/invite/{{ server.discord }}"
-                target="_blank" title="Link to discord server"><i class="fab fa-discord"></i> Join the discord
-                server</a>
-            <!-- Bump -->
+
+
                 <!-- Listing bump counter and bump button -->
-                <div class="d-flex">
-                    <p class="mb-0 align-self-center me-1">{{server.bump_count}}</p>
-                    {% if user.is_authenticated %}
-                    {% if server.id in bumps_queryset %}
-                    <button type="button" class="btn btn-light" data-item="{{ server.pk }}"
-                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bumped!"><i class="fa-solid fa-hand-fist"></i></button>
-                    {% elif bumps_queryset|length > 4 %}
-                    <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
-                        data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
-                    {% else %}
-                    <button type="button" class="btn btn-dark" data-item="{{ server.pk }}"
-                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
-                    {% endif %}
-                    {% else %}
-                    <button type="button" class="btn btn-dangeropacity-50" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
-                    {% endif %}
-                </div>
+
             <!-- Short description -->
             <p class="text-light">{{ server.short_description|safe }}</p>
             <!-- Long description -->

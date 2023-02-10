@@ -39,8 +39,9 @@
             </select>
             {{ form.short_description | as_crispy_field}}
             {{ form.long_description | as_crispy_field}}
-            {{ form.status | as_crispy_field}}
             {{ form.discord | as_crispy_field}}
+            {{ form.tiktok | as_crispy_field}}
+            {{ form.status | as_crispy_field}}
             <div class="d-flex mb-3 border rounded">
                 <button type="submit" class="btn btn-dark" aria-label="Save" data-bs-toggle="tooltip" title="Save"><i class="bi bi-save"></i></button>
                 <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#server-listing-delete-modal" aria-label="Delete" data-bs-toggle="tooltip" title="Delete">

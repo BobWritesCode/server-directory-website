@@ -132,7 +132,16 @@ def staff_image_review(request, item_pk: int = None):
 
 
 @login_required
-def server_create(request):
+def server_create(request: object):
+    """
+    Update listing.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
 
     if request.method == 'POST':
 
@@ -219,6 +228,8 @@ def server_edit(request: object, _pk: int):
         # If user is trying to update the listing
         form = CreateServerListingForm(request.POST)
         image_form = ImageForm(request.FILES)
+        print(form.errors)
+        print(image_form.errors)
         if form.is_valid() and image_form.is_valid():
 
             image = Images.objects.filter(listing_id = _pk).first()
@@ -245,19 +256,18 @@ def server_edit(request: object, _pk: int):
                 image.approved_by = None
                 image.save()
 
-        # Get tags selected from the form
-        query = Q(id__in=form.cleaned_data["tags"])
-        tags = Tag.objects.filter(query).all()
+            # Get tags selected from the form
+            query = Q(id__in=form.cleaned_data["tags"])
+            tags = Tag.objects.filter(query).all()
 
-        item.title = form.data['title']
-        item.tags.set(tags)
-        item.short_description = form.data['short_description']
-        item.long_description = form.data['long_description']
-        item.status = form.data['status']
-        item.discord = form.data['discord']
-        item.save()
-
-        # return redirect("my-account")
+            item.title = form.data['title']
+            item.tags.set(tags)
+            item.short_description = form.data['short_description']
+            item.long_description = form.data['long_description']
+            item.status = form.data['status']
+            item.discord = form.data['discord']
+            item.tiktok = form.data['tiktok']
+            item.save()
 
     # Set status text based on image.status.
     try:
@@ -1392,11 +1402,11 @@ def demote_user_from_staff(request: object, target_id: int):
 
 def update_user(_form: dict):
     """
-    Updates user to database.
+    Updates target user from form
 
-    Parameters:
-        request : object
-        form : dict
+    Args:
+        request (object): GET/POST request from user.
+        email (string): username given
     """
     # Get correct user from database
     user = get_object_or_404(CustomUser, pk=_form["id"])

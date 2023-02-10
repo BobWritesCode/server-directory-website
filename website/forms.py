@@ -172,11 +172,18 @@ class CreateServerListingForm(forms.ModelForm):
         required=True,
     )
 
+    tiktok = forms.CharField(
+        label="Tiktok profile link:",
+        max_length=20,
+        required=False,
+    )
+
     class Meta:
         model = ServerListing
         fields = [
             'game', 'tags', 'title', 'short_description',
-            'long_description', 'status', 'discord', 'logo'
+            'long_description', 'status', 'discord', 'logo',
+            'tiktok'
         ]
 
     def __init__(self, *args, **kwargs):
@@ -193,6 +200,7 @@ class CreateServerListingForm(forms.ModelForm):
                 'short_description',
                 'long_description',
                 'discord',
+                'tiktok',
                 'status',
             ),
             Submit('submit', 'Submit', css_class='btn btn-primary'),
