@@ -28,10 +28,12 @@
                 <button type="button" id="btnBan" class="col btn btn-dark" data-toggle="modal" data-target="#user-ban-modal" data-bs-toggle="tooltip" title="Ban user"><i class="bi bi-slash-circle"></i></button>
                 {% endif %}
                 <button type="button" id="btnVerify" class="col btn btn-dark" data-toggle="modal" data-target="#user-verify-modal" data-bs-toggle="tooltip" title="Send verification email"><i class="bi bi-envelope-exclamation"></i></button>
+                {% if user.is_superuser %}
                 {% if form.is_staff.value == 0 %}
                 <button type="button" id="btnPromote" class="col btn btn-dark" data-toggle="modal" data-target="#user-promote-modal" data-bs-toggle="tooltip" title="Assign as a staff member"><i class="bi bi-award"></i></button>
                 {% else %}
                 <button type="button" id="btnDemote" class="col btn btn-dark" data-toggle="modal" data-target="#user-demote-modal" data-bs-toggle="tooltip" title="Resign as a staff member"><i class="bi bi-award-fill"></i></button>
+                {% endif %}
                 {% endif %}
                 <button type="button" id="btnDelete" class="col btn btn-dark" data-toggle="modal" data-target="#user-delete-modal" data-bs-toggle="tooltip" title="Delete user"><i class="bi bi-trash"></i></button>
             </div>
