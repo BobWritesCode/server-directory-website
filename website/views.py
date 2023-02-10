@@ -1254,7 +1254,6 @@ def staff_user_management_search(request: object):
 def staff_user_management_user(request: object, _id: int):
     """
     request.GET: Loads html page using render().
-
     request.POST: Processes adding, updating and deleting user.
 
     Args:
@@ -1308,6 +1307,7 @@ def staff_user_management_user(request: object, _id: int):
     images_queryset = Images.objects.filter(query).distinct()
 
     # Pair images with server listing
+    # And add bump count.
     for index, value in enumerate(server_listings):
         # try to pair image with server listing, if image not available or does not
         # exist then set as None so a placeholder can be shown instead.
@@ -1330,6 +1330,9 @@ def staff_user_management_user(request: object, _id: int):
         finally:
             server_listings[index].image_url = image
             server_listings[index].image_status = status
+
+        # Adding bump count
+        server_listings[index].bump_count = server_listings[index].bumpCount()
 
     # Render page
     return render(

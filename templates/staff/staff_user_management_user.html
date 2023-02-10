@@ -72,8 +72,15 @@
                     </p>
                     <p class="text-light">{{ listing.short_description|safe }}</p>
                     <div class="d-flex border rounded position-absolute bottom-0 end-0">
+                        <!-- Bumps -->
+                        <div class="btn btn-dark cursor-pointer m-6" style='cursor: default;' data-bs-toggle="tooltip" title="Active bumps">
+                            <i class="fa-solid fa-hand-fist"></i> {{ listing.bump_count }}
+                        </div>
+                        <!-- Button: View listing -->
                         <a href="{% url 'server_detail' listing.slug %}" class="btn btn-dark" data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
+                        <!-- Button: Edit listing -->
                         <a href="/server_edit/{{listing.pk}}" class="btn btn-dark" data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
+                        <!-- Button: Delete listing -->
                         <button type="button" class="btn btn-dark" data-item="{{listing.pk}}" data-toggle="modal" data-target="#listing-delete-modal"  data-bs-toggle="tooltip" title="Delete Listing">
                             <i class="bi bi-trash"></i></button>
                     </div>
