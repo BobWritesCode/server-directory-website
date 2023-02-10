@@ -1414,7 +1414,6 @@ def update_user(_form: dict):
     user.username = _form["username"]
     user.first_name = _form["first_name"]
     user.email = _form["email"]
-    user.is_staff = _form["is_staff"]
     user.is_active = _form["is_active"]
 
     # Save user object
