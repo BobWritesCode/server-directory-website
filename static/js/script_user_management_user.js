@@ -6,6 +6,8 @@ const userDeleteForm = $("#user-delete-form")
 const listingDeleteForm = $("#listing-delete-form")
 const banForm =$('#user-ban-form')
 const verifyForm =$('#user-ban-form')
+const promoteForm =$('#user-promote-form')
+const demoteForm =$('#user-demote-form')
 
 const btnUpdate = $('button[name="user_management_save"]');
 const btnDelete = $('button[name="btnDelete"]');
@@ -16,6 +18,9 @@ const btnDeleteConfirm = userDeleteForm.find('button[name="user-delete-confirm"]
 const btnListingDeleteConfirm = listingDeleteForm.find('button[name="listing-delete-confirm"]');
 const btnBanConfirm = banForm.find('button[name="user-ban-confirm"]');
 const btnVerifyConfirm =$('button[name="user-verify-confirm"]')
+const btnPromoteConfirm = promoteForm.find('button[name="user-promote-confirm"]')
+const btnDemoteConfirm = demoteForm.find('button[name="user-demote-confirm"]')
+
 
 let lastDeleteBtnID = null
 
@@ -27,6 +32,7 @@ window.addEventListener("DOMContentLoaded", function() {
             lastDeleteBtnID = $(this).attr("data-item");
         }
     });
+
     btnUnban.on("click", function(e) {
         e.preventDefault()
         let input = $("<input>")
@@ -34,18 +40,17 @@ window.addEventListener("DOMContentLoaded", function() {
             .attr("name", "unban")
             .val(true);
         form.append(input).submit();
-
     });
+
     btnVerifyConfirm.on("click", function(e) {
         e.preventDefault()
-
         let input = $("<input>")
             .attr("type", "hidden")
             .attr("name", "email-verify")
             .val(true);
         form.append(input).submit();
-
     });
+
     btnUpdate.on("click", function(e) {
         e.preventDefault()
         $(".error-message").remove();
@@ -63,13 +68,21 @@ window.addEventListener("DOMContentLoaded", function() {
         }
     });
     btnListingDeleteConfirm.on("click", function(e) {
-        ListingDeleteConfirm()
+        ListingDeleteConfirm();
     });
     btnDeleteConfirm.on("click", function(e) {
-        UserDeleteConfirm()
+        UserDeleteConfirm();
     });
     btnBanConfirm.on("click", function(e) {
-        UserBanConfirm()
+        UserBanConfirm();
+    });
+    btnPromoteConfirm.on("click", function(e) {
+        e.preventDefault()
+        promoteUserToStaff();
+    });
+    btnDemoteConfirm.on("click", function(e) {
+        e.preventDefault()
+        demoteUserFromStaff();
     });
 });
 
@@ -169,6 +182,30 @@ function UserDeleteConfirm() {
         userDeleteForm.append(input);
         userDeleteForm.submit();
     }
+}
+
+/**
+ * Promotes user to staff member.
+ */
+function promoteUserToStaff() {
+    let input = $("<input>")
+        .attr("type", "hidden")
+        .attr("name", "promote")
+        .val(true);
+    form.append(input);
+    form.submit();
+}
+
+/**
+ * Promotes user to staff member.
+ */
+function demoteUserFromStaff() {
+    let input = $("<input>")
+        .attr("type", "hidden")
+        .attr("name", "demote")
+        .val(true);
+    form.append(input);
+    form.submit();
 }
 
 /**

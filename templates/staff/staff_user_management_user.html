@@ -28,6 +28,11 @@
                 <button type="button" id="btnBan" class="col btn btn-dark" data-toggle="modal" data-target="#user-ban-modal" data-bs-toggle="tooltip" title="Ban user"><i class="bi bi-slash-circle"></i></button>
                 {% endif %}
                 <button type="button" id="btnVerify" class="col btn btn-dark" data-toggle="modal" data-target="#user-verify-modal" data-bs-toggle="tooltip" title="Send verification email"><i class="bi bi-envelope-exclamation"></i></button>
+                {% if form.is_staff.value == 0 %}
+                <button type="button" id="btnPromote" class="col btn btn-dark" data-toggle="modal" data-target="#user-promote-modal" data-bs-toggle="tooltip" title="Assign as a staff member"><i class="bi bi-award"></i></button>
+                {% else %}
+                <button type="button" id="btnDemote" class="col btn btn-dark" data-toggle="modal" data-target="#user-demote-modal" data-bs-toggle="tooltip" title="Resign as a staff member"><i class="bi bi-award-fill"></i></button>
+                {% endif %}
                 <button type="button" id="btnDelete" class="col btn btn-dark" data-toggle="modal" data-target="#user-delete-modal" data-bs-toggle="tooltip" title="Delete user"><i class="bi bi-trash"></i></button>
             </div>
         </form>
@@ -154,6 +159,48 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" name="user-verify-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- user Promote Confirm Modal -->
+<div class="modal fade text-dark" id="user-promote-modal" tabindex="-1" role="dialog" aria-labelledby="User Promote Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title text-dark" id="modal-title">Promote Confirmation</h5>
+            </div>
+            <form method="post" id="user-promote-form" name="email-promote">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Please confirm you wish to assign this user as a staff member.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" name="user-promote-confirm">Confirm</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- user Demote Confirm Modal -->
+<div class="modal fade text-dark" id="user-demote-modal" tabindex="-1" role="dialog" aria-labelledby="User Demote Modal"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title text-dark" id="modal-title">Demote Confirmation</h5>
+            </div>
+            <form method="post" id="user-demote-form" name="email-demote">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <p>Please confirm you wish to resign user as a staff member.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" name="user-demote-confirm">Confirm</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>

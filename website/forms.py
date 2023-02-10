@@ -22,7 +22,7 @@ class UserForm(forms.ModelForm):
     first_name = forms.CharField(label="First name", max_length=20)
     email = forms.EmailField(label="Email", required=True)
     email_verified = forms.BooleanField(label="Email verified?", disabled=True)
-    is_staff = forms.BooleanField(label="Is Staff?")
+    is_staff = forms.BooleanField(label="Is Staff?", disabled=True)
     is_active = forms.BooleanField(label="Account Active?")
     is_banned = forms.BooleanField(label="Is Banned?", disabled=True)
 

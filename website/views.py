@@ -1295,6 +1295,14 @@ def staff_user_management_user(request: object, _id: int):
             send_email_verification(request, user)
             return redirect("staff_user_management_user", _id=request.POST['id'])
 
+        elif "promote" in request.POST:
+            promote_user_to_staff(request, request.POST['id'])
+            return redirect("staff_user_management_user", _id=request.POST['id'])
+
+        elif "demote" in request.POST:
+            demote_user_from_staff(request, request.POST['id'])
+            return redirect("staff_user_management_user", _id=request.POST['id'])
+
         else:
             form = UserForm(request.POST)
             update_user(form)
@@ -1345,13 +1353,50 @@ def staff_user_management_user(request: object, _id: int):
         },
     )
 
+
+def promote_user_to_staff(request: object, target_id: int):
+    """
+    Promotes target user to staff member
+
+    Args:
+        request (object): GET/POST request from user.
+        email (string): username given
+    """
+    # Check request user has correct level before proceeding
+    if request.user.is_superuser:
+        # Get target user object.
+        user = get_object_or_404(CustomUser, id=target_id)
+        # Change flag.
+        user.is_staff = True
+        # Save user.
+        user.save()
+
+
+def demote_user_from_staff(request: object, target_id: int):
+    """
+    Demote target user as staff member
+
+    Args:
+        request (object): GET/POST request from user.
+        email (string): username given
+    """
+    # Check request user has correct level before proceeding
+    if request.user.is_superuser:
+        # Get target user object.
+        user = get_object_or_404(CustomUser, id=target_id)
+        # Change flag.
+        user.is_staff = False
+        # Save user.
+        user.save()
+
+
 def update_user(_form: dict):
     """
     Updates user to database.
 
     Parameters:
-    request : object
-    form : dict
+        request : object
+        form : dict
     """
     # Get correct user from database
     user = get_object_or_404(CustomUser, pk=_form["id"])
