@@ -473,7 +473,7 @@ def server_listings(request, slug, tag_string=""):
     images_queryset = Images.objects.filter(query).distinct()
 
     # Get user bumps
-    bumps_queryset = get_user_bumps(request)
+    user_bumps_queryset = get_user_bumps(request)
 
     all_tags_for_game = []
     for x in tags:
@@ -534,7 +534,7 @@ def server_listings(request, slug, tag_string=""):
         "server-list.html",
         {
             "server_listings": listings_queryset,
-            "bumps_queryset": bumps_queryset,
+            "bumps_queryset": user_bumps_queryset,
             "selected_tags": selected_tags,
             "tags": tags,
             "tag_string": tag_string,
@@ -850,22 +850,38 @@ def unban_user(request: object, _id: int):
     query = Q(user_id = _id)
     Images.objects.filter(query).update(status = 0, expiry = None)
 
-def login_view(request):
+def login_view(request: object):
+    """
+    Login-view and process login.
+
+    Args:
+        request (object): request received from user.
+
+    Returns:
+        render(): Loads html page.
+    """
 
     error_message = None
 
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
+
+        # Check credentials are found and a match.
         user = authenticate(request, email=email, password=password)
-        if user.is_banned:
-            error_message = "This account is banned."
-            user = None
-        elif user is not None:
-            login(request, user)
-            return redirect("my-account")
-        else:
+
+
+        if user is None:
             error_message = "Either user does not exist or password does not match account."
+        else:
+            # Check if user is banned.
+            if user.is_banned:
+                error_message = "This account is banned."
+                user = None
+            # All being okay, log user in.
+            else:
+                login(request, user)
+                return redirect("my-account")
 
     form = LoginForm()
 
