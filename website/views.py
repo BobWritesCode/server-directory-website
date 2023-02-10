@@ -460,15 +460,27 @@ def activate(request, uidb64, token):
 
 
 def server_listings(request, slug, tag_string=""):
+    """
+    Update user email after checking it conforms.
+
+    Args:
+        request (object): GET/POST request from user.
+        slug (string): Keeps track of user's selected tags.
+        tag_string (string): Keeps track of user's selected tags.
+
+    Returns:
+        render(): Loads html page.
+
+    """
     game = get_object_or_404(Game, slug=slug)
     tags = game.tags.all()
 
     query = Q(status=1) & Q(game=game)
-    listings_queryset = ServerListing.objects.filter(query).distinct()
+    server_listings = ServerListing.objects.filter(query).distinct()
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
-    _list = [x[0] for x in listings_queryset.values_list('id')]
+    _list = [x[0] for x in server_listings.values_list('id')]
     query = Q(status=1) & Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
@@ -507,7 +519,7 @@ def server_listings(request, slug, tag_string=""):
 
         # Narrows server list down based on tags picked by user
         for value in selected_tags:
-            listings_queryset = listings_queryset.filter(tags__name=value)
+            server_listings = server_listings.filter(tags__name=value)
 
         # Use list comprehension to remove selected tags from all available tags
         tags = [x for x in game.tags.all() if x.name not in selected_tags]
@@ -518,22 +530,29 @@ def server_listings(request, slug, tag_string=""):
         # Get all available tags for game selected
         tags = game.tags.all()
 
-    # Pair images with server listing
-    for index, value in enumerate(listings_queryset):
+    # Now now longer required to to stay a queryset, convert to list
+    # and reorder by bump count.
+    server_listings = sorted(server_listings.all(), key=lambda a: a.bumpCount(), reverse=True)
+
+    # Pair images with server listing.
+    # And add bump count.
+    for index, value in enumerate(server_listings):
         # try to paid image with server listing, if image not available or does not
         # exist then set as None so a placeholder can be shown instead.
         try:
-            image = images_queryset.get(listing_id=listings_queryset[index].id).image
+            image = images_queryset.get(listing_id=server_listings[index].id).image
         except ObjectDoesNotExist:
             image = None
         finally:
-            listings_queryset[index].image_url = image
+            server_listings[index].image_url = image
+
+        server_listings[index].bump_count = server_listings[index].bumpCount()
 
     return render(
         request,
         "server-list.html",
         {
-            "server_listings": listings_queryset,
+            "server_listings": server_listings,
             "bumps_queryset": user_bumps_queryset,
             "selected_tags": selected_tags,
             "tags": tags,
@@ -548,11 +567,11 @@ def get_user_bumps(request):
     '''
     Returns a list of user's current bumps
 
-        Parameters:
-            request (Any): The server request
+    Parameters:
+        request (Any): The server request
 
-        Returns:
-            bumps_queryset (list): List of user's active bumps
+    Returns:
+        bumps_queryset (list): List of user's active bumps
     '''
     query = Q(user=request.user)
     bumps_queryset = Bumps.objects.filter(query).values_list('listing_id')
@@ -560,7 +579,17 @@ def get_user_bumps(request):
     return _list
 
 
-def server_detail(request, slug):
+def server_detail(request: object, slug: str):
+    """
+    Update user email after checking it conforms.
+
+    Args:
+        request (object): GET/POST request from user.
+        slug (str): Which game to load.
+
+    Returns:
+        render(): Loads html page.
+    """
 
     # Get correct listing, check if approved.
     queryset = ServerListing.objects.filter(status=1)
@@ -572,6 +601,8 @@ def server_detail(request, slug):
     # Get listing approved images.
     query = Q(status=1) & Q(listing_id=server.id)
     images = Images.objects.filter(query).distinct()
+
+    server.bump_count = server.bumpCount()
 
     return render(
         request,
@@ -589,7 +620,7 @@ def send_email_verification(request: object, user: object):
     Send email address verification to user.
 
     Parameters:
-        request (object): The server request.
+        request (object): GET/POST request from user.
         user (object): Target user model object
     '''
     current_site = get_current_site(request)
@@ -640,32 +671,43 @@ def email_check(request):
 def bump_server(request):
     '''
     Add 1 bump to server if already not bumped by user
+
+    Parameters:
+        request (object): GET/POST request from user.
+
+    Returns:
+        HttpResponse(json({}'result': number of bumps (int)})) (class)
     '''
     if request.method == 'POST':
 
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        content = body['server_id']
+        content = int(body['server_id'])
 
         # Get server listing object
         listing = get_object_or_404(ServerListing, id=content)
 
         # Get user bumps
         bumps_queryset = get_user_bumps(request)
-        bumps_queryset_len = len(bumps_queryset) + 1
 
-        # Check if this server already bumped by user
-        if (content in bumps_queryset):
+        # Check user does not already have active bump or listing
+        if content not in bumps_queryset:
+            # Add 1 to bump count for frontend
+            bumps_queryset_len = len(bumps_queryset) + 1
+
+            # Check if this server already bumped by user
+            if (content in bumps_queryset):
+                return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+
+            # Check user has not already bumped max server amount
+            if len(bumps_queryset) > 4:
+                return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+
+            # Create a row to table and save
+            bump = Bumps.objects.create(user=request.user, listing=listing )
+            bump.save()
             return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
-
-        # Check user has not already bumped max server amount
-        if len(bumps_queryset) > 4:
-            return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
-
-        # Create a row to table and save
-        bump = Bumps.objects.create(user=request.user, listing=listing )
-        bump.save()
-        return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+        return HttpResponse ( json.dumps({'result': int(len(bumps_queryset))}) )
 
 
 @staff_member_required
@@ -809,7 +851,7 @@ def ban_user(request: object, _id: int):
     Bans user and prevents user login, rejects all images for deletion, unpublish listings.
 
     Args:
-        request (object): request received from user
+        request (object): GET/POST request from user.
         _id (int): user id to ban
     """
     # Get target user.
@@ -838,7 +880,7 @@ def unban_user(request: object, _id: int):
     Unbans target user.
 
     Args:
-        request (object): request received from user
+        request (object): GET/POST request from user.
         _id (int): user id to ban
     """
     # Get target user.
@@ -855,7 +897,7 @@ def login_view(request: object):
     Login-view and process login.
 
     Args:
-        request (object): request received from user.
+        request (object): GET/POST request from user..
 
     Returns:
         render(): Loads html page.
@@ -904,7 +946,7 @@ def game_management(request: object):
     request.POST: Processes adding, updating and deleting games.
 
     Args:
-        request (object): request data received from POST
+        request (object): GET/POST request from user.
 
     Returns:
         render: Loads html page
@@ -1061,7 +1103,7 @@ def tag_management(request: object):
     request.POST: Processes adding, updating and deleting tags.
 
     Args:
-        request (object): request data received from POST
+        request (object): GET/POST request from user.
 
     Returns:
         render: Loads html page
@@ -1170,7 +1212,7 @@ def staff_user_management_search(request: object):
     request.POST: Processes updating and deleting user.
 
     Args:
-        request (object): request data received from POST
+        request (object): GET/POST request from user.
 
     Returns:
         render(): Loads html page
@@ -1197,7 +1239,7 @@ def staff_user_management_user(request: object, _id: int):
     request.POST: Processes adding, updating and deleting user.
 
     Args:
-        request (object): request data received
+        request (object): GET/POST request from user.
         _id (int): Received user ID
 
     Returns:

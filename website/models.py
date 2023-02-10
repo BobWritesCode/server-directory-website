@@ -66,6 +66,9 @@ class Game(models.Model):
 
 
 class ServerListing(models.Model):
+
+
+
     game = models.ForeignKey(
         Game, on_delete=models.CASCADE, related_name="ServerListing")
     owner = models.ForeignKey(
@@ -80,12 +83,16 @@ class ServerListing(models.Model):
     updated_on = models.DateTimeField(auto_now=True)
     discord = models.CharField(max_length=50)
     status = models.IntegerField(choices=STATUS, default=0)
+    bump_count = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['-created_on']
 
     def __str__(self):
         return self.title
+
+    def bumpCount(self):
+        return Bumps.objects.filter(listing=self.pk).count()
 
     def number_of_tags(self):
         return self.tags.count()

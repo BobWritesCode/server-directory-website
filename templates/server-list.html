@@ -14,7 +14,7 @@
         </div>
         {% for item in server_listings %}
         <div class="d-flex p-1 m-3 bg-1 rounded-3">
-            <!-- Thumbnail-->
+            <!-- Listing image-->
             <div class="col-3 p-1 position-relative overflow-hidden d-flex flex-wrap justify-content-center"
                 style="max-width: 100%; max-height: 25vh;">
                 {% if item.image_url %}
@@ -28,30 +28,38 @@
                 </div>
                 {% endif %}
             </div>
-            <div class="col-9 p-1">
+            <div class="col-9 p-1 position-relative">
+                <!-- Listing title -->
                 <a href="{% url 'server_detail' item.slug %}" class="text-decoration-none">
                     <h5 class="text-light">{{ item.title }}</h5>
                 </a>
+                <!-- Listing short decryption -->
                 <p class="text-light">{{ item.short_description|safe }}</p>
+                <!-- Listing tags -->
                 <p class="text-light">Tags:
                     {% for tag in item.tags.all %}
                     <span class="badge rounded-pill bg-info text-dark">{{ tag }}</span>
                     {% endfor %}
                 </p>
-                {% if user.is_authenticated %}
-                {% if item.id in bumps_queryset %}
-                <button type="button" class="btn btn-success" disabled name="" data-item="{{ item.pk }}"
-                    data-name='Bump Button'>Already bumped!</button>
-                {% elif bumps_queryset|length > 4 %}
-                <button type="button" class="btn btn-warning mb-3" disabled name="" data-item="{{ server.pk }}"
-                    data-name='Bump Button'>No more bumps!</button>
-                {% else %}
-                <button type="button" class="btn btn-primary" name="" data-item="{{ item.pk }}"
-                    data-name='Bump Button'>Bump this server</button>
-                {% endif %}
-                {% else %}
-                <button type="button" class="btn btn-primary" name="" disabled>Login to bump server</button>
-                {% endif %}
+                <!-- Listing bump counter and bump button -->
+                <div class="d-flex position-absolute bottom-0 end-0">
+                    <p class="mb-0 align-self-center me-1">{{item.bump_count}}</p>
+                    {% if user.is_authenticated %}
+                    {% if item.id in bumps_queryset %}
+                    <button type="button" class="btn btn-light" data-item="{{ item.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bumped!"><i class="fa-solid fa-hand-fist"></i></button>
+                    {% elif bumps_queryset|length > 4 %}
+                    <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
+                    {% else %}
+                    <button type="button" class="btn btn-dark" data-item="{{ item.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
+                    {% endif %}
+                    {% else %}
+                    <button type="button" class="btn btn-dangeropacity-50" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
+                    {% endif %}
+                </div>
+
             </div>
         </div>
         {% endfor %}

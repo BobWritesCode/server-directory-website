@@ -1,11 +1,8 @@
 {% extends "base.html" %}
-
 {% block head %}
 {% load static %}
 <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
 {% endblock head %}
-
-
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
     <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
@@ -13,7 +10,7 @@
         <h2 class="text-light text-center m-5">{{ server.title }}</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
             <p class="text-light">{{ server.game }}</p>
-            <!-- Thumbnail-->
+            <!-- Image -->
             <div class="col-12 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
                 {% if images.0.image %}
                 <img style="max-width: 100%; max-height: 50vh;" src=" {{ images.0.image }}"
@@ -26,29 +23,38 @@
                 </div>
                 {% endif %}
             </div>
+            <!-- Tags -->
             <p class="text-light mb-3">Tags:
                 {% for tag in server.tags.all %}
                 <span class="tag rounded-end text-light me-1 p-1">{{ tag }}</span>
                 {% endfor %}
             </p>
+            <!-- Discord button -->
             <a class="btn btn-discord text-light mb-3" href="https://discord.com/invite/{{ server.discord }}"
                 target="_blank" title="Link to discord server"><i class="fab fa-discord"></i> Join the discord
                 server</a>
-            {% if user.is_authenticated %}
-            {% if server.id in bumps_queryset %}
-            <button type="button" class="btn btn-success mb-3" disabled name="" data-item="{{ server.pk }}"
-                data-name='Bump Button'>Already bumped!</button>
-            {% elif bumps_queryset|length > 4 %}
-            <button type="button" class="btn btn-warning mb-3" disabled name="" data-item="{{ server.pk }}"
-                data-name='Bump Button'>No more bumps!</button>
-            {% else %}
-            <button type="button" class="btn btn-primary mb-3" name="" data-item="{{ server.pk }}"
-                data-name='Bump Button'>Bump this server</button>
-            {% endif %}
-            {% else %}
-            <button type="button" class="btn btn-primary mb-3" name="" disabled>Log in to bump server</button>
-            {% endif %}
+            <!-- Bump -->
+                <!-- Listing bump counter and bump button -->
+                <div class="d-flex">
+                    <p class="mb-0 align-self-center me-1">{{server.bump_count}}</p>
+                    {% if user.is_authenticated %}
+                    {% if server.id in bumps_queryset %}
+                    <button type="button" class="btn btn-light" data-item="{{ server.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bumped!"><i class="fa-solid fa-hand-fist"></i></button>
+                    {% elif bumps_queryset|length > 4 %}
+                    <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
+                    {% else %}
+                    <button type="button" class="btn btn-dark" data-item="{{ server.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
+                    {% endif %}
+                    {% else %}
+                    <button type="button" class="btn btn-dangeropacity-50" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
+                    {% endif %}
+                </div>
+            <!-- Short description -->
             <p class="text-light">{{ server.short_description|safe }}</p>
+            <!-- Long description -->
             <p class="text-light">{{ server.long_description|safe }}</p>
     </div>
 </div>

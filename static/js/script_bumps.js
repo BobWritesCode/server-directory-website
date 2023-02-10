@@ -2,8 +2,7 @@
 
 window.addEventListener("DOMContentLoaded", function() {
     $("button[data-name='Bump Button']").on("click", function() {
-        if ($(this).text() != "Bumped") {
-            $(this).text("Bumped")
+        if ($(this).hasClass('btn-dark')) {
             bump.call(this);
         }
     });
@@ -19,18 +18,19 @@ function bump() {
         // Change bump button to bumped and disable.
         if (data.result <= 5) {
             // Change button style and disable.
-            $(this).attr("disabled", true)
-                .removeClass('btn-primary')
-                .addClass('btn-success')
-                .text('BUMPED!')
+            $(this).removeClass('btn-dark').addClass('btn-light')
+                .attr('data-original-title', 'Bumped')
+                .tooltip("hide").tooltip("show");
+            let x = parseInt($(this).parent().find('p').text()) + 1;
+            $(this).parent().find('p').text(x)
         };
         // Disable remaining bump buttons if user used max bumps.
         if (data.result >= 5) {
-            $('html').find('.btn-primary[data-name="Bump Button"]')
-                .attr("disabled", true)
-                .removeClass('btn-primary')
-                .addClass('btn-warning')
-                .text('No more bumps!')
+            $('html').find('.btn-dark[data-name="Bump Button"]')
+                .removeClass('btn-dark')
+                .addClass('btn-danger')
+                .addClass('opacity-50')
+                .attr('data-original-title', 'Out of bumps');
         };
     });
 }
