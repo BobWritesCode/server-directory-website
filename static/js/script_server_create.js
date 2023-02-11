@@ -13,6 +13,10 @@ $(document).ready(function() {
         closeOnSelect: false,
         theme: "classic"})
         .prop("disabled", true);
+    $(('input[name="discord"]')).wrap("<div class='d-flex d-row'></div>");
+    $("<p class='mb-0 me-1 align-self-center'>www.discord.com/</p>").insertBefore('input[name="discord"]');
+    $(('input[name="tiktok"]')).wrap("<div class='d-flex d-row'></div>");
+    $("<p class='mb-0 me-1 align-self-center'>www.tiktok.com/@</p>").insertBefore('input[name="tiktok"]');
 });
 
 // Listeners
