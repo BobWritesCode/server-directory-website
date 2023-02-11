@@ -10,15 +10,21 @@
         <h3>Image approval</h3>
         <p>Image currently awaiting review: {{ img_need_review_count }}</p>
         {% if img_need_review_count > 0 %}
-        <a class="btn btn-primary mb-3" href="{% url 'staff_image_review' %}" aria-label="Link: Go to image review page.">Go to image review >></a>
+        <div class="d-flex mb-3 border rounded">
+            <a class="btn btn-dark w-100" href="{% url 'staff_image_review' %}" data-bs-toggle="tooltip" title="Image Review"><i class="bi bi-images"></i></a>
+        </div>
         {% else %}
-        <a class="btn btn-primary mb-3 disabled" href="{% url 'staff_image_review' %}" aria-label="Disabled link: Go to image review page.">Go to image review >></a>
+        <div class="d-flex mb-3 border rounded"  data-bs-toggle="tooltip" title="Image Review (Disabled)">
+            <a class="btn btn-dark disabled  w-100" href="{% url 'staff_image_review' %}"><i class="bi bi-images"></i></a>
+        </div>
         {% endif %}
         <hr class="border border-light border-3 opacity-75">
-        <h3>Management</h3>
-        <a class="btn btn-primary mb-3" href="{% url 'staff_user_management_search' %}" aria-label="Link: Go to user management page.">Manage Users</a>
-        <a class="btn btn-primary mb-3" href="{% url 'game_management' %}" aria-label="Link: Go to game management page.">Manage Games</a>
-        <a class="btn btn-primary mb-3" href="{% url 'tag_management' %}" aria-label="Link: Go to tag management page.">Manage Tags</a>
+        <h3 class="mb-3">Management</h3>
+        <div class="d-flex mb-3 border rounded">
+            <a class="btn btn-dark w-100" href="{% url 'staff_user_management_search' %}" data-bs-toggle="tooltip" title="Manage Users"><i class="bi bi-people"></i></a>
+            <a class="btn btn-dark w-100" href="{% url 'game_management' %}" data-bs-toggle="tooltip" title="Manage Games"><i class="bi bi-joystick"></i></a>
+            <a class="btn btn-dark w-100" href="{% url 'tag_management' %}" data-bs-toggle="tooltip" title="Manage Tags"><i class="bi bi-tags"></i></a>
+        </div>
     </div>
 </div>
 {% endblock %}
