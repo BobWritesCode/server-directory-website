@@ -152,7 +152,7 @@ function prepareFormForNewGame() {
     $('#form-header').text('Adding New Game');
     formInternalContainer.removeClass('d-none');
     form.find("#div_id_id").addClass("d-none");
-    btnSubmit.text("Add new game");
+    btnSubmit.html('<i class="bi bi-save"></i>');
     btnSubmit.prop("disabled", false);
     btnDeleteGame.addClass("d-none");
     btnDeleteGame.prop("disabled", true);
@@ -162,11 +162,11 @@ function prepareFormForNewGame() {
  * Prepare html form ready to update selected game
  */
 function prepareFormForUpdateGame() {
-    $('#form-header').text('Updating Game');
+    $('#form-header').text('Update Game');
     formInternalContainer.removeClass('d-none');
     form.find("#div_id_id").removeClass("d-none");
     form.find("#div_id_slug").removeClass("d-none");
-    btnSubmit.text("Save Changes");
+    btnSubmit.html('<i class="bi bi-save"></i>');
     btnSubmit.prop("disabled", false);
     btnDeleteGame.removeClass("d-none");
     btnDeleteGame.prop("disabled", false);

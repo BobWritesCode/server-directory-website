@@ -13,16 +13,21 @@
         <!-- Form used to select game or choose to add new game-->
         <form method="post" enctype="multipart/form-data" class="d-flex flex-column w-100">
             {% csrf_token %}
-            <p>Select Game:
-            </p>
+            <div class="mt-2 mb-3 w-100 text-center">
+                Select game
+            </div>
             <!-- Drop down using Select2 -->
             <select id="game-select-drop-down" class="game-select-drop-down" name="state">
                 {% for game in games %}
                 <option value="{{game.id}}">{{game.name}}</option>
                 {% endfor %}
             </select>
-            <p class="mt-3">Or</p>
-            <button type="button" id="btnNewGame" class="btn btn-primary">Add new game</button>
+            <div class="mt-2 mt-3 mb-3 w-100 text-center">
+                Or
+            </div>
+            <div class="d-flex mb-3 border rounded">
+                <button type="button" id="btnNewGame" class="btn btn-dark w-100" data-bs-toggle="tooltip" title="Add new game"><i class="bi bi-plus-circle"></i></button>
+            </div>
         </form>
         <hr class="border border-light border-3 opacity-75 w-100">
         <!-- Form header -->
@@ -42,7 +47,7 @@
                     {% endfor %}
                 </select>
                 <!-- Game image container -->
-                <div id="game-cover-container" class="d-none">
+                <div id="game-cover-container" class="d-flex d-none justify-content-center">
                     <!-- JS will add div here with image if game image exists -->
                 </div>
                 <!-- JS will unhide if not game image exists -->
@@ -56,9 +61,12 @@
                 </div>
                 {{ form.image | as_crispy_field }}
                 {{ form.status | as_crispy_field }}
-                <button type="submit" class="btn btn-success mb-3" disabled></button>
-                <button type="button" id="btnDeleteGame" class="btn btn-danger mb-3" data-toggle="modal"
-                    data-target="#game-delete-modal"> Delete Game </button>
+                <div class="d-flex mb-3 border rounded">
+                    <button type="submit" class="btn btn-dark w-100" data-bs-toggle="tooltip" title="Save" disabled></button>
+                </div>
+                <div class="d-flex mb-3 border rounded">
+                    <button type="button" id="btnDeleteGame" class="btn btn-dark w-100" data-toggle="modal"data-target="#game-delete-modal" data-bs-toggle="tooltip" title="Delete"><i class="bi bi-trash"></i></button>
+                </div>
             </div>
         </form>
     </div>
@@ -68,11 +76,8 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-title">Delete Game Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-light" id="modal-title">Delete Game Confirmation</h5>
             </div>
             <form method="post" id="game-delete-form">
                 {% csrf_token %}

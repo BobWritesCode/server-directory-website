@@ -51,7 +51,7 @@ class Tag(models.Model):
 
 class Game(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    name = models.CharField(max_length=50, blank=False)
+    name = models.CharField(max_length=50, blank=False, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
     image = CloudinaryField('image', null=True, default=None, blank=True)

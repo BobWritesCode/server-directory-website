@@ -978,9 +978,7 @@ def login_view(request: object):
 @login_required
 def game_management(request: object):
     """
-    request.GET: Loads html page using render().
-
-    request.POST: Processes adding, updating and deleting games.
+    Updates, adds or deletes games.
 
     Args:
         request (object): GET/POST request from user.
@@ -1038,19 +1036,18 @@ def game_management(request: object):
         {
             "form": GameManageForm(),
             "form_2": ConfirmGameDeleteForm(),
-            "games": Game.objects.all(),
-            "tags": Tag.objects.all(),
+            "games": Game.objects.all().order_by('name'),
+            "tags": Tag.objects.all().order_by('name'),
         },
     )
 
 
 def delete_game(form: object):
     """
-    Delete game from the database, and if a image was supplied it will delete
-    the image from the server.
+    Deletes game from the database.
 
-    Parameters:
-    form : object
+    Args:
+        form (object): Provides data to delete game.
     """
     if form.data["game_delete_confirm"] == "delete" and form.data["id"]:
         item_id = form.data["id"]
@@ -1065,12 +1062,11 @@ def delete_game(form: object):
 
 def add_new_game(request: object, form: object):
     """
-    Saves new game to database, and if a image was supplied it will upload
-    the image.
+    Adds new game to the database.
 
-    Parameters:
-    request : object.
-    form : object
+    Args:
+        request (object): GET/POST request from user.
+        form (object): Provides data for new game.
     """
     # Save form to database as a new game
     form.save()
@@ -1084,12 +1080,12 @@ def add_new_game(request: object, form: object):
 
 def update_game(request: object, form: object):
     """
-    Updates game to database, and if a image was supplied it will upload
-    the image.
+    Updates game in the database.
 
-    Parameters:
-    request : object.
-    form : object
+    Args:
+        request (object): GET/POST request from user.
+        form (object): Provides data to update game.
+
     """
     # Get correct game from database
     game = get_object_or_404(Game, pk=form.data["id"])
@@ -1135,15 +1131,13 @@ def update_game(request: object, form: object):
 @login_required
 def tag_management(request: object):
     """
-    request.GET: Loads html page using render().
-
-    request.POST: Processes adding, updating and deleting tags.
+    Updates, adds or deletes tags.
 
     Args:
         request (object): GET/POST request from user.
 
     Returns:
-        render: Loads html page
+        render (function): Loads html page
     """
 
     if request.method == "POST":
