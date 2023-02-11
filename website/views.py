@@ -184,7 +184,7 @@ def server_create(request: object):
         {
             'form': CreateServerListingForm(),
             'image_form': ImageForm(),
-            'tags': Tag.objects.all(),
+            'tags': Tag.objects.all().order_by('name'),
         }
     )
 
@@ -295,7 +295,7 @@ def server_edit(request: object, _pk: int):
         "item": item,
         'image_form': ImageForm(),
         'listing_image': listing_image,
-        'tags': Tag.objects.all(),
+        'tags': Tag.objects.all().order_by('name'),
         'selected_tags': serializers.serialize('json', selected_tags),
     }
     return render(request, "server_edit.html", context)
