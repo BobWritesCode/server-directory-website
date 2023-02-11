@@ -14,9 +14,13 @@
                 {{ error_message }}
             </div>
             {% endif %}
-            <button class="btn btn-primary w-100" type="submit">Log In</button>
+            <div class="d-flex mb-3 border rounded">
+                <button class="btn btn-dark w-100" type="submit" data-bs-toggle="tooltip" title="Log in"><i class="bi bi-arrow-right-square"></i></button>
+            </div>
         </form>
-        <a class="btn btn-success mb-3 w-100" href="{% url 'password_reset' %}">Forgotten Password</a>
+        <div class="d-flex mb-3 border rounded">
+            <a class="btn btn-dark w-100" href="{% url 'password_reset' %}" data-bs-toggle="tooltip" title="Forgotten Password?">Forgotten Password?</a>
+        </div>
     </div>
 </div>
 {% endblock %}
