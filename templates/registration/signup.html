@@ -7,13 +7,11 @@
         <h2 class="text-light text-center m-5">Sign Up</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
         <form method="post" class="text-light" id="signup-form">
-
             {% csrf_token %}
             {{ form|crispy }}
-
-            <button type="submit" class="btn btn-primary">
-                Sign up
-            </button>
+            <div class="d-flex mb-3 border rounded">
+                <button type="submit" class="btn btn-dark w-100" data-bs-toggle="tooltip" title="Sign up">Sign up</button>
+            </div>
         </form>
     </div>
 </div>

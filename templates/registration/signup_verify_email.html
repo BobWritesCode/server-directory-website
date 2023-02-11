@@ -10,8 +10,12 @@
             You will need to verify your email address before you can login.
             <br>
             <br>Please click on the link sent to the email you used to register.
+            <br>
+            <br>Please remember to check your spam/junk inbox.
         </p>
-        <a href="{% url 'home' %}" class="btn btn-primary">Homepage</a>
+        <div class="d-flex mb-3 border rounded">
+            <a class="btn btn-dark w-100" href="{% url 'home' %}" data-bs-toggle="tooltip" title="Go to homepage">Homepage</a>
+        </div>
     </div>
 </div>
 {% endblock %}
