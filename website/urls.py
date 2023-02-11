@@ -218,4 +218,10 @@ urlpatterns = [
         name='unauthorized'
     ),
 
+    path(
+        '404',
+        views.e404,
+        name='404'
+    ),
+
 ]

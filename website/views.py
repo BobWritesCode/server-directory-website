@@ -77,6 +77,9 @@ def contact_us(request):
 def unauthorized(request):
     return render(request, "unauthorized.html")
 
+def e404(request):
+    return render(request, "404.html")
+
 
 @login_required
 @staff_member_required

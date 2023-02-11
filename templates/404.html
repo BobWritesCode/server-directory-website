@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head %}
+<!-- Scripts / styles specific for this page -->
+{% endblock head %}
+{% block content %}
+<div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light">
+    <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
+        <!-- Page header -->
+        <h2 class="text-light text-center m-5">404 - Did you get lost?</h2>
+        <hr class="border border-light border-3 opacity-75 w-100 mt-0">
+        <p>
+            It seems you tried to go somewhere you were not allowed or does not exist.
+            If this does not seem right to you, then let us know so we can fix it.
+        </p>
+        <div class="d-flex mb-3 border rounded">
+            <a class="btn btn-dark w-100" href="{% url 'home' %}" data-bs-toggle="tooltip" title="Go to the homepage"><i class="bi bi-house"></i></a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<!-- Scripts specific for this page -->
+{% endblock %}
