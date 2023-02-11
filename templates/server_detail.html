@@ -49,18 +49,27 @@
             </div>
 
             <div class="d-flex border rounded">
+                <!-- Discord button -->
                 <a class="btn btn-dark text-light w-100" href="https://discord.com/invite/{{ server.discord }}"
                 target="_blank" data-bs-toggle="tooltip" title="Join the discord."><i class="fab fa-discord"></i> Discord</a>
                 {% if server.tiktok%}
+                <!-- TikTok button -->
                 <a class="btn btn-dark text-light w-100" href="https://www.tiktok.com/{{ server.tiktok }}"
-                target="_blank" data-bs-toggle="tooltip" title="Check out the TikTok." disabled><i class="bi bi-tiktok"></i> TikTok</a>
+                data-bs-toggle="tooltip" title="Check out the TikTok." disabled><i class="bi bi-tiktok"></i> TikTok</a>
                 {% endif %}
             </div>
-            <!-- Discord button -->
+            {% if user.is_staff %}
+            <div class="d-flex border rounded mt-3">
+                <div class="align-self-center w-100 mb-0">
+                    <p class="text-center mb-0">Staff view:</p>
+                </div>
+                <a class="btn btn-dark text-light w-100" href="/staff_user_management_user/{{server_owner.id}}"
+                data-bs-toggle="tooltip" title="Owner's profile."><i class="bi bi-eye"></i> Owner</a>
+                <a class="btn btn-dark text-light w-100" href="/server_edit/{{server.id}}"
+                data-bs-toggle="tooltip" title="Edit listing."><i class="bi bi-pencil-square"></i> Listing</a>
 
-
-                <!-- Listing bump counter and bump button -->
-
+            </div>
+            {% endif %}
             <!-- Short description -->
             <p class="text-light">{{ server.short_description|safe }}</p>
             <!-- Long description -->

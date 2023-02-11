@@ -621,8 +621,15 @@ def server_detail(request: object, slug: str):
     """
 
     # Get correct listing, check if approved.
-    queryset = ServerListing.objects.filter(status=1)
-    server = get_object_or_404(queryset, slug=slug)
+    server_listing = ServerListing.objects.filter(status=1)
+    server = get_object_or_404(server_listing, slug=slug)
+
+    if request.user.is_staff:
+        server_owner = get_object_or_404(CustomUser, id=server.owner_id)
+    else:
+        server_owner = None
+
+    print(server_owner.username)
 
     # Get user bumps.
     bumps_queryset = get_user_bumps(request)
@@ -640,6 +647,7 @@ def server_detail(request: object, slug: str):
             "images": images,
             "server": server,
             "bumps_queryset": bumps_queryset,
+            "server_owner": server_owner,
         },
     )
 
