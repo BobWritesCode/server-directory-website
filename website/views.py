@@ -555,11 +555,14 @@ def server_listings(request, slug, tag_string=""):
         # Use list comprehension to remove selected tags from all available tags
         tags = [x for x in game.tags.all() if x.name not in selected_tags]
 
+        tags.sort(key=operator.attrgetter('name'))
+        selected_tags.sort()
+
     else:
         # If tag_string empty then create empty list
         selected_tags = []
         # Get all available tags for game selected
-        tags = game.tags.all()
+        tags = game.tags.all().order_by('name')
 
     # Now now longer required to to stay a queryset, convert to list
     # and reorder by bump count.
@@ -578,9 +581,6 @@ def server_listings(request, slug, tag_string=""):
             server_listings[index].image_url = image
 
         server_listings[index].bump_count = server_listings[index].bumpCount()
-
-    tags.sort(key=operator.attrgetter('name'))
-    selected_tags.sort()
 
     return render(
         request,
