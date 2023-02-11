@@ -74,9 +74,9 @@ function displayUsers(obj) {
     for (let i = 0; i < obj.length; i++) {
         let newTr = document.createElement("tr")
         $(newTr).append('<th scope="row">' + (i + 1) + '</th>')
-            .append('<td><a href=staff_user_management_user/' + obj[i].pk + '  class="text-decoration-none link-info">' + obj[i].pk + '</a>')
-            .append('<td><a href=staff_user_management_user/' + obj[i].pk + '  class="text-decoration-none link-info">' + obj[i].fields.username + '</a></td>')
-            .append('<td><a href=staff_user_management_user/' + obj[i].pk + '  class="text-decoration-none link-info">' + obj[i].fields.email + '</a>');
+            .append('<td><a href=staff_user_management_user/' + obj[i].pk + '  class="text-decoration-none link-light">' + obj[i].pk + '</a>')
+            .append('<td><a href=staff_user_management_user/' + obj[i].pk + '  class="text-decoration-none link-light">' + obj[i].fields.username + '</a></td>')
+            .append('<td><a href=staff_user_management_user/' + obj[i].pk + '  class="text-decoration-none link-light">' + obj[i].fields.email + '</a>');
         $('#user-search-display-table').find('tbody').append(newTr)
     }
 }
