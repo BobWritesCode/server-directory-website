@@ -22,6 +22,7 @@ from django.views import View, generic
 from cloudinary import uploader
 from datetime import timedelta, date
 import json
+import operator
 import re
 
 
@@ -211,7 +212,7 @@ def server_edit(request: object, _pk: int):
         return redirect("unauthorized")
 
     query = Q(serverlisting=item)
-    selected_tags = Tag.objects.filter(query)
+    selected_tags = Tag.objects.filter(query).order_by('name')
 
     if request.method == "POST":
 
@@ -231,8 +232,6 @@ def server_edit(request: object, _pk: int):
         # If user is trying to update the listing
         form = CreateServerListingForm(request.POST)
         image_form = ImageForm(request.FILES)
-        print(form.errors)
-        print(image_form.errors)
         if form.is_valid() and image_form.is_valid():
 
             image = Images.objects.filter(listing_id = _pk).first()
@@ -261,7 +260,7 @@ def server_edit(request: object, _pk: int):
 
             # Get tags selected from the form
             query = Q(id__in=form.cleaned_data["tags"])
-            tags = Tag.objects.filter(query).all()
+            tags = Tag.objects.filter(query).all().order_by('name')
 
             item.title = form.data['title']
             item.tags.set(tags)
@@ -580,6 +579,9 @@ def server_listings(request, slug, tag_string=""):
 
         server_listings[index].bump_count = server_listings[index].bumpCount()
 
+    tags.sort(key=operator.attrgetter('name'))
+    selected_tags.sort()
+
     return render(
         request,
         "server-list.html",
@@ -592,6 +594,7 @@ def server_listings(request, slug, tag_string=""):
             "slug": slug,
         },
     )
+
 
 
 @login_required
@@ -631,8 +634,6 @@ def server_detail(request: object, slug: str):
         server_owner = get_object_or_404(CustomUser, id=server.owner_id)
     else:
         server_owner = None
-
-    print(server_owner.username)
 
     # Get user bumps.
     bumps_queryset = get_user_bumps(request)
@@ -816,7 +817,7 @@ def call_server(request):
             case 'get_game_details':
                 game = get_object_or_404(Game, pk=content['1'])
                 query = Q(game=content['1'])
-                tags = Tag.objects.filter(query)
+                tags = Tag.objects.filter(query).order_by('name')
                 result = {
                     'success': True,
                     'game': game.toJSON(),
@@ -870,7 +871,7 @@ def call_server(request):
 
             case 'get_game_tags':
                 game = get_object_or_404(Game, id=content['1'])
-                tags = game.tags.all()
+                tags = game.tags.all().order_by('name')
 
                 all_tags_for_game = []
                 for x in tags:
@@ -1099,7 +1100,7 @@ def update_game(request: object, form: object):
 
     # Get tags selected from the form
     query = Q(id__in=form.cleaned_data["tags"])
-    tags = Tag.objects.filter(query).all()
+    tags = Tag.objects.filter(query).all().order_by('name')
 
     # Update tags with tags selected from form
     game.tags.set(tags)
