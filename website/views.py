@@ -137,7 +137,7 @@ def staff_image_review(request, item_pk: int = None):
 @login_required
 def server_create(request: object):
     """
-    Update listing.
+    Create listing.
 
     Args:
         request (object): GET/POST request from user.
