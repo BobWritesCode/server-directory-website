@@ -19,11 +19,11 @@
 }
 
 .bg-2 {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgb(41, 25, 25);
 }
 
 .bg-3 {
-    background-color: #6f42c1;
+    background-color: #00000071;
 }
 
 .fill {
@@ -58,6 +58,12 @@
     background-color: rgba(0,0,0,0.7);
     bottom: 8px;
     padding: 0 10px 0 10px;
+}
+
+/* -------- BootStrap */
+.form-control-plaintext {
+    background-color: rgba(67, 67, 67, 0.7);
+    border: 0 !important;
 }
 
 /* -------- SELECT2 */
