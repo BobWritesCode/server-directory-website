@@ -28,7 +28,6 @@ window.addEventListener("DOMContentLoaded", function() {
         e.preventDefault()
         validateForm()
         if ($(".error-message").length == 0) {
-            console.log(form);
             submitForm();
         }
     });
@@ -109,8 +108,7 @@ function prepareFormForNewTag() {
     $('#form-header').text('Adding New Tag');
     formInternalContainer.removeClass('d-none');
     form.find("#div_id_id").addClass("d-none");
-    form.find("#div_id_slug").addClass("d-none");
-    btnSubmit.text("Add new tag");
+    btnSubmit.html('<i class="bi bi-save"></i>');
     btnSubmit.prop("disabled", false);
     btnDeleteTag.addClass("d-none");
     btnDeleteTag.prop("disabled", true);
@@ -120,11 +118,11 @@ function prepareFormForNewTag() {
  * Prepare html form ready to update selected tag
  */
 function prepareFormForUpdateTag() {
-    $('#form-header').text('Updating Tag');
+    $('#form-header').text('Update Tag');
     formInternalContainer.removeClass('d-none');
     form.find("#div_id_id").removeClass("d-none");
     form.find("#div_id_slug").removeClass("d-none");
-    btnSubmit.text("Save Changes");
+    btnSubmit.html('<i class="bi bi-save"></i>');
     btnSubmit.prop("disabled", false);
     btnDeleteTag.removeClass("d-none");
     btnDeleteTag.prop("disabled", false);

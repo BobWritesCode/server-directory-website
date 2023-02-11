@@ -13,17 +13,21 @@
         <!-- Form used to select tag or choose to add new tag-->
         <form method="post" enctype="multipart/form-data" class="d-flex flex-column w-100">
             {% csrf_token %}
-            <p>
-                Select Tag:
-            </p>
+            <div class="mt-2 mb-3 w-100 text-center">
+                Select tag
+            </div>
             <!-- Drop down using Select2 -->
             <select id="tag-select-drop-down" class="tag-select-drop-down" name="state">
                 {% for tag in tags %}
                 <option value="{{tag.id}}">{{tag.name}}</option>
                 {% endfor %}
             </select>
-            <p class="mt-2">Or</p>
-            <button type="button" id="btnNewTag" class="btn btn-primary">Add new tag</button>
+            <div class="mt-2 mt-3 mb-3 w-100 text-center">
+                Or
+            </div>
+            <div class="d-flex mb-3 border rounded">
+                <button type="button" id="btnNewTag" class="btn btn-dark w-100" data-bs-toggle="tooltip" title="Add new tag."><i class="bi bi-plus-circle"></i></button>
+            </div>
         </form>
         <hr class="border border-light border-3 opacity-75 w-100">
         <!-- Form header -->
@@ -35,9 +39,13 @@
                 {{ form.id | as_crispy_field }}
                 {{ form.name | as_crispy_field }}
                 {{ form.slug | as_crispy_field }}
-                <button type="submit" class="btn btn-success mb-3" disabled></button>
-                <button type="button" id="btnDeleteTag" class="btn btn-danger mb-3" data-toggle="modal"
-                    data-target="#tag-delete-modal"> Delete Tag </button>
+                <div class="d-flex mb-3 border rounded">
+                    <button type="submit" class="btn btn-dark w-100"  data-bs-toggle="tooltip" title="Save" disabled></button>
+                </div>
+                <div class="d-flex mb-3 border rounded">
+                    <button type="button" id="btnDeleteTag" class="btn btn-dark w-100" data-toggle="modal"
+                        data-target="#tag-delete-modal" data-bs-toggle="tooltip" title="Delete tag"><i class="bi bi-trash"></i></button>
+                </div>
             </div>
         </form>
     </div>
@@ -47,13 +55,10 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modal-title">Delete tag Confirmation</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-light" id="modal-title">Delete Tag Confirmation</h5>
             </div>
-            <form method="post" id="tag-delete-form">
+            <form method="post" id="tag-delete-form" class="mb-3">
                 {% csrf_token %}
                 <div class="modal-body">
                     <p> Deleting this tag is permanent and irreversible.

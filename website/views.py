@@ -1173,7 +1173,6 @@ def tag_management(request: object):
             request.POST._mutable = True
             # Get next ID and assign slug
             form.data["id"] = Tag.objects.order_by("-id").first().id + 1
-            form.data["slug"] = "Tag-" + str(form.data["id"])
             # Restrict object from being edited
             request.POST._mutable = False
 
@@ -1191,7 +1190,7 @@ def tag_management(request: object):
         {
             "form": TagsManageForm(),
             "form_2": ConfirmTagDeleteForm(),
-            "tags": Tag.objects.all(),
+            "tags": Tag.objects.all().order_by('name'),
         },
     )
 

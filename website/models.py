@@ -38,7 +38,7 @@ class CustomUser(AbstractUser):
 
 class Tag(models.Model):
     id = models.BigIntegerField(primary_key=True)
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     slug = models.SlugField(max_length=20, unique=True)
 
     def __str__(self):
