@@ -1,7 +1,9 @@
-"use strict";
+// Global HTML Elements
+const footerYear = $('#footer-year');
 
 // DOM Ready
 $(document).ready(function() {
-    $('#footer-year').text(new Date().getFullYear())
+    'use strict';
+    footerYear.text(new Date().getFullYear());
     $('[data-bs-toggle="tooltip"]').tooltip();
 });
