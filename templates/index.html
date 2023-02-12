@@ -4,32 +4,37 @@
 
 {% block content %}
 
-
     <div class="container-fluid position-relative" style="height: 100px;">
-        <h1 class="position-absolute top-50 start-50 translate-middle text-light">GAMER'S-VERSE</h1>
+        <h1 class="position-absolute top-50 start-50 translate-middle text-light text-center w-100"><i class="fa-solid fa-gamepad"></i> GAMER'S-VERSE</h1>
     </div>
 
     <div class="container-fluid bg-1 position-relative" style="height: 200px;">
-        <h2 class="position-absolute top-50 start-50 translate-middle text-light">FIND YOUR NEW PERFECT HOME</h2>
+        <h2 class="position-absolute top-50 start-50 translate-middle text-light text-center">FIND YOUR NEW PERFECT HOME</h2>
     </div>
 
-    <div class="container-fluid position-relative d-flex justify-content-center mt-4">
-        <h3 class="text-light">Find a private server by first selecting which game you interested in first:</h3>
-    </div>
-
-    <div class="container-fluid position-relative d-flex justify-content-center mt-4">
-        <div class="col-8 d-flex justify-content-center">
-            {% for game in games %}
 
 
-            <div class="card m-3" style="width: 18rem;">
-                {% cloudinary game.image.url width="286" crop="fit" alt=game.name %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ game.name }}</h5>
-                    <a href="{% url 'server-list' game.slug %}" class="btn btn-primary">Go somewhere</a>
-                </div>
+    <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 h-100 text-light text-center">
+        <div class="col-xxl-11 col-xl-11 col-lg-11 col-md-11 col-sm-11 col-11 d-flex flex-column align-items-left">
+
+            <div class="container-fluid position-relative d-flex justify-content-center mt-4">
+                <h3 class="text-light">Find a private server by first selecting which game you interested in first:</h3>
             </div>
-            {% endfor %}
+
+            <div class="container-fluid position-relative d-flex flex-wrap justify-content-center">
+                {% for game in games %}
+                <a href="{% url 'server-list' game.slug %}" class="btn btn-dark p-0 m-1 ">
+                    <div class="bg-1 rounded-3" style="width: 18rem;">
+                        <div class="p-1">
+                            <img src="{{game.image.url}}" alt="Game cover for {{game.name}}" class="w-100">
+                        </div>
+                        <div class="p-1">
+                            <h5 class="text-center text-light">{{ game.name }}</h5>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 
