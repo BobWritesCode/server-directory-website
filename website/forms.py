@@ -7,7 +7,7 @@ from cloudinary.forms import CloudinaryFileField
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML
-from crispy_forms.bootstrap import InlineRadios, Field
+from crispy_forms.bootstrap import InlineRadios
 
 from .constants import STATUS
 from .models import (
@@ -153,7 +153,7 @@ class CreateServerListingForm(forms.ModelForm):
         label="Long description: (min: 200, max: 2000 characters)",
         min_length=200,
         max_length=2000,
-        widget=TinyMCE(attrs={'cols': 80, 'rows': 30, }),
+        widget=TinyMCE(attrs={'cols': 80, 'rows': 15, }),
         required=True,
     )
 
