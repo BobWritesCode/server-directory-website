@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sessions.models import Session
 from django.contrib.sites.shortcuts import get_current_site
@@ -977,6 +977,34 @@ def login_view(request: object):
         },
     )
 
+
+def password_reset_view(request: object):
+    """
+    Password reset view and process.
+
+    Args:
+        request (object): GET/POST request from user..
+
+    Returns:
+        redirect(): Loads html page.
+        render(): Loads html page.
+    """
+    if request.method == "POST":
+        form = PasswordResetForm({'email': request.POST['email']})
+        if form.is_valid():
+            form.save(
+                subject_template_name='email_templates/password_reset_email.txt',
+                email_template_name='email_templates/password_reset_email.html',
+                request=request
+            )
+            return redirect("password_reset_done")
+    return render(
+        request,
+        "registration/password_reset_form.html",
+        {
+            "form": PasswordResetForm(),
+        },
+    )
 
 @staff_member_required
 @login_required
