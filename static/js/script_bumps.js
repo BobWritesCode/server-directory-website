@@ -1,9 +1,22 @@
 "use strict";
 
 window.addEventListener("DOMContentLoaded", function() {
+    // As Anchor goes over whole listing, it also covers the button.
+    // This will check to see if the button has been clicked and if so
+    // prevent the anchor loading the next page.
+    // We also check the text inside the button has not been clicked
+    // as that is a different event target.
+    $(document).on('click', 'a', function(e) {
+        let target = $( e.target );
+        if (target.is('button') || target.parent().is('button')) {
+            e.preventDefault();
+        }
+    });
+
     $("button[data-name='Bump Button']").on("click", function() {
         if ($(this).hasClass('btn-dark')) {
             bump.call(this);
+            return "";
         }
     });
 });
