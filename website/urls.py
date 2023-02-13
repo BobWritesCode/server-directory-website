@@ -1,8 +1,12 @@
+"""
+All urls for app.
+"""
+
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import (
     PasswordChangeForm, SetPasswordForm
 )
-from django.urls import path, reverse_lazy
+from django.urls import path
 
 from . import views
 
@@ -27,8 +31,8 @@ urlpatterns = [
 
     path(
         'server/<slug>',
-        views.server_detail,
-        name='server_detail'
+        views.listing_detail,
+        name='listing_detail'
     ),
 
     path(
