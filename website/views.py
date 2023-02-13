@@ -1,8 +1,15 @@
-from django.contrib import messages
+"""
+Contains vast majority of methods to run app
+"""
+from datetime import timedelta, date
+import json
+import operator
+import re
+
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sessions.models import Session
 from django.contrib.sites.shortcuts import get_current_site
@@ -16,15 +23,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.urls import reverse_lazy
-from django.views import View, generic
 
 from cloudinary import uploader
-from datetime import timedelta, date
-import json
-import operator
-import re
-
 
 from .constants import DAYS_TO_EXPIRE_IMAGE
 
@@ -42,7 +42,16 @@ from .models import (
 UserModel = get_user_model()
 
 
-def index(request):
+def index(request: object):
+    """
+    Load index view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     games = Game.objects.filter(status=1)
     ctx = {
         'games': games,
@@ -51,40 +60,126 @@ def index(request):
     return render(request, "index.html", ctx)
 
 
-def account_deleted(request):
+def account_deleted(request: object):
+    """
+    Load account deleted view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "registration/account_deleted.html")
 
 
-def signup_verify_email(request):
+def signup_verify_email(request: object):
+    """
+    Load Signup verify view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "registration/signup_verify_email.html")
 
 
-def email_address_verified(request):
+def email_address_verified(request: object):
+    """
+    Load email address verified view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "registration/email_address_verified.html")
 
 
-def terms_and_conditions(request):
+def terms_and_conditions(request: object):
+    """
+    Load terms and conditions view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "terms_and_conditions.html")
 
 
-def privacy_policy(request):
+def privacy_policy(request: object):
+    """
+    Load privacy policy view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "privacy_policy.html")
 
 
-def contact_us(request):
+def contact_us(request: object):
+    """
+    Load contact us view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "contact_us.html")
 
 
-def unauthorized(request):
+def unauthorized(request: object):
+    """
+    Load unauthorized view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "unauthorized.html")
 
-def e404(request):
+
+def e404(request: object):
+    """
+    Load 404 view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     return render(request, "404.html")
 
 
 @login_required
 @staff_member_required
-def staff_account(request):
+def staff_account(request: object):
+    """
+    Load staff account view.
+
+    Decorators:
+        @login_required: User required to be logged in.
+        @staff_member_required: Logged in user must be staff.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     query = Q(status=0)
     review_count = Images.objects.filter(query)
 
@@ -99,7 +194,20 @@ def staff_account(request):
 
 @login_required
 @staff_member_required
-def staff_image_review(request, item_pk: int = None):
+def staff_image_review(request: object, item_pk: int = None):
+    """
+    Load staff account view.
+
+    Decorators:
+        @login_required: User required to be logged in.
+        @staff_member_required: Logged in user must be staff.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        render() (func): Loads the html page.
+    """
     # If ID has been entered in URL.
     if item_pk:
         query = Q(pk=item_pk)
@@ -139,6 +247,9 @@ def staff_image_review(request, item_pk: int = None):
 def server_create(request: object):
     """
     Create listing.
+
+    Decorators:
+        @login_required: User required to be logged in.
 
     Args:
         request (object): GET/POST request from user.
@@ -195,6 +306,9 @@ def server_edit(request: object, _pk: int):
     """
     Update listing.
 
+    Decorators:
+        @login_required: User required to be logged in.
+
     Args:
         request (object): GET/POST request from user.
         _pk (string): primary key for server that is being updated
@@ -234,7 +348,7 @@ def server_edit(request: object, _pk: int):
         image_form = ImageForm(request.FILES)
         if form.is_valid() and image_form.is_valid():
 
-            image = Images.objects.filter(listing_id = _pk).first()
+            image = Images.objects.filter(listing_id=_pk).first()
 
             if image is not None and request.FILES:
                 # Delete old image from Cloudinary server
@@ -275,7 +389,7 @@ def server_edit(request: object, _pk: int):
     try:
         # Get images for server listings
         # Makes sure they are status 1: approved.
-        query =  Q(listing_id=item.id)
+        query = Q(listing_id=item.id)
         listing_image = Images.objects.filter(query).first()
 
         match listing_image.status:
@@ -301,14 +415,26 @@ def server_edit(request: object, _pk: int):
 
 
 @login_required
-def server_delete(request, item_pk):
-    item = get_object_or_404(ServerListing, pk=item_pk)
+def server_delete(request: object, item_pk: int):
+    """
+    Delete listing.
 
-    image = Images.objects.filter(listing_id = item_pk).first()
+    Decorators:
+        @login_required: User required to be logged in.
+
+    Args:
+        request (object): GET/POST request from user.
+        item_pk (string): primary key for server that is being updated
+
+    Returns:
+        redirect (function): Loads html page
+
+    """
+    item = get_object_or_404(ServerListing, pk=item_pk)
+    image = Images.objects.filter(listing_id=item_pk).first()
     if image is not None:
         # Delete listing image from Cloudinary server
         uploader.destroy(image.public_id)
-
     item.delete()
     return redirect('my-account')
 
@@ -318,19 +444,17 @@ def my_account(request: object):
     """
     My account view.
 
-    Decorator:
-        @login_required
+    Decorators:
+        @login_required: User required to be logged in.
 
     Args:
         request (object): GET/POST request from user.
-        _pk (string): primary key for server that is being updated
 
     Returns:
         redirect (function): Unauthorized page
         redirect (function): My account page
         redirect (function): My account page
         render (function): Loads html page
-
     """
 
     if request.method == 'POST':
@@ -373,24 +497,24 @@ def my_account(request: object):
                 return redirect(to='account_deleted')
 
     username = request.user
-    server_listings = ServerListing.objects.filter(
+    listings = ServerListing.objects.filter(
         owner=username).order_by('-created_on')
-    num_of_listings = server_listings.count()
+    num_of_listings = listings.count()
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
-    _list = [x[0] for x in server_listings.values_list('id')]
+    _list = [x[0] for x in listings.values_list('id')]
     query = Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
     # Pair images with server listing
-    for index, value in enumerate(server_listings):
-        # try to pair image with server listing, if image not available or does not
-        # exist then set as None so a placeholder can be shown instead.
+    for key, value in enumerate(listings):
+        # try to pair image with server listing, if image not available
+        # or does not exist then set as None so a placeholder can be
+        # shown instead.
         try:
-            image = images_queryset.get(listing_id = server_listings[index].id).image
-
-            match images_queryset.get(listing_id = server_listings[index].id).status:
+            image = images_queryset.get(listing_id=value.id).image
+            match images_queryset.get(listing_id=value.id).status:
                 case 0:
                     status = "Awaiting review"
                 case 1:
@@ -399,15 +523,13 @@ def my_account(request: object):
                     status = "Rejected"
                 case 3:
                     status = "Banned"
-
         except ObjectDoesNotExist:
             image = None
             status = None
-        finally:
-            server_listings[index].image_url = image
-            server_listings[index].image_status = status
 
-        server_listings[index].bump_count = server_listings[index].bumpCount()
+        listings[key].image_url = image
+        listings[key].image_status = status
+        listings[key].bump_count = value.bumpCount()
 
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
@@ -421,8 +543,8 @@ def my_account(request: object):
     query = Q(pk__in=bumps_queryset.values_list('listing_id'))
     server_listings_queryset = ServerListing.objects.filter(query)
     # Add server listing slug to bumps queryset
-    for index, value in enumerate(bumps_queryset):
-        bumps_queryset[index].url = server_listings_queryset.get(
+    for key, value in enumerate(bumps_queryset):
+        bumps_queryset[key].url = server_listings_queryset.get(
             id=value.listing.id).slug
     # Calculate how many bumps the user has left to use
     bumps_left = 5 - len(bumps_queryset)
@@ -435,7 +557,7 @@ def my_account(request: object):
             'form_2': form_2,
             'email_form': email_form,
             'form_4': form_4,
-            'server_listings': server_listings,
+            'server_listings': listings,
             'num_of_listings': num_of_listings,
             'bumps': bumps_queryset,
             'bumps_left': bumps_left,
@@ -445,20 +567,26 @@ def my_account(request: object):
 
 def sign_up_view(request):
     """
-    User create account view
+    Loads sign up view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        redirect (function): Email verification view.
+        render (function): Loads view.
     """
     if request.method == 'POST':
         form = SignupForm(request.POST)
         # Check user has completed form as required.
         if form.is_valid():
-
             # Original code before modifications, check ReadMe:
             # https://shafikshaon.medium.com/
             # user-registration-with-email-verification-in-django-8aeff5ce498d
-
             # Saving user to memory as inactive.
             user = form.save(commit=False)
             user.is_active = False
+            user.id = CustomUser.objects.order_by("-pk").first().pk + 1
             user.save()
             send_email_verification(request, user)
             return redirect('signup_verify_email')
@@ -467,37 +595,45 @@ def sign_up_view(request):
     return render(request, 'registration/signup.html', {'form': form})
 
 
-def activate(request, uidb64, token):
-    '''
+def activate(request: object, uidb64, token):
+    """
     Activate user account after they have they visited the link in the
     email address verification, sent to the user by email.
-    '''
+
+    Args:
+        request (object): GET/POST request from user.
+        uidb64 ():
+        token ():
+
+    Returns:
+        redirect (function): Email address verified view.
+        HttpResponse (class): Activation link is invalid.
+    """
     # Original code:
     # https://shafikshaon.medium.com/
     # user-registration-with-email-verification-in-django-8aeff5ce498d
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
-        user = UserModel._default_manager.get(pk=uid)
+        user = get_object_or_404(CustomUser, pk=uid)
+        # user = UserModel._default_manager.get(pk=uid)
     except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.email_verified = True
         user.save()
-
         return redirect('email_address_verified')
-    else:
-        return HttpResponse('Activation link is invalid!')
+    return HttpResponse('Activation link is invalid!')
 
 
-def server_listings(request, slug, tag_string=""):
+def server_listings(request: object, slug: str, tag_string: str = ""):
     """
-    Update user email after checking it conforms.
+    Loads server listing view.
 
     Args:
         request (object): GET/POST request from user.
-        slug (string): Keeps track of user's selected tags.
-        tag_string (string): Keeps track of user's selected tags.
+        slug (str): Keeps track of user's selected tags.
+        tag_string (str): Keeps track of user's selected tags.
 
     Returns:
         render(): Loads html page.
@@ -507,11 +643,11 @@ def server_listings(request, slug, tag_string=""):
     tags = game.tags.all()
 
     query = Q(status=1) & Q(game=game)
-    server_listings = ServerListing.objects.filter(query).distinct()
+    listings = ServerListing.objects.filter(query).distinct()
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
-    _list = [x[0] for x in server_listings.values_list('id')]
+    _list = [x[0] for x in listings.values_list('id')]
     query = Q(status=1) & Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
@@ -519,8 +655,8 @@ def server_listings(request, slug, tag_string=""):
     user_bumps_queryset = get_user_bumps(request)
 
     all_tags_for_game = []
-    for x in tags:
-        all_tags_for_game.append([x.id, x.name])
+    for tag in tags:
+        all_tags_for_game.append([tag.id, tag.name])
 
     # Manage tag_string
     if tag_string != "":
@@ -550,9 +686,10 @@ def server_listings(request, slug, tag_string=""):
 
         # Narrows server list down based on tags picked by user
         for value in selected_tags:
-            server_listings = server_listings.filter(tags__name=value)
+            listings = listings.filter(tags__name=value)
 
-        # Use list comprehension to remove selected tags from all available tags
+        # Use list comprehension to remove selected tags from all
+        # available tags
         tags = [x for x in game.tags.all() if x.name not in selected_tags]
 
         tags.sort(key=operator.attrgetter('name'))
@@ -566,27 +703,28 @@ def server_listings(request, slug, tag_string=""):
 
     # Now now longer required to to stay a queryset, convert to list
     # and reorder by bump count.
-    server_listings = sorted(server_listings.all(), key=lambda a: a.bumpCount(), reverse=True)
+    listings = sorted(listings.all(), key=lambda a: a.bumpCount(),
+                      reverse=True)
 
     # Pair images with server listing.
     # And add bump count.
-    for index, value in enumerate(server_listings):
-        # try to paid image with server listing, if image not available or does not
-        # exist then set as None so a placeholder can be shown instead.
+    for key, value in enumerate(listings):
+        # try to paid image with server listing, if image not available or
+        # does not exist then set as None so a placeholder can be
+        # shown instead.
         try:
-            image = images_queryset.get(listing_id=server_listings[index].id).image
+            image = images_queryset.get(listing_id=value.id).image
         except ObjectDoesNotExist:
             image = None
-        finally:
-            server_listings[index].image_url = image
 
-        server_listings[index].bump_count = server_listings[index].bumpCount()
+        listings[key].image_url = image
+        listings[key].bump_count = value.bumpCount()
 
     return render(
         request,
         "server-list.html",
         {
-            "server_listings": server_listings,
+            "server_listings": listings,
             "bumps_queryset": user_bumps_queryset,
             "selected_tags": selected_tags,
             "tags": tags,
@@ -596,11 +734,13 @@ def server_listings(request, slug, tag_string=""):
     )
 
 
-
 @login_required
-def get_user_bumps(request):
+def get_user_bumps(request: object):
     '''
-    Returns a list of user's current bumps
+    Returns a list of user's current bumps.
+
+    Decorators:
+        @login_required: User required to be logged in.
 
     Parameters:
         request (Any): The server request
@@ -614,9 +754,9 @@ def get_user_bumps(request):
     return _list
 
 
-def server_detail(request: object, slug: str):
+def listing_detail(request: object, slug: str):
     """
-    Update user email after checking it conforms.
+    Loads listing detail view.
 
     Args:
         request (object): GET/POST request from user.
@@ -625,7 +765,6 @@ def server_detail(request: object, slug: str):
     Returns:
         render(): Loads html page.
     """
-
     # Get correct listing, check if approved.
     server_listing = ServerListing.objects.filter(status=1)
     server = get_object_or_404(server_listing, slug=slug)
@@ -646,7 +785,7 @@ def server_detail(request: object, slug: str):
 
     return render(
         request,
-        "server_detail.html",
+        "listing_detail.html",
         {
             "images": images,
             "server": server,
@@ -683,42 +822,57 @@ def send_email_verification(request: object, user: object):
 
 
 def check_match(value1: str, value2: str):
-    '''
-    Returns bool depending if args match.
-    :returns: True or False
-    '''
+    """
+    Returns True / False depending if args match.
+
+    Args:
+        value1 (str): First arg.
+        value2 (str): Second arg to compare to first.
+
+    Returns:
+        bool (bool): True / False.
+    """
     if value1 == value2:
         return True
     return False
 
 
-def email_check(request):
-    '''
-    Check if email address already in use.
-    '''
+def email_check(request: object):
+    """
+    Check if email address is already in use.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        HttpResponse ((json.dumps({'result': result}))
+    """
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     content = body['email']
 
-    if CustomUser.objects.filter(email = content).exists():
+    if CustomUser.objects.filter(email=content).exists():
         result = True
     else:
         result = False
 
-    return HttpResponse ( json.dumps({'result': result}) )
+    return HttpResponse(json.dumps({'result': result}))
 
 
 @login_required
-def bump_server(request):
-    '''
+def bump_server(request: object):
+    """
     Add 1 bump to server if already not bumped by user
+
+    Decorators:
+        @login_required: User required to be logged in
 
     Parameters:
         request (object): GET/POST request from user.
 
     Returns:
-        HttpResponse(json({}'result': number of bumps (int)})) (class)
-    '''
+        HttpResponse(json({}'result': number of bumps (int)}))
+    """
     if request.method == 'POST':
 
         body_unicode = request.body.decode('utf-8')
@@ -737,36 +891,50 @@ def bump_server(request):
             bumps_queryset_len = len(bumps_queryset) + 1
 
             # Check if this server already bumped by user
-            if (content in bumps_queryset):
-                return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+            if content in bumps_queryset:
+                return HttpResponse(
+                    json.dumps({'result': int(bumps_queryset_len)}))
 
             # Check user has not already bumped max server amount
             if len(bumps_queryset) > 4:
-                return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
+                return HttpResponse(
+                    json.dumps({'result': int(bumps_queryset_len)}))
 
             # Create a row to table and save
-            bump = Bumps.objects.create(user=request.user, listing=listing )
+            bump = Bumps.objects.create(user=request.user, listing=listing)
             bump.save()
-            return HttpResponse ( json.dumps({'result': int(bumps_queryset_len)}) )
-        return HttpResponse ( json.dumps({'result': int(len(bumps_queryset))}) )
+            return HttpResponse(
+                json.dumps({'result': int(bumps_queryset_len)}))
+
+        return HttpResponse(
+            json.dumps({'result': int(len(bumps_queryset))}))
 
 
 @staff_member_required
 @login_required
-def call_server(request):
-    '''
-    Generic method for front end to call backend with a request.
-    '''
+def call_server(request: object):
+    """
+    Method for frontend to call backend with a request.
 
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
+
+    Parameters:
+        request (object): GET/POST request from user.
+
+    Returns:
+        HttpResponse(json.dumps({'result': result}))
+    """
     if request.method == 'POST':
 
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        content = body['arguments']
+        content = body['args']
 
-        match content['0']:
+        match content[0]:
             case 'image_approval_approve':
-                item = get_object_or_404(Images, pk=content['1'])
+                item = get_object_or_404(Images, pk=content[1])
                 item.status = 1
                 item.expiry = None
                 item.reviewed_by = request.user
@@ -777,9 +945,10 @@ def call_server(request):
                 }
 
             case 'image_approval_reject':
-                item = get_object_or_404(Images, pk=content['1'])
+                item = get_object_or_404(Images, pk=content[1])
                 item.status = 2
-                item.expiry = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
+                item.expiry = date.today() + timedelta(
+                    days=DAYS_TO_EXPIRE_IMAGE)
                 item.reviewed_by = request.user
                 item.save()
                 result = {
@@ -788,9 +957,10 @@ def call_server(request):
                 }
 
             case 'image_approval_ban':
-                item = get_object_or_404(Images, pk=content['1'])
+                item = get_object_or_404(Images, pk=content[1])
                 item.status = 3
-                item.expiry = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
+                item.expiry = date.today() + timedelta(
+                    days=DAYS_TO_EXPIRE_IMAGE)
                 item.reviewed_by = request.user
                 item.save()
                 ban_user(request, item.user_id)
@@ -802,7 +972,8 @@ def call_server(request):
             case 'image_approval_next':
                 query = Q(status=0)
                 image = Images.objects.filter(query).first()
-                # If no image is currently waiting be approved, then handle request.
+                # If no image is currently waiting be approved,
+                # then handle request.
                 if image is None:
                     result = {
                         'success': True,
@@ -815,24 +986,25 @@ def call_server(request):
                     }
 
             case 'get_game_details':
-                game = get_object_or_404(Game, pk=content['1'])
-                query = Q(game=content['1'])
+                print(content[1])
+                game = get_object_or_404(Game, pk=content[1])
+                query = Q(game=content[1])
                 tags = Tag.objects.filter(query).order_by('name')
                 result = {
                     'success': True,
                     'game': game.toJSON(),
-                    'game_tags':serializers.serialize('json', tags),
+                    'game_tags': serializers.serialize('json', tags),
                 }
 
             case 'get_tag_details':
-                tag = get_object_or_404(Tag, pk=content['1'])
+                tag = get_object_or_404(Tag, pk=content[1])
                 result = {
                     'success': True,
                     'tag': tag.toJSON(),
                 }
 
             case 'search_users-username':
-                query = Q(username__contains=content['1'])
+                query = Q(username__contains=content[1])
                 users = CustomUser.objects.filter(query)
                 result = {
                     'success': True,
@@ -840,7 +1012,7 @@ def call_server(request):
                 }
 
             case 'search_users-email':
-                query = Q(email__contains=content['1'])
+                query = Q(email__contains=content[1])
                 users = CustomUser.objects.filter(query)
                 result = {
                     'success': True,
@@ -848,7 +1020,7 @@ def call_server(request):
                 }
 
             case 'search_users-id':
-                query = Q(id__contains=int(content['1']))
+                query = Q(id__contains=int(content[1]))
                 users = CustomUser.objects.filter(query)
                 result = {
                     'success': True,
@@ -856,26 +1028,26 @@ def call_server(request):
                 }
 
             case 'user_management_save':
-                success = update_user(content['1'])
+                success = update_user(content[1])
                 result = {
                     'success': success['result'],
                     'reason': success['reason']
                 }
 
             case 'update_email':
-                success = update_email(request, content['1'])
+                success = update_email(request, content[1])
                 result = {
                     'success': success['result'],
                     'reason': success['reason']
                 }
 
             case 'get_game_tags':
-                game = get_object_or_404(Game, id=content['1'])
+                game = get_object_or_404(Game, id=content[1])
                 tags = game.tags.all().order_by('name')
 
                 all_tags_for_game = []
-                for x in tags:
-                    all_tags_for_game.append([x.id, x.name])
+                for tag in tags:
+                    all_tags_for_game.append([tag.id, tag.name])
 
                 result = {
                     'success': "tags",
@@ -889,29 +1061,36 @@ def call_server(request):
 @login_required
 def ban_user(request: object, _id: int):
     """
-    Bans user and prevents user login, rejects all images for deletion, unpublish listings.
+    Bans user and prevents user login, rejects all images for deletion,
+    unpublish listings.
 
-    Args:
-        request (object): GET/POST request from user.
-        _id (int): user id to ban
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
+
+    Parameters:
+        request (object): GET/POST request from user.#
+        _id (int): Target user to be banned.
     """
     # Get target user.
     user = get_object_or_404(CustomUser, id=_id)
 
     # Delete all current user sessions (in case logged in on multiple devices)
-    [s.delete() for s in Session.objects.all() if s.get_decoded().get('_auth_user_id') == user.id]
+    for session in Session.objects.all():
+        if session.get_decoded().get('_auth_user_id') == user.id:
+            session.delete()
 
     user.is_banned = True
     user.save()
 
     # Unpublish all listings
-    query = Q(owner_id = _id)
+    query = Q(owner_id=_id)
     ServerListing.objects.filter(query).update(status=0)
 
     # Unpublish all images and set for deletion
-    query = Q(user_id = _id)
-    image_expire = date.today() + timedelta(days = DAYS_TO_EXPIRE_IMAGE)
-    Images.objects.filter(query).update(status = 3, expiry = image_expire)
+    query = Q(user_id=_id)
+    image_expire = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
+    Images.objects.filter(query).update(status=3, expiry=image_expire)
 
 
 @staff_member_required
@@ -920,9 +1099,13 @@ def unban_user(request: object, _id: int):
     """
     Unbans target user.
 
-    Args:
-        request (object): GET/POST request from user.
-        _id (int): user id to ban
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
+
+    Parameters:
+        request (object): GET/POST request from user.#
+        _id (int): Target user to be banned.
     """
     # Get target user.
     user = get_object_or_404(CustomUser, id=_id)
@@ -930,8 +1113,9 @@ def unban_user(request: object, _id: int):
     user.save()
 
     # Un-expire all images
-    query = Q(user_id = _id)
-    Images.objects.filter(query).update(status = 0, expiry = None)
+    query = Q(user_id=_id)
+    Images.objects.filter(query).update(status=0, expiry=None)
+
 
 def login_view(request: object):
     """
@@ -943,19 +1127,17 @@ def login_view(request: object):
     Returns:
         render(): Loads html page.
     """
-
     error_message = None
-
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-
         # Check credentials are found and a match.
         user = authenticate(request, email=email, password=password)
-
-
         if user is None:
-            error_message = "Either user does not exist or password does not match account."
+            error_message = (
+                "Either user does not exist or password does not "
+                "match account."
+            )
         else:
             # Check if user is banned.
             if user.is_banned:
@@ -965,9 +1147,7 @@ def login_view(request: object):
             else:
                 login(request, user)
                 return redirect("my-account")
-
     form = LoginForm()
-
     return render(
         request,
         "registration/login.html",
@@ -993,8 +1173,10 @@ def password_reset_view(request: object):
         form = PasswordResetForm({'email': request.POST['email']})
         if form.is_valid():
             form.save(
-                subject_template_name='email_templates/password_reset_email.txt',
-                email_template_name='email_templates/password_reset_email.html',
+                subject_template_name=(
+                    'email_templates/password_reset_email.txt'),
+                email_template_name=(
+                    'email_templates/password_reset_email.html'),
                 request=request
             )
             return redirect("password_reset_done")
@@ -1006,11 +1188,16 @@ def password_reset_view(request: object):
         },
     )
 
+
 @staff_member_required
 @login_required
 def game_management(request: object):
     """
     Updates, adds or deletes games.
+
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
 
     Args:
         request (object): GET/POST request from user.
@@ -1020,9 +1207,6 @@ def game_management(request: object):
     """
 
     if request.method == "POST":
-
-        # New listing flag - default to False
-        new_listing = False
 
         # Let's see if the user is trying to delete a game.
         if (
@@ -1036,30 +1220,20 @@ def game_management(request: object):
         # Checking if updating a current game
         elif request.POST["id"]:
             form = GameManageForm(
-                request.POST, instance=get_object_or_404(Game, pk=request.POST["id"])
+                request.POST, instance=get_object_or_404(
+                    Game, pk=request.POST["id"]
+                    )
             )
-            # New listing flag - False
-            new_listing = False
+            if form.is_valid():
+                update_game(request, form)
 
         # Or if inputting a new game
         else:
             form = GameManageForm(request.POST)
-            # New listing flag - True
-            new_listing = True
-            # Allow object to the edited
-            request.POST._mutable = True
-            # Get next ID and assign slug
-            form.data["id"] = Game.objects.order_by("-id").first().id + 1
-            form.data["slug"] = form.data["slug"]
-            # Restrict object from being edited
-            request.POST._mutable = False
-
-        # Check form is valid and if so call next method.
-        if form.is_valid():
-            if new_listing:
-                add_new_game(request, form)
-            else:
-                update_game(request, form)
+            if form.is_valid():
+                form_data = form.data.copy()
+                form_data['id'] = Game.objects.order_by("-id").first().id + 1
+                add_new_game(request, GameManageForm(form_data))
 
     # Render page
     return render(
@@ -1165,19 +1339,23 @@ def tag_management(request: object):
     """
     Updates, adds or deletes tags.
 
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
+
     Args:
         request (object): GET/POST request from user.
 
     Returns:
         render (function): Loads html page
     """
-
     if request.method == "POST":
-        # New listing flag - default to False
-        new_listing = False
 
         # Let's see if the user is trying to delete a tag.
-        if ConfirmTagDeleteForm(request.POST) and "tag_delete_confirm" in request.POST:
+        if (
+            ConfirmTagDeleteForm(request.POST)
+            and "tag_delete_confirm" in request.POST
+        ):
             form = ConfirmTagDeleteForm(request.POST)
             delete_tag(form)
             return redirect("tag_management")
@@ -1185,29 +1363,18 @@ def tag_management(request: object):
         # Checking if updating a current tag
         elif request.POST["id"]:
             form = TagsManageForm(
-                request.POST, instance=get_object_or_404(Tag, pk=request.POST["id"])
+                request.POST, instance=get_object_or_404(
+                    Tag, pk=request.POST["id"])
             )
-            # New listing flag - False
-            new_listing = False
+            update_tag(form)
 
         # Or if inputting a new tag
         else:
             form = TagsManageForm(request.POST)
-            # New listing flag - True
-            new_listing = True
-            # Allow object to the edited
-            request.POST._mutable = True
-            # Get next ID and assign slug
-            form.data["id"] = Tag.objects.order_by("-id").first().id + 1
-            # Restrict object from being edited
-            request.POST._mutable = False
-
-        # Check form is valid and if so call next method.
-        if form.is_valid():
-            if new_listing:
-                add_new_tag(form)
-            else:
-                update_tag(form)
+            if form.is_valid():
+                form_data = form.data.copy()
+                form_data['id'] = Tag.objects.order_by("-id").first().id + 1
+                add_new_tag(TagsManageForm(form_data))
 
     # Render page
     return render(
@@ -1225,8 +1392,8 @@ def delete_tag(form: object):
     """
     Delete tag from the database.
 
-    Parameters:
-    form : object
+    Args:
+        form (object): Data used to delete tag.
     """
     if form.data["tag_delete_confirm"] == "delete" and form.data["id"]:
         item_id = form.data["id"]
@@ -1240,8 +1407,8 @@ def add_new_tag(form: object):
     """
     Saves new tag to database.
 
-    Parameters:
-    form : object
+    Args:
+        form (object): Data used to add tag.
     """
     # Save form to database as a new tag
     form.save()
@@ -1249,18 +1416,16 @@ def add_new_tag(form: object):
 
 def update_tag(form: object):
     """
-    Updates tag to database.
+    Update tag in database.
 
-    Parameters:
-    request : object.
-    form : object
+    Args:
+        form (object): Data used to update tag.
     """
     # Get correct tag from database
     tag = get_object_or_404(Tag, pk=form.data["id"])
     # Update values
     tag.name = form.data["name"]
     tag.slug = form.data["slug"]
-
     # Save tag object
     tag.save()
 
@@ -1269,45 +1434,45 @@ def update_tag(form: object):
 @login_required
 def staff_user_management_search(request: object):
     """
-    request.GET: Loads html page using render().
+    View to search for a member.
 
-    request.POST: Processes updating and deleting user.
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
 
     Args:
         request (object): GET/POST request from user.
 
     Returns:
-        render(): Loads html page
+        render(function): Loads html page
     """
-
-    if request.method == "POST":
-        pass
-
     # Render page
     return render(
         request,
         "staff/staff_user_management_search.html",
-        {
-
-        },
+        {},
     )
+
 
 @staff_member_required
 @login_required
 def staff_user_management_user(request: object, _id: int):
     """
-    request.GET: Loads html page using render().
-    request.POST: Processes adding, updating and deleting user.
+    Loads target user staff view account page of user.
+
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
 
     Args:
         request (object): GET/POST request from user.
-        _id (int): Received user ID
+        _id (int): Target user ID.
 
     Returns:
         render (function): Loads html page
     """
     user = get_object_or_404(CustomUser, id=_id)
-    server_listings = ServerListing.objects.filter(
+    listings = ServerListing.objects.filter(
         owner=user.id).order_by('-created_on')
     if request.method == "POST":
         # Let's see if the user is trying to delete a user.
@@ -1319,53 +1484,68 @@ def staff_user_management_user(request: object, _id: int):
         elif "ban_confirm" in request.POST:
             _id = request.POST['id']
             ban_user(request, _id)
-            return redirect("staff_user_management_user", _id=request.POST['id'])
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id']
+                )
 
         elif "unban" in request.POST:
             _id = request.POST['id']
             unban_user(request, _id)
-            return redirect("staff_user_management_user", _id=request.POST['id'])
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id']
+                )
 
         elif "delete_listing_confirm" in request.POST:
             # Let's see if the user is trying to delete the listing.
             if request.POST["delete_listing_confirm"] == "delete":
                 item = get_object_or_404(ServerListing, id=request.POST['id'])
                 item.delete()
-                return redirect("staff_user_management_user", _id=request.POST['id'])
+                return redirect(
+                    "staff_user_management_user", _id=request.POST['id']
+                    )
 
         elif "email-verify" in request.POST:
             # Send email verification to the user
             send_email_verification(request, user)
-            return redirect("staff_user_management_user", _id=request.POST['id'])
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id']
+                )
 
         elif "promote" in request.POST:
             promote_user_to_staff(request, request.POST['id'])
-            return redirect("staff_user_management_user", _id=request.POST['id'])
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id']
+                )
 
         elif "demote" in request.POST:
             demote_user_from_staff(request, request.POST['id'])
-            return redirect("staff_user_management_user", _id=request.POST['id'])
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id']
+                )
 
         else:
             form = UserForm(request.POST)
             update_user(form)
-            return redirect("staff_user_management_user", _id=request.POST['id'])
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id']
+                )
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
-    _list = [x[0] for x in server_listings.values_list('id')]
+    _list = [x[0] for x in listings.values_list('id')]
     query = Q(listing_id__in=_list)
     images_queryset = Images.objects.filter(query).distinct()
 
     # Pair images with server listing
     # And add bump count.
-    for index, value in enumerate(server_listings):
-        # try to pair image with server listing, if image not available or does not
-        # exist then set as None so a placeholder can be shown instead.
+    for key, value in enumerate(listings):
+        # try to pair image with server listing, if image not
+        # available or does not exist then set as None so a placeholder
+        # can be shown instead.
         try:
-            image = images_queryset.get(listing_id=server_listings[index].id).image
+            image = images_queryset.get(listing_id=value.id).image
 
-            match images_queryset.get(listing_id=server_listings[index].id).status:
+            match images_queryset.get(listing_id=value.id).status:
                 case 0:
                     status = "Awaiting review"
                 case 1:
@@ -1378,12 +1558,11 @@ def staff_user_management_user(request: object, _id: int):
         except ObjectDoesNotExist:
             image = None
             status = None
-        finally:
-            server_listings[index].image_url = image
-            server_listings[index].image_status = status
 
+        listings[key].image_url = image
+        listings[key].image_status = status
         # Adding bump count
-        server_listings[index].bump_count = server_listings[index].bumpCount()
+        listings[key].bump_count = value.bumpCount()
 
     # Render page
     return render(
@@ -1392,18 +1571,18 @@ def staff_user_management_user(request: object, _id: int):
         {
             "form": UserForm(instance=user),
             "form_2": DeleteConfirmForm(),
-            "server_listings": server_listings
+            "server_listings": listings
         },
     )
 
 
 def promote_user_to_staff(request: object, target_id: int):
     """
-    Promotes target user to staff member
+    Promotes target user to staff member.
 
     Args:
         request (object): GET/POST request from user.
-        email (string): username given
+        target_id (int): Target user ID.
     """
     # Check request user has correct level before proceeding
     if request.user.is_superuser:
@@ -1417,11 +1596,11 @@ def promote_user_to_staff(request: object, target_id: int):
 
 def demote_user_from_staff(request: object, target_id: int):
     """
-    Demote target user as staff member
+    Demote target user as staff member.
 
     Args:
         request (object): GET/POST request from user.
-        email (string): username given
+        target_id (int): Target user ID.
     """
     # Check request user has correct level before proceeding
     if request.user.is_superuser:
@@ -1435,11 +1614,10 @@ def demote_user_from_staff(request: object, target_id: int):
 
 def update_user(_form: dict):
     """
-    Updates target user from form
+    Updates target user from form.
 
     Args:
-        request (object): GET/POST request from user.
-        email (string): username given
+        _form (dict): Data to update user.
     """
     # Get correct user from database
     user = get_object_or_404(CustomUser, pk=_form["id"])
@@ -1462,21 +1640,21 @@ def update_user(_form: dict):
     # Save user object
     try:
         user.save()
-    except IntegrityError as e:
-        if 'UNIQUE constraint failed: auth_user.username' in e.args:
-            return { 'result': False, 'reason': "Username already taken"}
-        if 'UNIQUE constraint failed: auth_user.email' in e.args:
-            return { 'result': False, 'reason': "Email address already taken"}
+    except IntegrityError as err:
+        if 'UNIQUE constraint failed: auth_user.username' in err.args:
+            return {'result': False, 'reason': "Username already taken"}
+        if 'UNIQUE constraint failed: auth_user.email' in err.args:
+            return {'result': False, 'reason': "Email address already taken"}
 
-    return { 'result': True, 'reason': "No problems"}
+    return {'result': True, 'reason': "No problems"}
 
 
 def delete_user(form: object):
     """
-    Delete user from the database.
+    Delete target user from database.
 
-    Parameters:
-    form : object
+    Args:
+        form (dict): Data to delete user.
     """
     if form.data["delete_confirm"] == "delete" and form.data["id"]:
         item_id = form.data["id"]
@@ -1488,52 +1666,55 @@ def delete_user(form: object):
 
 def check_username(username: str):
     """
-    Checks username given conforms to rules
+    Checks username given conforms to rules.
 
     Args:
-        username (string): username given
+        username (string): Username given.
 
     Returns:
         {result (bool), reason (string)}
 
     """
-
     if " " in username:
-        return { 'result': False, 'reason': "No spaces allowed"}
-
+        return {'result': False,
+                'reason': "No spaces allowed"}
     if len(username) < 5:
-        return { 'result': False, 'reason': "Must be at least 5 characters long"}
-
+        return {'result': False,
+                'reason': "Must be at least 5 characters long"}
     if len(username) > 20:
-        return { 'result': False, 'reason': "Must be at 20 characters or less"}
+        return {'result': False,
+                'reason': "Must be at 20 characters or less"}
+    return {'result': True,
+            'reason': ""}
 
-    return { 'result': True, 'reason': ""}
 
-
-def check_email(email):
+def check_email(email: str):
     """
-    Checks email address given conforms to rules
+    Checks email address given conforms to rules.
 
     Args:
-        email (string): username given
+        email (string): Username given.
 
     Returns:
         {result (bool), reason (string)}
-
     """
-    pat = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-    if re.match(pat,email) is None:
-        return { 'result': False, 'reason': "Email address not valid"}
-    return { 'result': True, 'reason': ""}
+    pat = (
+        r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#"
+        "#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9"
+        r"-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
+        )
+    if re.match(pat, email) is None:
+        return {'result': False, 'reason': "Email address not valid"}
+    return {'result': True, 'reason': ""}
 
 
-def update_email(request, _obj):
+def update_email(request: object, _obj: object):
     """
     Update user email after checking it conforms.
 
     Args:
         request (object): GET/POST request from user.
-        _obj (string): username given
+        _obj (object): Object with email address 1 and 2.
 
     Returns:
         {result (bool), reason (string)}
@@ -1544,7 +1725,7 @@ def update_email(request, _obj):
         return result
 
     if _obj['email1'] != _obj['email2']:
-        return { 'result': False, 'reason': "Does not match"}
+        return {'result': False, 'reason': "Does not match"}
 
     # Get correct user from database
     user = get_object_or_404(CustomUser, id=request.user.id)
@@ -1553,11 +1734,11 @@ def update_email(request, _obj):
     # Save user object
     try:
         user.save()
-    except IntegrityError as e:
-        if 'UNIQUE constraint failed: auth_user.email' in e.args:
-            return { 'result': False, 'reason': "Email address already taken"}
+    except IntegrityError as err:
+        if 'UNIQUE constraint failed: auth_user.email' in err.args:
+            return {'result': False, 'reason': "Email address already taken"}
 
     # Send verification email to the user.
     send_email_verification(request, user)
 
-    return { 'result': True, 'reason': ""}
+    return {'result': True, 'reason': ""}
