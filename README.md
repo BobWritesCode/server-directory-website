@@ -35,8 +35,6 @@ Coming soon...
     - [Site Admin](#site-admin)
   - [Initial Concept](#initial-concept)
     - [Wireframes](#wireframes)
-      - [Desktop](#desktop)
-      - [Mobile](#mobile)
     - [Colour Scheme](#colour-scheme)
     - [Typography](#typography)
     - [Imagery](#imagery)
@@ -186,11 +184,14 @@ Below are some wireframe that I designed to help build and represent the design 
 
 ![Create Listing on mobile](./README_Images/wireframe_create_listing_mobile.png)
 
-#### Desktop
-
-#### Mobile
-
 ### Colour Scheme
+
+The 4 main colour's hex codes for this site are: D63600, F8F9FA, 262626, 151515.\
+This 4 colours contrast very nicely against each other, and the white text against the other 3 colours pass WCAG contrast scores.
+
+![Colour scheme](./README_Images/colour_scheme_text_example.png)
+
+![Colour scheme](./README_Images/colour_scheme.png)
 
 ### Typography
 
