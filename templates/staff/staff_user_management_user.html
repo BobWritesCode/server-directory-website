@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% load cloudinary %}
 {% block head %}
-{% endblock head %}
+{% endblock %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 text-light">
     <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
@@ -246,5 +247,5 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="../static/js/script_user_management_user.js"></script>
+<script src="{% static 'js/script_user_management_user.js' %}"></script>
 {% endblock %}

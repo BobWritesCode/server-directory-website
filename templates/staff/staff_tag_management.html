@@ -1,9 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% block head %}
 <!-- Scripts / styles specific for this page -->
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-{% endblock head %}
+{% endblock %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 text-light">
     <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
@@ -76,5 +77,5 @@
 {% block scripts %}
 <!-- Scripts specific for this page -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="../static/js/script_tag_management.js"></script>
+<script src="{% static 'js/script_tag_management.js'%}"></script>
 {% endblock %}

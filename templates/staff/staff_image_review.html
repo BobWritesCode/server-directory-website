@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% load cloudinary %}
 {% block content %}
@@ -34,5 +35,5 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script src="../static/js/script_image_approval.js"></script>
+<script src="{% static 'js/script_image_approval.js'%}"></script>
 {% endblock %}
