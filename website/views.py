@@ -529,7 +529,7 @@ def my_account(request: object):
 
         listings[key].image_url = image
         listings[key].image_status = status
-        listings[key].bump_count = value.bumpCount()
+        listings[key].bump_count = value.bump_counter()
 
     form = ProfileForm(instance=request.user)
     form_2 = ConfirmAccountDeleteForm(instance=request.user)
@@ -703,7 +703,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
 
     # Now now longer required to to stay a queryset, convert to list
     # and reorder by bump count.
-    listings = sorted(listings.all(), key=lambda a: a.bumpCount(),
+    listings = sorted(listings.all(), key=lambda a: a.bump_counter(),
                       reverse=True)
 
     # Pair images with server listing.
@@ -718,7 +718,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
             image = None
 
         listings[key].image_url = image
-        listings[key].bump_count = value.bumpCount()
+        listings[key].bump_count = value.bump_counter()
 
     return render(
         request,
@@ -781,7 +781,7 @@ def listing_detail(request: object, slug: str):
     query = Q(status=1) & Q(listing_id=server.id)
     images = Images.objects.filter(query).distinct()
 
-    server.bump_count = server.bumpCount()
+    server.bump_count = server.bump_counter()
 
     return render(
         request,
@@ -992,7 +992,7 @@ def call_server(request: object):
                 tags = Tag.objects.filter(query).order_by('name')
                 result = {
                     'success': True,
-                    'game': game.toJSON(),
+                    'game': game.to_json(),
                     'game_tags': serializers.serialize('json', tags),
                 }
 
@@ -1000,7 +1000,7 @@ def call_server(request: object):
                 tag = get_object_or_404(Tag, pk=content[1])
                 result = {
                     'success': True,
-                    'tag': tag.toJSON(),
+                    'tag': tag.to_json(),
                 }
 
             case 'search_users-username':
@@ -1562,7 +1562,7 @@ def staff_user_management_user(request: object, _id: int):
         listings[key].image_url = image
         listings[key].image_status = status
         # Adding bump count
-        listings[key].bump_count = value.bumpCount()
+        listings[key].bump_count = value.bump_counter()
 
     # Render page
     return render(
