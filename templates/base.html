@@ -19,12 +19,12 @@
         {% block head %}
         {% endblock head %}
     </head>
-    <body class="d-flex flex-column h-100 main-bg bg-dark">
+    <body class="d-flex flex-column h-100 bg-main">
         {% csrf_token %}
         <!-- Navigation -->
         <nav
-            class="container-fluid px-2 d-flex justify-content-between navbar sticky-top navbar-expand-md navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="{% url 'home' %}"><i class="fa-solid fa-gamepad"></i> Gamer's-verse</a>
+            class="container-fluid px-2 d-flex justify-content-between navbar sticky-top navbar-expand-md navbar-expand-lg navbar-light bg-orange text-light">
+            <a class="navbar-brand  text-light" href="{% url 'home' %}"><i class="fa-solid fa-gamepad"></i> Gamer's-verse</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02"
                 aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -32,38 +32,38 @@
             <div class="collapse navbar-collapse" style="flex-grow: unset;" id="navbarTogglerDemo02">
                 <ul class="navbar-nav mt-2 mt-lg-0">
                     {% if user.is_authenticated %}
-                    <li class="navbar-text">
+                    <li class="navbar-text text-light">
                         <strong>Hi {{ user.username }}!</strong>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'my-account' %}">My Account</a>
+                        <a class="nav-link text-light" href="{% url 'my-account' %}">My Account</a>
                     </li>
                     {% if user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'staff_account' %}">Admin</a>
+                    <li class="nav-item text-light">
+                        <a class="nav-link text-light" href="{% url 'staff_account' %}">Admin</a>
                     </li>
                     {% endif %}
-                    <li class="nav-item">
-                        <a class="ms-1 me-3 btn btn-outline-secondary" href="{% url 'logout' %}">Log Out</a>
+                    <li class="nav-item text-light">
+                        <a class="ms-1 me-3 btn btn-outline-light" href="{% url 'logout' %}">Log Out</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="ms-1 nav-link" href="{% url 'login' %}">Login</a>
+                        <a class="ms-1 nav-link text-light" href="{% url 'login' %}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="ms-1 me-3 btn btn-outline-primary" href="{% url 'signup' %}">Sign Up</a>
+                        <a class="ms-1 me-3 btn btn-outline-light" href="{% url 'signup' %}">Sign Up</a>
                     </li>
                     {% endif %}
                 </ul>
             </div>
         </nav>
-        <main class="flex-shrink-0 main-bg fill">
+        <main class="flex-shrink-0 main-bg fill flex-grow-1 text-orange">
             {% block content %}
             <!-- Content Goes here -->
             {% endblock content %}
         </main>
         <!-- Footer -->
-        <footer class="flex-shrink-0 bg-secondary pt-3 pb-3 text-light">
+        <footer class="flex-shrink-0 bg-secondary pt-3 pb-3 bg-orange text-light">
             <div class="container">
                 <div class="row text-center mb-1">
                     <a class="navbar-brand" href="{% url 'home' %}"><i class="fa-solid fa-gamepad"></i> Gamer's-verse</a>

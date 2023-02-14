@@ -8,7 +8,7 @@
         <h1 class="position-absolute top-50 start-50 translate-middle text-light text-center w-100"><i class="fa-solid fa-gamepad"></i> GAMER'S-VERSE</h1>
     </div>
 
-    <div class="container-fluid bg-1 position-relative" style="height: 200px;">
+    <div class="container-fluid position-relative bg-semi" style="height: 200px;">
         <h2 class="position-absolute top-50 start-50 translate-middle text-light text-center">FIND YOUR NEW PERFECT HOME</h2>
     </div>
 
@@ -20,10 +20,10 @@
                 <h3 class="text-light">Find a private server by first selecting which game you interested in first:</h3>
             </div>
 
-            <div class="container-fluid position-relative d-flex flex-wrap justify-content-center">
+            <div class="container-fluid position-relative d-flex flex-wrap justify-content-center mb-3">
                 {% for game in games %}
-                <a href="{% url 'server-list' game.slug %}" class="btn btn-dark p-0 m-1 ">
-                    <div class="bg-1 rounded-3" style="width: 18rem;">
+                <a href="{% url 'server-list' game.slug %}" class="btn btn-dark bg-semi p-1 m-1">
+                    <div class="bg-1 rounded-3 h-100" style="width: 18rem;">
                         <div class="p-1">
                             <img src="{{game.image.url}}" alt="Game cover for {{game.name}}" class="w-100">
                         </div>

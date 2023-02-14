@@ -1,42 +1,5 @@
 :root {
-    --aqua: rgb(57, 181, 181);
-}
-
-.height100vh {
-    height: 100vh;
-}
-
-.tag {
-    background-color: var(--aqua);
-}
-
-.text-aqua {
-    color: var(--aqua);
-}
-
-.bg-1 {
-    background-color: rgba(255,255,255,0.05);
-}
-
-.bg-2 {
-    background-color: rgb(41, 25, 25);
-}
-
-.bg-3 {
-    background-color: #00000071;
-}
-
-.fill {
-    flex: 1 1 auto;
-}
-
-.btn-discord {
-    background-color: #7289DA;
-    color: inherit;
-}
-
-.btn-discord:hover {
-    background-color: #5f74c0;
+    --_orange: #d63600;
 }
 
 .bumps {
@@ -60,7 +23,31 @@
     padding: 0 10px 0 10px;
 }
 
-/* -------- BootStrap */
+.bg-main {
+    background-color: rgb(21, 21, 21);
+}
+
+.bg-orange {
+    background-color: var(--_orange) !important;
+}
+
+.border-orange {
+    border-color: var(--_orange) !important;
+}
+
+.bg-semi {
+    background-color: rgba(255, 255, 255, 0.076);
+}
+
+.btn-outline-orange {
+    border-color: var(--_orange) !important;
+}
+
+.text-orange {
+    color: var(--_orange) !important;
+}
+
+
 .form-control-plaintext {
     background-color: rgba(67, 67, 67, 0.7);
     border: 0 !important;

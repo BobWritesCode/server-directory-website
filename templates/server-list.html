@@ -10,7 +10,7 @@
     <h2 class="text-light">Server Listings</h2>
     <hr class="border border-light border-3 opacity-75 w-100">
 </div>
-<div class="container-fluid no-gutters justify-content-end d-flex flex-column-reverse flex-md-row ps-0 pe-0 text-light">
+<div class="container-fluid no-gutters justify-content-end d-flex flex-column-reverse flex-md-row ps-0 pe-0 text-light h-100">
 
     <!-- Main content -->
     <div class="col-12 col-md-8 pb-2">
@@ -19,7 +19,7 @@
             <hr class="border border-light border-3 opacity-75 w-100">
         </div>
         {% for item in server_listings %}
-        <div class="col-12 p-1 pb-0">
+        <div class="col-12 p-2 pb-0">
             <a href="{% url 'listing_detail' item.slug %}" class="btn btn-dark text-decoration-none p-0 w-100">
                 <div class="d-flex p-1 bg-1 rounded-3">
                     <!-- Listing image-->
@@ -38,9 +38,7 @@
                     </div>
                     <div class="col-9 p-1 position-relative">
                         <!-- Listing title -->
-
-                            <h5 class="text-light">{{ item.title|escape }}</h5>
-
+                        <h5 class="text-light">{{ item.title|escape }}</h5>
                         <!-- Listing tags -->
                         <p>
                             {% for tag in item.tags.all %}
@@ -50,7 +48,7 @@
                         <!-- Listing short decryption -->
                         <div class="text-light text-break mb-0">{{ item.short_description|safe }}</div>
                         <!-- Listing bump counter and bump button -->
-                        <div class="d-flex position-absolute bottom-0 end-0">
+                        <div class="d-flex position-absolute bottom-0 end-0 ps-2 bg-semi rounded-2">
                             <p class="mb-0 align-self-center me-1">{{item.bump_count}}</p>
                             {% if user.is_authenticated %}
                             {% if item.id in bumps_queryset %}
@@ -60,11 +58,11 @@
                             <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
                                 data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
                             {% else %}
-                            <button type="button" class="btn btn-dark" data-item="{{ item.pk }}"
+                            <button type="button" class="btn btn-dark border-light" data-item="{{ item.pk }}"
                                 data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
                             {% endif %}
                             {% else %}
-                            <button type="button" class="btn btn-dangeropacity-50" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
+                            <button type="button" class="btn btn-dark border-orange text-orange" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
                             {% endif %}
                         </div>
 
@@ -76,7 +74,7 @@
     </div>
 
     <!-- Sidebar -->
-    <div class="col-12 col-md-4 bg-3 me-0 pb-3 pb-md-0 text-light ps-3 pt-3">
+    <div class="d-flex flex-column col-12 col-md-4 me-0 ps-3 pt-3 pb-3 pb-md-0 text-light bg-semi">
         <h3 class="mb-3">Filter search</h3>
         <hr class="border border-light border-2 opacity-75 mt-0 ms-2 me-3">
         <div class="mb-3">
