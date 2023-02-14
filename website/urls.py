@@ -59,9 +59,10 @@ urlpatterns = [
         name='signup_verify_email'
     ),
 
-    path('activate/<uidb64>/<token>/',
-    views.activate,
-    name='activate'
+    path(
+        'activate/<uidb64>/<token>/',
+        views.activate,
+        name='activate'
     ),
 
     path(
