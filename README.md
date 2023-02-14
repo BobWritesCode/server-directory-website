@@ -152,11 +152,15 @@ Below are some wireframe that I designed to help build and represent the design 
 
 #### Homepage - Mobile
 
+![Homepage on mobile](./README_Images/wireframe_homepage_mobile.png)
+
 #### Listings - PC
 
 ![Listings](./README_Images/wireframe_listings.png)
 
 #### Listings - Mobile
+
+![Listings on mobile](./README_Images/wireframe_listings_mobile.png)
 
 #### Full listing - PC
 
@@ -164,17 +168,23 @@ Below are some wireframe that I designed to help build and represent the design 
 
 #### Full listing - Mobile
 
+![Full listing on mobile](./README_Images/wireframe_full_listing_mobile.png)
+
 #### My Account - PC
 
 ![My Account](./README_Images/wireframe_my_account.png)
 
 #### My Account - Mobile
 
+![My Account on mobile](./README_Images/wireframe_my_account_mobile.png)
+
 #### Create Listing - PC
 
 ![Create Listing](./README_Images/wireframe_create_listing.png)
 
 #### Create Listing - Mobile
+
+![Create Listing on mobile](./README_Images/wireframe_create_listing_mobile.png)
 
 #### Desktop
 
