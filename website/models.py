@@ -1,10 +1,13 @@
+"""
+All models for app
+"""
+import json
+from datetime import timedelta, date
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 from cloudinary.models import CloudinaryField
-from datetime import timedelta, date
 from tinymce import models as tinymce_models
-import json
 
 from .constants import DAYS_TO_EXPIRE_BUMP
 
@@ -12,6 +15,40 @@ STATUS = ((0, 'Draft'), (1, 'Published'))
 
 
 class CustomUser(AbstractUser):
+    """
+    A class to represent a user.
+
+    ...
+
+    Attributes
+    ----------
+    id : int : PRIMARY KEY
+        Unique identity number for user.
+    username : str : REQUIRED
+        Chosen by user to represent themselves.
+    first_name : str
+        Optional to put real first name.
+    email : str : USERNAME_FIELD
+        User's primary email address.
+    email_verified : bool
+        Has use completed email verification.
+    is_staff : bool
+        Is the user a staff user.
+    is_active : bool
+        Can the user log in.
+    is_banned : bool
+        Has the account been banned.
+    date_joined : datetime
+        Date and time user originally signed up.
+
+    Methods
+    -------
+    __str__():
+        returns email address as the class str.
+
+    to_json():
+        converts class into a json string.
+    """
     id = models.BigIntegerField(primary_key=True)
     username = models.CharField(max_length=20, unique=True, blank=False)
     first_name = models.CharField(max_length=20)
@@ -29,27 +66,115 @@ class CustomUser(AbstractUser):
         db_table = 'auth_user'
 
     def __str__(self):
+        """
+        Returns email address as the class str.
+
+        Args:
+            None
+
+        Returns:
+            email: str
+        """
         return f"{self.email}"
 
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
+    def to_json(self):
+        """
+        Returns class as a JSON string.
+
+        Args:
+            None
+
+        Returns:
+            Class as a JSON: str
+        """
+        return json.dumps(
+            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
+            )
 
 
 class Tag(models.Model):
+    """
+    A class to represent a tag for a listing and game.
+
+    ...
+
+    Attributes
+    ----------
+    id : int : PRIMARY KEY
+        Unique identity number for user.
+    name : str
+        The tag name.
+    slug : str
+        The slug which is used in the url.
+
+    Methods
+    -------
+    __str__():
+        returns name as the class str.
+
+    to_json():
+        converts class into a json string.
+    """
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=20, unique=True)
     slug = models.SlugField(max_length=20, unique=True)
 
     def __str__(self):
+        """
+        Returns name as the class str.
+
+        Args:
+            None
+
+        Returns:
+            name: str
+        """
         return f"{self.name}"
 
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
+    def to_json(self):
+        """
+        Returns class as a JSON string.
+
+        Args:
+            None
+
+        Returns:
+            Class as a JSON: str
+        """
+        return json.dumps(
+            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
+            )
 
 
 class Game(models.Model):
+    """
+    A class to represent a game.
+
+    ...
+
+    Attributes
+    ----------
+    id : int : PRIMARY KEY
+        Unique identity number for user.
+    name : str
+        The tag name.
+    slug : str
+        The slug which is used in the url.
+    tags: ManyToMany
+        Links Game class with Tag class.
+    image: Cloudinary
+        Allows upload to Cloudinary hosting service.
+    status: int
+        Lets user pick from choices=STATUS.
+
+    Methods
+    -------
+    __str__():
+        returns name as the class str.
+
+    to_json():
+        converts class into a json string.
+    """
     id = models.BigIntegerField(primary_key=True)
     name = models.CharField(max_length=50, blank=False, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
@@ -58,14 +183,92 @@ class Game(models.Model):
     status = models.IntegerField(choices=STATUS, default=0)
 
     def __str__(self):
+        """
+        Returns name as the class str.
+
+        Args:
+            None
+
+        Returns:
+            name: str
+        """
         return f"{self.name}"
 
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
+    def to_json(self):
+        """
+        Returns class as a JSON string.
+
+        Args:
+            None
+
+        Returns:
+            Class as a JSON: str
+        """
+        return json.dumps(
+            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
+            )
 
 
 class ServerListing(models.Model):
+    """
+    A class to represent a listing.
+
+    ...
+
+    Attributes
+    ----------
+    game : ForeignKey
+        Links listing to a Game class.
+    owner : ForeignKey
+        Links listing to a CustomUser class.
+    title: str
+        The name of the listing.
+    slug: str
+        The slug which is used in the url.
+    logo: CloudinaryField
+        Allows upload to Cloudinary hosting service.
+    tags: ManyToMany
+        Links ServerListing class with Tag class.
+    short_description: str
+        A short introductory text field to introduce the listing.
+    long_description: str
+        A much longer description for users to view more detail about
+        the listing.
+    created_on: DateTime
+        When the listing was created.
+    updated_on: DateTime
+        When the listing was last updated.
+    discord: str
+        The invite code used by Discord to invite new members.
+        www.discord.com/?????????
+    tiktok: str
+        The profile link to share with users a listing TikTok page.
+        www.tiktok.com/@???????
+    status: int
+        Lets user pick from choices=STATUS.
+    bump_count: int
+        Allows us to keep track of how many bumps the listing current has.
+
+    Methods
+    -------
+    __str__():
+        Returns title as the class str.
+
+    bumpCount():
+        Returns total amount of active bumps the listing has.
+        Gets bump list from the Bumps class.
+
+    number_of_tags():
+        Returns total amount of tags currently linked to the listing.
+
+    to_json():
+        Converts class into a json string.
+
+    save():
+        Saves the object to the database.
+        If new listing this method will assign a slug by getting the
+        next available ID to use.
+    """
     game = models.ForeignKey(
         Game, on_delete=models.CASCADE, related_name="ServerListing")
     owner = models.ForeignKey(
@@ -87,19 +290,68 @@ class ServerListing(models.Model):
         ordering = ['-created_on']
 
     def __str__(self):
+        """
+        Returns title as the class str.
+
+        Args:
+            None
+
+        Returns:
+            title: str
+        """
         return self.title
 
-    def bumpCount(self):
+    def bump_counter(self):
+        """
+        returns total amount of active bumps the listing has.
+        Gets bump list from the Bumps class.
+
+        Args:
+            None
+
+        Returns:
+            bump count: int
+        """
         return Bumps.objects.filter(listing=self.pk).count()
 
     def number_of_tags(self):
+        """
+        Returns total amount of tags currently linked to the listing.
+
+        Args:
+            None
+
+        Returns:
+            number of tags: int
+        """
         return self.tags.count()
 
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__,
-            sort_keys=True, indent=4)
+    def to_json(self):
+        """
+        Returns class as a JSON string.
+
+        Args:
+            None
+
+        Returns:
+            Class as a JSON: str
+        """
+        return json.dumps(
+            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
+            )
 
     def save(self, *args, **kwargs):
+        """
+        When saving object to database this method will check if it's a
+        new entry. If so it will assign a new slug based on the next
+        available ID.
+
+        Args:
+            None
+
+        Returns:
+            none
+        """
         if self.pk:
             self.slug = f'Listing-{self.pk}'
         else:
@@ -113,8 +365,38 @@ class ServerListing(models.Model):
 
 
 class Bumps(models.Model):
+    """
+    A class to represent a Bump.
 
-    def set_expiry():
+    ...
+
+    Attributes
+    ----------
+    user : ForeignKey
+        Links to a CustomUser class.
+    listing : ForeignKey
+        Links to a ServerListing class.
+    date_added: Date
+        Date bump was created.
+    expiry: Date
+        Date bump will expire, ready to be removed.
+
+    Methods
+    -------
+    set_expiry():
+        When bump is created, an expiry date is also applied.
+    """
+
+    def set_expiry(self):
+        """
+        Returns expiry date when bump is created.
+
+        Args:
+            None
+
+        Returns:
+            expiry date: Date
+        """
         return date.today() + timedelta(days=DAYS_TO_EXPIRE_BUMP)
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -124,17 +406,50 @@ class Bumps(models.Model):
 
 
 class Images(models.Model):
+    """
+    A class to represent an Image.
+
+    ...
+
+    Attributes
+    ----------
+    image : Cloudinary
+        Allows upload to Cloudinary hosting service.
+    public_id : str
+        Cloudinary image public id.
+    user: ForeignKey
+        The uploader. Links to a CustomUser class.
+    reviewed_by: ForeignKey
+        Which staff member reviewed the image. Links to a CustomUser class.
+    listing: ForeignKey
+        Links to a ServerListing class.
+    status: int
+        User can choose from 1 of 4 options. Unapproved, Approved, Rejected
+        or 'Rejected and User banned'.
+    date_added: Date
+        Date image was uploaded to Cloudinary.
+    expiry: Date: OPTIONAL
+        If a date is present, the image will de deleted on this date.
+
+    Methods
+    -------
+    None
+    """
 
     image = CloudinaryField('image', default='placeholder')
     public_id = models.CharField(max_length=50, unique=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user_uploaded")
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name="user_uploaded"
+        )
     reviewed_by = models.ForeignKey(
         CustomUser,
         blank=True,
         null=True,
         on_delete=models.DO_NOTHING,
         related_name="user_approved"
-    )
+        )
     listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=(
