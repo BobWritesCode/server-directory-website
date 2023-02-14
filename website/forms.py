@@ -1,3 +1,6 @@
+"""
+All forms for website app
+"""
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
@@ -9,14 +12,43 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, HTML
 from crispy_forms.bootstrap import InlineRadios
 
-from .constants import STATUS
 from .models import (
     CustomUser, Game, Tag, ServerListing, Images
 )
 
 
 class UserForm(forms.ModelForm):
-    '''A for to load the user profile'''
+    """
+    A form to represent a user.
+    Used to update user information.
+
+    ...
+
+    Meta
+    ----------
+    model: CustomUser
+
+    Attributes
+    ----------
+    id : Integer
+        Unique identity number for user.
+    username : Char : REQUIRED
+        Chosen by user to represent themselves.
+    email : Char : REQUIRED
+        User's primary email address.
+    email_verified : Boolean : DISABLED
+        Has use completed email verification.
+    is_staff : Boolean : DISABLED
+        Is the user a staff user.
+    is_active : Boolean
+        Can the user log in.
+    is_banned : Boolean : DISABLED
+        Has the account been banned.
+
+    Methods
+    -------
+    none
+    """
     id = forms.IntegerField(label="ID")
     username = forms.CharField(label="Username", max_length=20, required=True)
     first_name = forms.CharField(label="First name", max_length=20)
@@ -28,12 +60,34 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'first_name', 'email', 'email_verified', 'is_staff', 'is_active', 'is_banned']
+        fields = [
+            'id', 'username', 'first_name', 'email', 'email_verified',
+            'is_staff', 'is_active', 'is_banned'
+            ]
+
 
 class ProfileForm(forms.ModelForm):
-    '''
-    A form that allows the user to update their profile information.
-    '''
+    """
+    A form to represent a user.
+    User for email updating.
+
+    ...
+
+    Meta
+    ----------
+    model: CustomUser
+
+    Attributes
+    ----------
+    email : Email : REQUIRED
+        User's primary email address.
+    email_verified : Boolean : DISABLED
+        Has use completed email verification.
+
+    Methods
+    -------
+    none
+    """
     email = forms.EmailField(label=("Email address"), required=True)
     email_verified = forms.BooleanField(label=("Verified?"), disabled=True)
 
@@ -43,6 +97,25 @@ class ProfileForm(forms.ModelForm):
 
 
 class SignupForm(UserCreationForm):
+    """
+    A form to represent a user.
+    User for user sign up.
+
+    ...
+
+    Meta
+    ----------
+    model: CustomUser
+
+    Attributes
+    ----------
+    email : Email
+        User's primary email address.
+
+    Methods
+    -------
+    none
+    """
     email = forms.EmailField(max_length=200, help_text='Required')
 
     class Meta:
@@ -51,14 +124,33 @@ class SignupForm(UserCreationForm):
 
 
 class ConfirmAccountDeleteForm(forms.ModelForm):
-    '''
-    A form for user to confirm deletion of their account.
-    '''
+    """
+    A form to represent a user.
+    Used for account deletion.
+
+    ...
+
+    Meta
+    ----------
+    model: CustomUser
+
+    Attributes
+    ----------
+    confirm : Char : REQUIRED
+        Ask for user to type a specific phrase.
+
+    Methods
+    -------
+    none
+    """
     confirm = forms.CharField(
-        label=f'To confirm deletion please type "remove" in the below box and then hit confirm:',
+        label=(
+            'To confirm deletion please type "remove" in the'
+            'below box and then hit confirm:'),
         max_length=10,
-        error_messages={
-            'required': f'To confirm deletion please type "<strong>remove</strong>" in the below box and then hit confirm'},
+        error_messages={'required': (
+            'To confirm deletion please type "<strong>remove</strong>" '
+            'in the below box and then hit confirm')},
         required=True,
     )
 
@@ -68,14 +160,33 @@ class ConfirmAccountDeleteForm(forms.ModelForm):
 
 
 class ConfirmServerListingDeleteForm(forms.ModelForm):
-    '''
-    A form for user to confirm deletion a server listing.
-    '''
+    """
+    A form to represent a Listing.
+    Used for listing deletion.
+
+    ...
+
+    Meta
+    ----------
+    model: ServerListing
+
+    Attributes
+    ----------
+    server_listing_delete_confirm : Char : REQUIRED
+        Ask for user to type a specific phrase.
+
+    Methods
+    -------
+    none
+    """
     server_listing_delete_confirm = forms.CharField(
-        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        label=(
+            'To confirm deletion please type "delete" '
+            'in the below box and then hit confirm:'),
         max_length=10,
-        error_messages={
-            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        error_messages={'required': (
+            'To confirm deletion please type "<strong>delete</strong>" '
+            'in the below box and then hit confirm')},
         required=True,
     )
 
@@ -85,14 +196,33 @@ class ConfirmServerListingDeleteForm(forms.ModelForm):
 
 
 class ConfirmGameDeleteForm(forms.ModelForm):
-    '''
-    A form for user to confirm deletion a game.
-    '''
+    """
+    A form to represent a Game.
+    Used for game deletion.
+
+    ...
+
+    Meta
+    ----------
+    model: Game
+
+    Attributes
+    ----------
+    game_delete_confirm : Char : REQUIRED
+        Ask for user to type a specific phrase.
+
+    Methods
+    -------
+    none
+    """
     game_delete_confirm = forms.CharField(
-        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        label=(
+            'To confirm deletion please type "delete" in the '
+            'below box and then hit confirm:'),
         max_length=10,
-        error_messages={
-            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        error_messages={'required': (
+            'To confirm deletion please type "<strong>delete</strong>" '
+            'in the below box and then hit confirm')},
         required=True,
     )
 
@@ -102,26 +232,76 @@ class ConfirmGameDeleteForm(forms.ModelForm):
 
 
 class UserUpdateEmailAddressForm(forms.Form):
-    '''
-    A form for user to update their email address.
-    '''
+    """
+    A form used for user email update.
+
+    ...
+
+    Meta
+    ----------
+    None
+
+    Attributes
+    ----------
+    email : Email : REQUIRED
+        Ask for user to type their email address.
+    email_confirm : Email : REQUIRED
+        Ask for user to retype their email address.
+
+    Methods
+    -------
+    none
+    """
     email = forms.EmailField(
-        label=f'New email address:',
-        error_messages={'required': f'Required'},
+        label='New email address:',
+        error_messages={'required': 'Required'},
         required=True,
     )
 
     email_confirm = forms.EmailField(
-        label=f'Repeat new email address:',
-        error_messages={'required': f'Required'},
+        label='Repeat new email address:',
+        error_messages={'required': 'Required'},
         required=True,
     )
 
 
 class CreateServerListingForm(forms.ModelForm):
-    '''
+    """
     A form that allows the user to create a server listing.
-    '''
+
+    ...
+
+    Meta
+    ----------
+    model : ServerListing
+
+    Attributes
+    ----------
+    game : ModelChoice : REQUIRED
+        Select game from the Game model class.
+    tags : ModelMultipleChoice : REQUIRED
+        Select multiple tags from the Tag model class.
+    title : Char : REQUIRED
+        User to provide name/title of server listing.
+    short_description : Char : REQUIRED
+        Provide a short description of the listing.
+    long_description : Char : REQUIRED
+        Provide a long description of the listing.
+    status : TypedChoice : REQUIRED
+        Choose to have listing as draft or published.
+        (1, "Published"), (0, "Draft")
+    discord : Char : REQUIRED
+        Provide discord invite code.
+        www.discord.com/?????????
+    tiktok : Char
+        Provide tiktok profile url.
+        www.tiktok.com/@?????????
+
+    Methods
+    -------
+    __init__():
+        A form helper to provide the layout of the form.
+    """
 
     game = forms.ModelChoiceField(
         label="Choose game:",
@@ -191,11 +371,12 @@ class CreateServerListingForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Fieldset(
-                '', # First arg is the legend of the fieldset
+                '',  # First arg is the legend of the fieldset
                 'game',
                 'title',
                 HTML(
-                    """{% if item.logo.url %}<img class="img-fluid" src="{{ item.logo.url }}">{% endif %}""", ),
+                    """{% if item.logo.url %}<img class="img-fluid"
+                    src="{{ item.logo.url }}">{% endif %}""", ),
                 'tags',
                 'short_description',
                 'long_description',
@@ -206,7 +387,26 @@ class CreateServerListingForm(forms.ModelForm):
             Submit('submit', 'Submit', css_class='btn btn-primary'),
         )
 
+
 class ImageForm(forms.ModelForm):
+    """
+    A form that allows the user to choose image to upload.
+
+    ...
+
+    Meta
+    ----------
+    model : Images
+
+    Attributes
+    ----------
+    image : Image
+        Allow user to choose image to upload.
+
+    Methods
+    -------
+    None
+    """
 
     image = forms.ImageField(
         label="Upload image:",
@@ -220,6 +420,26 @@ class ImageForm(forms.ModelForm):
 
 
 class LoginForm(forms.ModelForm):
+    """
+    A form that allows the user to login.
+
+    ...
+
+    Meta
+    ----------
+    model : CustomUser
+
+    Attributes
+    ----------
+    email : Email : REQUIRED
+        User to provide email address.
+    password : Char
+        User to provide password.
+
+    Methods
+    -------
+    None
+    """
 
     email = forms.EmailField(required=True)
     password = forms.CharField(widget=forms.PasswordInput)
@@ -230,17 +450,69 @@ class LoginForm(forms.ModelForm):
 
 
 class GameListForm(forms.ModelForm):
+    """
+    A form that allows the user to select a Game.
+
+    ...
+
+    Meta
+    ----------
+    model : Game
+
+    Attributes
+    ----------
+    name : CharField
+        User to provide email address.
+
+    Methods
+    -------
+    None
+    """
     name = forms.CharField()
 
     class Meta:
         model = Game
         fields = ['name']
 
+
 class GameManageForm(forms.ModelForm):
-    id = forms.IntegerField()
+    """
+    A form used to update a Game.
+
+    ...
+
+    Meta
+    ----------
+    model : Game
+
+    Attributes
+    ----------
+    id : Integer
+        Unique number for each game.
+    name : Char : REQUIRED
+        Game title.
+    slug : Slug
+        Unique game url.
+    tags : ModelMultipleChoice : REQUIRED
+        Tags associated with Game.
+        Tags provided by Tag class.
+    Image : Cloudinary : REQUIRED
+        Game image, uploaded to Cloudinary.
+    Status : TypedChoice : REQUIRED
+        User can choose from the following options,
+        ((0, "Unpublish"), (1, "Publish")).
+
+
+    Methods
+    -------
+    __init__():
+        A form helper to provide the layout of the form.
+    """
+    id = forms.IntegerField(required=False)
     name = forms.CharField(label="Game", max_length=50, required=True)
     slug = forms.SlugField(max_length=50)
-    tags = forms.ModelMultipleChoiceField(queryset=Tag.objects.all(), blank=False)
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(), blank=False)
     image = CloudinaryFileField(
         label="Upload new image:",
         required=False,
@@ -248,7 +520,7 @@ class GameManageForm(forms.ModelForm):
     status = forms.TypedChoiceField(
         label="Set status as:",
         choices=((0, "Unpublish"), (1, "Publish")),
-        coerce=lambda x: int(x),
+        coerce=int,
         widget=forms.RadioSelect,
         required=True,
     )
@@ -273,8 +545,32 @@ class GameManageForm(forms.ModelForm):
             Submit('submit', 'Submit', css_class='button white'),
         )
 
+
 class TagsManageForm(forms.ModelForm):
-    id = forms.IntegerField()
+    """
+    A form used to update a Tag.
+
+    ...
+
+    Meta
+    ----------
+    model : Tag
+
+    Attributes
+    ----------
+    id : Integer
+        Unique number for each tag.
+    name : Char : REQUIRED
+        Tag title.
+    slug : Slug
+        Unique tag url.
+
+    Methods
+    -------
+    __init__():
+        A form helper to provide the layout of the form.
+    """
+    id = forms.IntegerField(required=False)
     name = forms.CharField(label="Tag", max_length=50, required=True)
     slug = forms.SlugField(max_length=50)
 
@@ -297,14 +593,32 @@ class TagsManageForm(forms.ModelForm):
 
 
 class ConfirmTagDeleteForm(forms.ModelForm):
-    '''
+    """
     A form for user to confirm deletion a tag.
-    '''
+
+    ...
+
+    Meta
+    ----------
+    model : Tag
+
+    Attributes
+    ----------
+    tag_delete_confirm : Char : REQUIRED
+        Ask for user to type a specific phrase.
+
+    Methods
+    -------
+    None
+    """
     tag_delete_confirm = forms.CharField(
-        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        label=(
+            'To confirm deletion please type "delete" in '
+            'the below box and then hit confirm:'),
         max_length=10,
-        error_messages={
-            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        error_messages={'required': (
+            'To confirm deletion please type "<strong>delete</strong>" '
+            'in the below box and then hit confirm')},
         required=True,
     )
 
@@ -314,13 +628,31 @@ class ConfirmTagDeleteForm(forms.ModelForm):
 
 
 class DeleteConfirmForm(forms.Form):
-    '''
-    A form for user to confirm deletion.
-    '''
+    """
+    A form for general deletion confirmation.
+
+    ...
+
+    Meta
+    ----------
+    None
+
+    Attributes
+    ----------
+    tag_delete_confirm : Char : REQUIRED
+        Ask for user to type a specific phrase.
+
+    Methods
+    -------
+    None
+    """
     delete_confirm = forms.CharField(
-        label=f'To confirm deletion please type "delete" in the below box and then hit confirm:',
+        label=(
+            'To confirm deletion please type "delete" '
+            'in the below box and then hit confirm:'),
         max_length=10,
-        error_messages={
-            'required': f'To confirm deletion please type "<strong>delete</strong>" in the below box and then hit confirm'},
+        error_messages={'required': (
+            'To confirm deletion please type "<strong>delete</strong>" '
+            'in the below box and then hit confirm')},
         required=True,
     )
