@@ -387,9 +387,13 @@ class Bumps(models.Model):
         When bump is created, an expiry date is also applied.
     """
 
-    def set_expiry(self):
+    @staticmethod
+    def set_expiry():
         """
         Returns expiry date when bump is created.
+
+        Decorator:
+            @staticmethod
 
         Args:
             None
