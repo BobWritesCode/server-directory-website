@@ -1,20 +1,47 @@
+"""
+Automated task to be completed.
+Initiated by updater.py
+"""
+
+from datetime import datetime
+
 from django.db.models import Q
 
 from cloudinary import uploader
-from datetime import datetime
 
 from .models import Bumps, Images
 
 
 def daily_jobs():
+    """
+    Lists functions that are run daily or at each server start.
+
+    Decorators:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     clear_bumps()
     delete_rejected_images()
 
 
 def clear_bumps():
-    '''
+    """
     Automated task: Finds expired bumps and deletes them.
-    '''
+
+    Decorators:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     print('clear_bumps(): Starting automated task.')
     # Get bumps that have expired
     query = Q(expiry__lte=datetime.now())
@@ -26,10 +53,19 @@ def clear_bumps():
 
 
 def delete_rejected_images():
-    '''
+    """
     Automated task: Finds rejected and expired images and delete
     from the Cloudinary server.
-    '''
+
+    Decorators:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
     print('delete_rejected_images(): Starting automated task.')
     # Get images that have been marked as rejected and expired
     query = Q(expiry__lte=datetime.now()) & Q(status__in=[2, 3])
