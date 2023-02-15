@@ -49,7 +49,7 @@ class CustomUser(AbstractUser):
     to_json():
         converts class into a json string.
     """
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     username = models.CharField(max_length=20, unique=True, blank=False)
     first_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True, blank=False)
@@ -115,7 +115,7 @@ class Tag(models.Model):
     to_json():
         converts class into a json string.
     """
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=20, unique=True)
     slug = models.SlugField(max_length=20, unique=True)
 
@@ -175,7 +175,7 @@ class Game(models.Model):
     to_json():
         converts class into a json string.
     """
-    id = models.BigIntegerField(primary_key=True)
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=50, blank=False, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
