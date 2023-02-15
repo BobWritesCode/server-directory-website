@@ -20,7 +20,10 @@ if os.path.exists('env.py'):
     # pylint: disable=unused-import
     import env
 
-dev_mode = os.environ.get('DEVELOPMENT', False)
+dev_mode = False
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -34,9 +37,6 @@ LOGOUT_REDIRECT_URL = "/"
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = dev_mode
 
 if dev_mode:
     ALLOWED_HOSTS = ['127.0.0.1']
