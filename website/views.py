@@ -1264,8 +1264,8 @@ def delete_game(form: object):
     Args:
         form (object): Provides data to delete game.
     """
-    if form.data["game_delete_confirm"] == "delete" and form.data["id"]:
-        item_id = form.data["id"]
+    if form.data["game_delete_confirm"] == "delete" and form.data["itemID"]:
+        item_id = form.data["itemID"]
         # Get current image for game
         game = get_object_or_404(Game, id=item_id)
         if game.image is not None:
@@ -1284,9 +1284,8 @@ def add_new_game(request: object, form: object):
         form (object): Provides data for new game.
     """
     # Save form to database as a new game
-    form.save()
+    game = form.save()
     if request.FILES:
-        game = get_object_or_404(Game, pk=form.data["id"])
         # Upload image
         new_image = uploader.upload(
             request.FILES["image"],
@@ -1413,8 +1412,8 @@ def delete_tag(form: object):
     Args:
         form (object): Data used to delete tag.
     """
-    if form.data["tag_delete_confirm"] == "delete" and form.data["id"]:
-        item_id = form.data["id"]
+    if form.data["tag_delete_confirm"] == "delete" and form.data["itemID"]:
+        item_id = form.data["itemID"]
         # Get tag object
         tag = get_object_or_404(Tag, id=item_id)
         # Delete tag from database

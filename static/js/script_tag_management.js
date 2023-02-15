@@ -135,7 +135,11 @@ function TagDeleteConfirm() {
   }
   // If no error messages then send request to server.
   if ($('.error-message').length === 0) {
-    $('#tag-delete-form').find('#id_id').removeClass('d-none').val(form.find('#id_id').val());
+    const input = $('<input>')
+      .attr('type', 'hidden')
+      .attr('name', 'itemID')
+      .val(form.find('#id_id').val());
+    $('#tag-delete-form').append(input);
     $('#tag-delete-form').submit();
   }
 }
