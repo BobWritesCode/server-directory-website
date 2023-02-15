@@ -269,7 +269,10 @@ def server_create(request: object):
             form.save()
 
             if request.FILES:
-                new_image = uploader.upload(request.FILES['image'])
+                new_image = uploader.upload(
+                    request.FILES['image'],
+                    folder="server_directory/"
+                    )
                 image_form.instance.image = new_image['url']
                 image_form.instance.public_id = new_image['public_id']
                 image_form.instance.user = request.user
@@ -354,11 +357,17 @@ def server_edit(request: object, _pk: int):
                 # Delete old image from Cloudinary server
                 uploader.destroy(image.public_id)
                 # Upload new imaged
-                new_image = uploader.upload(request.FILES['image'])
+                new_image = uploader.upload(
+                    request.FILES['image'],
+                    folder="server_directory/"
+                    )
 
             if image is None and request.FILES:
                 # Upload new imaged
-                new_image = uploader.upload(request.FILES['image'])
+                new_image = uploader.upload(
+                    request.FILES['image'],
+                    folder="server_directory/"
+                    )
                 image = image_form.instance
                 image.user = request.user
                 image.listing = get_object_or_404(ServerListing, pk=_pk)
@@ -1279,7 +1288,10 @@ def add_new_game(request: object, form: object):
     if request.FILES:
         game = get_object_or_404(Game, pk=form.data["id"])
         # Upload image
-        new_image = uploader.upload(request.FILES["image"])
+        new_image = uploader.upload(
+            request.FILES["image"],
+            folder="server_directory/"
+            )
         game.image = new_image["url"]
         game.save()
 
@@ -1318,7 +1330,10 @@ def update_game(request: object, form: object):
         public_id = txt.rsplit("/", 1)[1]
         # Upload new image
         new_image = uploader.upload(
-            request.FILES["image"], public_id=public_id, overwrite=True
+            request.FILES["image"],
+            public_id=public_id,
+            overwrite=True,
+            folder="server_directory/"
         )
         # Save new url to game object
         game.image = new_image["url"]
@@ -1326,7 +1341,10 @@ def update_game(request: object, form: object):
     # If game image does not exists, just upload.
     if game.image is None and request.FILES:
         # Upload new image
-        new_image = uploader.upload(request.FILES["image"])
+        new_image = uploader.upload(
+            request.FILES["image"],
+            folder="server_directory/"
+            )
         game.image = new_image["url"]
 
     # Save game object
