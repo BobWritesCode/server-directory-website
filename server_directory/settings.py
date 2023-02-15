@@ -78,6 +78,12 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
+TINYMCE_JS_URL = (
+    'https://cdn.tiny.cloud/1/'
+    + os.environ.get('TINYMCE_API_KEY')
+    + '/tinymce/6/tinymce.min.js')
+TINYMCE_COMPRESSOR = False
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
