@@ -20,6 +20,7 @@ if os.path.exists('env.py'):
     # pylint: disable=unused-import
     import env
 
+# If True use localhost and local database
 dev_mode = False
 
 # SECURITY WARNING: don't run with debug turned on in production!

@@ -22,8 +22,6 @@ class CustomUser(AbstractUser):
 
     Attributes
     ----------
-    id : int : PRIMARY KEY
-        Unique identity number for user.
     username : str : REQUIRED
         Chosen by user to represent themselves.
     first_name : str
@@ -49,7 +47,6 @@ class CustomUser(AbstractUser):
     to_json():
         converts class into a json string.
     """
-    id = models.BigAutoField(primary_key=True)
     username = models.CharField(max_length=20, unique=True, blank=False)
     first_name = models.CharField(max_length=20)
     email = models.EmailField(unique=True, blank=False)
@@ -100,8 +97,6 @@ class Tag(models.Model):
 
     Attributes
     ----------
-    id : int : PRIMARY KEY
-        Unique identity number for user.
     name : str
         The tag name.
     slug : str
@@ -115,7 +110,6 @@ class Tag(models.Model):
     to_json():
         converts class into a json string.
     """
-    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=20, unique=True)
     slug = models.SlugField(max_length=20, unique=True)
 
@@ -154,8 +148,6 @@ class Game(models.Model):
 
     Attributes
     ----------
-    id : int : PRIMARY KEY
-        Unique identity number for user.
     name : str
         The tag name.
     slug : str
@@ -175,7 +167,6 @@ class Game(models.Model):
     to_json():
         converts class into a json string.
     """
-    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=50, blank=False, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)

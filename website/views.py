@@ -274,7 +274,7 @@ def server_create(request: object):
                 image_form.instance.public_id = new_image['public_id']
                 image_form.instance.user = request.user
                 image_form.instance.listing = get_object_or_404(
-                    ServerListing, pk=form.instance.id)
+                    ServerListing, pk=form.instance.pk)
                 image_form.instance.approved_by = None
                 image_form.save()
 
@@ -389,7 +389,7 @@ def server_edit(request: object, _pk: int):
     try:
         # Get images for server listings
         # Makes sure they are status 1: approved.
-        query = Q(listing_id=item.id)
+        query = Q(listing_id=item.pk)
         listing_image = Images.objects.filter(query).first()
 
         match listing_image.status:
@@ -513,8 +513,8 @@ def my_account(request: object):
         # or does not exist then set as None so a placeholder can be
         # shown instead.
         try:
-            image = images_queryset.get(listing_id=value.id).image
-            match images_queryset.get(listing_id=value.id).status:
+            image = images_queryset.get(listing_id=value.pk).image
+            match images_queryset.get(listing_id=value.pk).status:
                 case 0:
                     status = "Awaiting review"
                 case 1:
@@ -545,7 +545,7 @@ def my_account(request: object):
     # Add server listing slug to bumps queryset
     for key, value in enumerate(bumps_queryset):
         bumps_queryset[key].url = server_listings_queryset.get(
-            id=value.listing.id).slug
+            id=value.listing.pk).slug
     # Calculate how many bumps the user has left to use
     bumps_left = 5 - len(bumps_queryset)
 
@@ -586,7 +586,7 @@ def sign_up_view(request):
             # Saving user to memory as inactive.
             user = form.save(commit=False)
             user.is_active = False
-            user.id = CustomUser.objects.order_by("-pk").first().pk + 1
+            # user.id = CustomUser.objects.order_by("-pk").first().pk + 1
             user.save()
             send_email_verification(request, user)
             return redirect('signup_verify_email')
@@ -656,7 +656,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
 
     all_tags_for_game = []
     for tag in tags:
-        all_tags_for_game.append([tag.id, tag.name])
+        all_tags_for_game.append([tag.pk, tag.name])
 
     # Manage tag_string
     if tag_string != "":
@@ -713,7 +713,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
         # does not exist then set as None so a placeholder can be
         # shown instead.
         try:
-            image = images_queryset.get(listing_id=value.id).image
+            image = images_queryset.get(listing_id=value.pk).image
         except ObjectDoesNotExist:
             image = None
 
@@ -778,7 +778,7 @@ def listing_detail(request: object, slug: str):
     bumps_queryset = get_user_bumps(request)
 
     # Get listing approved images.
-    query = Q(status=1) & Q(listing_id=server.id)
+    query = Q(status=1) & Q(listing_id=server.pk)
     images = Images.objects.filter(query).distinct()
 
     server.bump_count = server.bump_counter()
@@ -1047,7 +1047,7 @@ def call_server(request: object):
 
                 all_tags_for_game = []
                 for tag in tags:
-                    all_tags_for_game.append([tag.id, tag.name])
+                    all_tags_for_game.append([tag.pk, tag.name])
 
                 result = {
                     'success': "tags",
@@ -1073,11 +1073,11 @@ def ban_user(request: object, _id: int):
         _id (int): Target user to be banned.
     """
     # Get target user.
-    user = get_object_or_404(CustomUser, id=_id)
+    user = get_object_or_404(CustomUser, pk=_id)
 
     # Delete all current user sessions (in case logged in on multiple devices)
     for session in Session.objects.all():
-        if session.get_decoded().get('_auth_user_id') == user.id:
+        if session.get_decoded().get('_auth_user_id') == user.pk:
             session.delete()
 
     user.is_banned = True
@@ -1232,7 +1232,7 @@ def game_management(request: object):
             form = GameManageForm(request.POST)
             if form.is_valid():
                 form_data = form.data.copy()
-                form_data['id'] = Game.objects.order_by("-id").first().id + 1
+                # form_data['id'] = Game.objects.order_by("-id").first().id + 1
                 add_new_game(request, GameManageForm(form_data))
 
     # Render page
@@ -1373,7 +1373,7 @@ def tag_management(request: object):
             form = TagsManageForm(request.POST)
             if form.is_valid():
                 form_data = form.data.copy()
-                form_data['id'] = Tag.objects.order_by("-id").first().id + 1
+                # form_data['id'] = Tag.objects.order_by("-id").first().id + 1
                 add_new_tag(TagsManageForm(form_data))
 
     # Render page
@@ -1471,9 +1471,9 @@ def staff_user_management_user(request: object, _id: int):
     Returns:
         render (function): Loads html page
     """
-    user = get_object_or_404(CustomUser, id=_id)
+    user = get_object_or_404(CustomUser, pk=_id)
     listings = ServerListing.objects.filter(
-        owner=user.id).order_by('-created_on')
+        owner=user.pk).order_by('-created_on')
     if request.method == "POST":
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
@@ -1543,9 +1543,9 @@ def staff_user_management_user(request: object, _id: int):
         # available or does not exist then set as None so a placeholder
         # can be shown instead.
         try:
-            image = images_queryset.get(listing_id=value.id).image
+            image = images_queryset.get(listing_id=value.pk).image
 
-            match images_queryset.get(listing_id=value.id).status:
+            match images_queryset.get(listing_id=value.pk).status:
                 case 0:
                     status = "Awaiting review"
                 case 1:
@@ -1728,7 +1728,7 @@ def update_email(request: object, _obj: object):
         return {'result': False, 'reason': "Does not match"}
 
     # Get correct user from database
-    user = get_object_or_404(CustomUser, id=request.user.id)
+    user = get_object_or_404(CustomUser, pk=request.user.pk)
     user.email = _obj['email1']
     user.email_verified = False
     # Save user object
