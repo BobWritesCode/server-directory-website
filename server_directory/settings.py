@@ -20,11 +20,13 @@ if os.path.exists('env.py'):
     # pylint: disable=unused-import
     import env
 
-# If True use localhost and local database
-dev_mode = False
+# If True use localhost
+user_localhost = False
+# If True use local database
+user_local_db = False
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,7 +41,7 @@ LOGOUT_REDIRECT_URL = "/"
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-if dev_mode:
+if user_localhost:
     ALLOWED_HOSTS = ['127.0.0.1']
 else:
     ALLOWED_HOSTS = [os.environ.get('HEROKU_HOSTNAME')]
@@ -109,7 +111,7 @@ WSGI_APPLICATION = 'server_directory.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-if dev_mode:
+if user_local_db:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
