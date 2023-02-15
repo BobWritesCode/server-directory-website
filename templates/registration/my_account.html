@@ -233,18 +233,5 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
 
 {% block scripts %}
 <!-- Scripts specific for this page -->
-<script>
-    tinymce.init({
-        selector: 'textarea',
-        plugins: 'emoticons wordcount lists',
-        menubar: false,
-        statusbar: true,
-        branding: true,
-        elementpath: false,
-        toolbar: 'wordcount | emoticons | blocks fontsize | hr | bold italic underline strikethrough | backcolor | alignleft aligncenter alignright alignjustify | indent outdent | numlist bullist| removeformat',
-        content_css: "{% static 'css/tinymce.css' %}"  // resolved to http://domain.mine/mysite/mycontent.css
-    });
-</script>
-<script src="{% static 'js/prism.js' %}"></script>
 <script src="{% static 'js/script_my_account.js'%}"></script>
 {% endblock %}
