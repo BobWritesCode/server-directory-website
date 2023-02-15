@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block head %}
-<link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 text-light">
@@ -81,6 +80,6 @@
 {%endblock%}
 {% block scripts %}
 <!-- Scripts specific for this page -->
-<script src="{% static 'tinymce/js/prism.js' %}"></script>
+<script src="{% static 'js/prism.js' %}"></script>
 <script src="{% static 'js/script_bumps.js' %}"></script>
 {% endblock %}

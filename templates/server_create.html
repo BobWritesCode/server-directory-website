@@ -46,7 +46,7 @@
         branding: true,
         elementpath: false,
         toolbar: 'wordcount | emoticons | blocks fontsize | hr | bold italic underline strikethrough | backcolor | alignleft aligncenter alignright alignjustify | indent outdent | numlist bullist| removeformat',
-        content_css: '/static/css/tinymce.css'  // resolved to http://domain.mine/mysite/mycontent.css
+        content_css: "{% static 'css/tinymce.css' %}"  // resolved to http://domain.mine/mysite/mycontent.css
     });
 </script>
 <script src="{% static 'js/script_server_create.js' %}"></script>

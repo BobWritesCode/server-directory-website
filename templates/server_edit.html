@@ -2,7 +2,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load cloudinary %}
-
 {% block head %}
 {{ form.media }}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -83,7 +82,6 @@
 {% block scripts %}
 <!-- Scripts specific for this page -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{% static 'js/script_server_edit.js' %}"></script>
 <script>
     tinymce.init({
         selector: 'textarea',
@@ -93,7 +91,8 @@
         branding: true,
         elementpath: false,
         toolbar: 'wordcount | emoticons | blocks fontsize | hr | bold italic underline strikethrough | backcolor | alignleft aligncenter alignright alignjustify | indent outdent | numlist bullist| removeformat',
-        content_css: '/static/css/tinymce.css'  // resolved to http://domain.mine/mysite/mycontent.css
+        content_css: "{% static 'css/tinymce.css' %}"  // resolved to http://domain.mine/mysite/mycontent.css
     });
 </script>
+<script src="{% static 'js/script_server_edit.js' %}"></script>
 {% endblock %}
