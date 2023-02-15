@@ -995,7 +995,6 @@ def call_server(request: object):
                     }
 
             case 'get_game_details':
-                print(content[1])
                 game = get_object_or_404(Game, pk=content[1])
                 query = Q(game=content[1])
                 tags = Tag.objects.filter(query).order_by('name')
