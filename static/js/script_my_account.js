@@ -4,8 +4,8 @@
 // Global HTML Elements
 const emailForm = $('#email-update-form');
 const btnDeleteAccount = $("button[data-target='#delete-account-modal']");
-const btnEmailUpdateConfirm = $('#email-update-form').find("button[name='email-address-update-confirm']");
-const btnServerListingDeleteConfirm = $('#server-listing-delete-form').find("button[name='server-listing-delete-confirm']");
+const btnEmailUpdateConfirm = $('#email-update-form').find('button[name="email-address-update-confirm"]');
+const btnServerListingDeleteConfirm = $('#server-listing-delete-form').find('button[name="server-listing-delete-confirm"]');
 
 let lastDeleteBtnID = null;
 
@@ -38,7 +38,7 @@ function ServerListingDeleteConfirm(id) {
     $('#server-listing-delete-form')
       .find('#id_server_listing_delete_confirm')
       .after(
-        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+        '<div class="error-message alert alert-warning mt-1" role="alert">Follow instructions above</div>',
       );
   }
   // If no error messages then send request to server.
@@ -58,7 +58,7 @@ function ServerListingDeleteConfirm(id) {
  * @return {None} No  return
  */
 function clearRemoveInput() {
-  $('#div_id_confirm').find('input[name=confirm]').val('');
+  $('#div_id_confirm').find('input[name="confirm"]').val('');
 }
 
 /**
@@ -95,10 +95,12 @@ async function askServer(url = '', data = {}) {
  * @param {*} arg... [...] Any other data you wish to send to server.
  */
 function action(...args) {
+  console.log(args);
   askServer('/call_server', {
     args,
   })
     .then((data) => {
+      console.log(data);
       if (data.result.success) {
         // Show BootStrap toast
         window.location.href = 'my_account';
@@ -107,19 +109,19 @@ function action(...args) {
           case 'Email address not valid':
             emailForm.find('#id_email')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Email address not valid</div>",
+                '<div class="error-message alert alert-danger mt-1" role="alert">Email address not valid</div>',
               );
             break;
           case 'Does not match':
             emailForm.find('#id_email_confirm')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Email does not match</div>",
+                '<div class="error-message alert alert-danger mt-1" role="alert">Email does not match</div>',
               );
             break;
           case 'Email address already taken':
             emailForm.find('#id_email')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Email address already taken</div>",
+                '<div class="error-message alert alert-danger mt-1" role="alert">Email address already taken</div>',
               );
             break;
           // skip default case
@@ -141,7 +143,7 @@ function userEmailUpdate() {
 
 window.addEventListener('DOMContentLoaded', () => {
   // Keep track of last item id pressed.
-  $("button[data-target='#server-listing-delete-modal']").on('click', function getID() {
+  $('button[data-target="#server-listing-delete-modal"]').on('click', function getID() {
     if ($(this).attr('data-item')) {
       lastDeleteBtnID = $(this).attr('data-item');
     }
