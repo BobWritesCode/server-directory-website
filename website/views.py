@@ -648,6 +648,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
         render(): Loads html page.
 
     """
+    # Get only the tags linked to a game.
     game = get_object_or_404(Game, slug=slug)
     tags = game.tags.all()
 
@@ -663,6 +664,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
     # Get user bumps
     user_bumps_queryset = get_user_bumps(request)
 
+    # Create and empty list then append all tags into that list.
     all_tags_for_game = []
     for tag in tags:
         all_tags_for_game.append([tag.pk, tag.name])
