@@ -49,7 +49,7 @@
             <tr>
                 <td>{{forloop.counter}}</td>
                 <td>{{bump.listing}}</td>
-                <td><a href="{% url 'listing_detail' bump.url %}" class="text-decoration-none">Go to listing...</a></td>
+                <td><a href="{% url 'listing_detail' bump.url %}" class="text-decoration-none text-light"><div class='w-100'><i class="bi bi-arrow-right-square"></i></div></a></td>
                 <td>{{bump.expiry}}</td>
             </tr>
             {% endfor %}
@@ -160,8 +160,8 @@ aria-labelledby="Delete Account Modal" aria-hidden="true">
 aria-labelledby="Email Address Update Modal" aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <div class="modal-header bg-light">
-            <h5 class="modal-title" id="modal-title">Email Address Update</h5>
+        <div class="modal-header bg-orange">
+            <h5 class="modal-title text-light" id="modal-title">Email Address Update</h5>
         </div>
         <form method="post" id="email-update-form">
             {% csrf_token %}
@@ -178,7 +178,7 @@ aria-labelledby="Email Address Update Modal" aria-hidden="true">
                 {{ email_form|crispy }}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-success"
+                <button type="button" class="btn btn-primary"
                     name="email-address-update-confirm">Confirm</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
