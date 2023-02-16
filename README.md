@@ -33,7 +33,7 @@ Cloudinary, SELECT2 and tinyMCE.
     - [Site-visitor](#site-visitor)
     - [Server-Owner](#server-owner)
     - [Site Admin](#site-admin)
-  - [Initial Concept](#initial-concept)
+  - [Development](#initial-concept)
     - [Wireframes](#wireframes)
     - [Colour Scheme](#colour-scheme)
     - [Typography](#typography)
@@ -138,51 +138,66 @@ Some example user stories which will affect the design and project functionality
 
 ---
 
-## Initial Concept
+## Development
 
 ### Wireframes
 
 Below are some wireframe that I designed to help build and represent the design of the website.
 
-#### Homepage - PC
+#### Homepage
+
+<details><summary>PC</summary>
 
 ![Homepage](./README_Images/wireframe_homepage.png)
-
-#### Homepage - Mobile
+</details>
+<details><summary>Mobile</summary>
 
 ![Homepage on mobile](./README_Images/wireframe_homepage_mobile.png)
+</details>
 
-#### Listings - PC
+#### Listings
+
+<details><summary>PC</summary>
 
 ![Listings](./README_Images/wireframe_listings.png)
-
-#### Listings - Mobile
+</details>
+<details><summary>Mobile</summary>
 
 ![Listings on mobile](./README_Images/wireframe_listings_mobile.png)
+</details>
 
 #### Full listing - PC
 
-![Full listing](./README_Images/wireframe_full_listing.png)
+<details><summary>PC</summary>
 
-#### Full listing - Mobile
+![Full listing](./README_Images/wireframe_full_listing.png)
+</details>
+<details><summary>Mobile</summary>
 
 ![Full listing on mobile](./README_Images/wireframe_full_listing_mobile.png)
+</details>
 
-#### My Account - PC
+#### My Account
+
+<details><summary>PC</summary>
 
 ![My Account](./README_Images/wireframe_my_account.png)
-
-#### My Account - Mobile
+</details>
+<details><summary>Mobile</summary>
 
 ![My Account on mobile](./README_Images/wireframe_my_account_mobile.png)
+</details>
 
-#### Create Listing - PC
+#### Create Listing
+
+<details><summary>PC</summary>
 
 ![Create Listing](./README_Images/wireframe_create_listing.png)
-
-#### Create Listing - Mobile
+</details>
+<details><summary>Mobile</summary>
 
 ![Create Listing on mobile](./README_Images/wireframe_create_listing_mobile.png)
+</details>
 
 ### Colour Scheme
 
