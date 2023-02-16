@@ -68,11 +68,6 @@
                     <a href="{% url 'listing_detail' listing.slug %}">
                         <h5 class="text-light">{{ listing.title }}</h5>
                     </a>
-                    {% if listing.status == 1 %}
-                    <div class='error-message alert alert-success mt-1 mb-1 p-1 position-absolute top-0 end-0' role='alert'>Published</div>
-                    {% else %}
-                    <div class='error-message alert alert-danger mt-1 mb-1 p-1 position-absolute top-0 end-0' role='alert'>Unpublished</div>
-                    {% endif %}
                     <p class="text-light">
                         {% for tag in listing.tags.all %}
                         <span class="badge rounded-pill bg-info text-dark"><i class="bi bi-tag"></i>{{ tag }}</span>
@@ -80,6 +75,13 @@
                     </p>
                     <p class="text-light">{{ listing.short_description|safe }}</p>
                     <div class="d-flex border rounded position-absolute bottom-0 end-0">
+                        <!-- Publish or draft icon -->
+                        {% if listing.status == 1 %}
+                        <button type="button" class="btn btn-dark text-success" style='cursor: default;' data-bs-toggle="tooltip" title="Published">
+                        {% else %}
+                        <button type="button" class="btn btn-dark text-danger" style='cursor: default;' data-bs-toggle="tooltip" title="Draft">
+                        {% endif %}
+                        <i class="bi bi-circle-fill"></i></button>
                         <!-- Bumps -->
                         <div class="btn btn-dark cursor-pointer m-6" style='cursor: default;' data-bs-toggle="tooltip" title="Active bumps">
                             <i class="fa-solid fa-hand-fist"></i> {{ listing.bump_count }}
