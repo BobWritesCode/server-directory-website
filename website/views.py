@@ -919,7 +919,6 @@ def bump_server(request: object):
             json.dumps({'result': int(len(bumps_queryset))}))
 
 
-@staff_member_required
 @login_required
 def call_server(request: object):
     """
@@ -943,104 +942,133 @@ def call_server(request: object):
 
         match content[0]:
             case 'image_approval_approve':
-                item = get_object_or_404(Images, pk=content[1])
-                item.status = 1
-                item.expiry = None
-                item.reviewed_by = request.user
-                item.save()
-                result = {
-                    'success': True,
-                    'text': "Approved"
-                }
-
-            case 'image_approval_reject':
-                item = get_object_or_404(Images, pk=content[1])
-                item.status = 2
-                item.expiry = date.today() + timedelta(
-                    days=DAYS_TO_EXPIRE_IMAGE)
-                item.reviewed_by = request.user
-                item.save()
-                result = {
-                    'success': True,
-                    'text': "Rejected"
-                }
-
-            case 'image_approval_ban':
-                item = get_object_or_404(Images, pk=content[1])
-                item.status = 3
-                item.expiry = date.today() + timedelta(
-                    days=DAYS_TO_EXPIRE_IMAGE)
-                item.reviewed_by = request.user
-                item.save()
-                ban_user(request, item.user_id)
-                result = {
-                    'success': True,
-                    'text': "Rejected and user banned"
-                }
-
-            case 'image_approval_next':
-                query = Q(status=0)
-                image = Images.objects.filter(query).first()
-                # If no image is currently waiting be approved,
-                # then handle request.
-                if image is None:
+                if request.user.is_staff:
+                    item = get_object_or_404(Images, pk=content[1])
+                    item.status = 1
+                    item.expiry = None
+                    item.reviewed_by = request.user
+                    item.save()
                     result = {
                         'success': True,
-                        'text': "/staff_account",
+                        'text': "Approved"
                     }
                 else:
+                    return render(request, "unauthorized.html")
+
+            case 'image_approval_reject':
+                if request.user.is_staff:
+                    item = get_object_or_404(Images, pk=content[1])
+                    item.status = 2
+                    item.expiry = date.today() + timedelta(
+                        days=DAYS_TO_EXPIRE_IMAGE)
+                    item.reviewed_by = request.user
+                    item.save()
                     result = {
                         'success': True,
-                        'text': f"/staff_image_review/{image.pk}",
+                        'text': "Rejected"
                     }
+                else:
+                    return render(request, "unauthorized.html")
 
+            case 'image_approval_ban':
+                if request.user.is_staff:
+                    item = get_object_or_404(Images, pk=content[1])
+                    item.status = 3
+                    item.expiry = date.today() + timedelta(
+                        days=DAYS_TO_EXPIRE_IMAGE)
+                    item.reviewed_by = request.user
+                    item.save()
+                    ban_user(request, item.user_id)
+                    result = {
+                        'success': True,
+                        'text': "Rejected and user banned"
+                    }
+                else:
+                    return render(request, "unauthorized.html")
+
+            case 'image_approval_next':
+                if request.user.is_staff:
+                    query = Q(status=0)
+                    image = Images.objects.filter(query).first()
+                    # If no image is currently waiting be approved,
+                    # then handle request.
+                    if image is None:
+                        result = {
+                            'success': True,
+                            'text': "/staff_account",
+                        }
+                    else:
+                        result = {
+                            'success': True,
+                            'text': f"/staff_image_review/{image.pk}",
+                        }
+                else:
+                    return render(request, "unauthorized.html")
             case 'get_game_details':
-                game = get_object_or_404(Game, pk=content[1])
-                query = Q(game=content[1])
-                tags = Tag.objects.filter(query).order_by('name')
-                result = {
-                    'success': True,
-                    'game': game.to_json(),
-                    'game_tags': serializers.serialize('json', tags),
-                }
+                if request.user.is_staff:
+                    game = get_object_or_404(Game, pk=content[1])
+                    query = Q(game=content[1])
+                    tags = Tag.objects.filter(query).order_by('name')
+                    result = {
+                        'success': True,
+                        'game': game.to_json(),
+                        'game_tags': serializers.serialize('json', tags),
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
             case 'get_tag_details':
-                tag = get_object_or_404(Tag, pk=content[1])
-                result = {
-                    'success': True,
-                    'tag': tag.to_json(),
-                }
+                if request.user.is_staff:
+                    tag = get_object_or_404(Tag, pk=content[1])
+                    result = {
+                        'success': True,
+                        'tag': tag.to_json(),
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
             case 'search_users-username':
-                query = Q(username__contains=content[1])
-                users = CustomUser.objects.filter(query)
-                result = {
-                    'success': True,
-                    'users': serializers.serialize('json', users),
-                }
+                if request.user.is_staff:
+                    query = Q(username__contains=content[1])
+                    users = CustomUser.objects.filter(query)
+                    result = {
+                        'success': True,
+                        'users': serializers.serialize('json', users),
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
             case 'search_users-email':
-                query = Q(email__contains=content[1])
-                users = CustomUser.objects.filter(query)
-                result = {
-                    'success': True,
-                    'users': serializers.serialize('json', users),
-                }
+                if request.user.is_staff:
+                    query = Q(email__contains=content[1])
+                    users = CustomUser.objects.filter(query)
+                    result = {
+                        'success': True,
+                        'users': serializers.serialize('json', users),
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
             case 'search_users-id':
-                query = Q(id__contains=int(content[1]))
-                users = CustomUser.objects.filter(query)
-                result = {
-                    'success': True,
-                    'users': serializers.serialize('json', users),
-                }
+                if request.user.is_staff:
+                    query = Q(id__contains=int(content[1]))
+                    users = CustomUser.objects.filter(query)
+                    result = {
+                        'success': True,
+                        'users': serializers.serialize('json', users),
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
             case 'user_management_save':
-                success = update_user(content[1])
-                result = {
-                    'success': success['result'],
-                    'reason': success['reason']
-                }
+                if request.user.is_staff:
+                    success = update_user(content[1])
+                    result = {
+                        'success': success['result'],
+                        'reason': success['reason']
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
             case 'update_email':
                 success = update_email(request, content[1])
@@ -1050,17 +1078,18 @@ def call_server(request: object):
                 }
 
             case 'get_game_tags':
-                game = get_object_or_404(Game, id=content[1])
-                tags = game.tags.all().order_by('name')
-
-                all_tags_for_game = []
-                for tag in tags:
-                    all_tags_for_game.append([tag.pk, tag.name])
-
-                result = {
-                    'success': "tags",
-                    'reason': all_tags_for_game
-                }
+                if request.user.is_staff:
+                    game = get_object_or_404(Game, id=content[1])
+                    tags = game.tags.all().order_by('name')
+                    all_tags_for_game = []
+                    for tag in tags:
+                        all_tags_for_game.append([tag.pk, tag.name])
+                    result = {
+                        'success': "tags",
+                        'reason': all_tags_for_game
+                    }
+                else:
+                    return render(request, "unauthorized.html")
 
         return HttpResponse(json.dumps({'result': result}))
 
