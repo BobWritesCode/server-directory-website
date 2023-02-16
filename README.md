@@ -12,11 +12,11 @@ Cloudinary, SELECT2 and tinyMCE.
 
 ## Live Site
 
-Coming soon...
+[Hosted on Herokuapp](https://server-directory-website.herokuapp.com/)
 
 ## Repository
 
-[server-directory-website](https://github.com/BobWritesCode/server-directory-website)
+[GitHub repository](https://github.com/BobWritesCode/server-directory-website)
 
 ---
 
@@ -206,6 +206,8 @@ This 4 colours contrast very nicely against each other, and the white text again
 The below entity relationship diagram (ERD) is a graphical representation that depicts relationships between the different models in this project. It also shows the different attributes and their types for each class.
 
 ![Entity relationship diagram (ERD)](./README_Images/erd.png)
+
+*Created using: [app.diagrams.net](https://app.diagrams.net)*
 
 ### Python
 
