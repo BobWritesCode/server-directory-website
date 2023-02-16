@@ -248,7 +248,7 @@ Depending if the user is flagged as a staff member will determine if they can se
 <details><summary>Mobile</summary>
 
 ![Navbar Mobile](./README_Images/site_navbar_mobile.png)
-</details>
+</details><br>
 
 ```html
 <!-- base.html -->
@@ -286,11 +286,93 @@ Depending if the user is flagged as a staff member will determine if they can se
 
 #### Homepage
 
-<details><summary>Homepage</summary>
+The homepage is designed to be simple and provide a clear understanding of what the website is about when a first time user visits.
+
+<details><summary>Homepage screenshot</summary>
 
 ![Homepage](./README_Images/site_homepage.png)
 </details>
 
+\
+The user can hover their mouse over the different game cards. This help the user understand these are intractable. For UX purpose the whole card was made a clickable link to avoid user confusion on how to proceed.
+
+![Game cards](./README_Images/site_homepage_games.gif)
+
+#### Server listings
+
+The server listing page allows the user to start looking through the different listings. The user can filter their search down using the tags filter on the right. They can select up to as many tags as they like and also easily remove tags. This provides a much more bespoke list that is filled only with that user's interests.
+
+<details><summary>Server listings screenshot</summary>
+
+![Server listings](./README_Images/site_server_listings.png)
+</details><br>
+
+```python
+# views.py
+# These are snippets from the code to provide the filtering by essentially
+# building tag string in the url. I removed other parts of this method not
+# to the tag filtering.
+
+def server_listings(request: object, slug: str, tag_string: str = ""):
+
+    # Get only the tags linked to a game.
+    game = get_object_or_404(Game, slug=slug)
+    tags = game.tags.all()
+
+    # Create and empty list then append all tags into that list.
+    all_tags_for_game = []
+    for tag in tags:
+        all_tags_for_game.append([tag.pk, tag.name])
+
+    # Manage tag_string
+    if tag_string != "":
+        # Create list from string
+        selected_tags = tag_string.split("%")
+        # Check to see if adding or removing tag
+        action = selected_tags.pop(0)
+
+        # A = add tag, R = remove tag
+        if action == "A":
+            # Prepare new tag_string to send to front-end
+            tag_string = '%' + '%'.join(selected_tags)
+
+        else:
+            # Which tag has been selected to be removed
+            to_be_removed = selected_tags.pop(0)
+
+            # Remove tag from selected list
+            selected_tags.remove(to_be_removed)
+
+            # Check to see if all tags have been unselected
+            # Prepare tag_string
+            if len(selected_tags) != 0:
+                tag_string = '%' + '%'.join(selected_tags)
+            else:
+                tag_string = ''
+
+        # Narrows server list down based on tags picked by user
+        for value in selected_tags:
+            listings = listings.filter(tags__name=value)
+
+        # Use list comprehension to remove selected tags from all
+        # available tags
+        tags = [x for x in game.tags.all() if x.name not in selected_tags]
+
+        tags.sort(key=operator.attrgetter('name'))
+        selected_tags.sort()
+
+    else:
+        # If tag_string empty then create empty list
+        selected_tags = []
+        # Get all available tags for game selected
+        tags = game.tags.all().order_by('name')
+
+    # We can now render the page and provide tags, selected_tags and
+    # tag_string as context.
+```
+#### Server detail page
+
+#### Server listings
 
 #### Select2
 
