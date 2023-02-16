@@ -39,7 +39,7 @@ Coming soon...
     - [Typography](#typography)
     - [Imagery](#imagery)
   - [Logic](#logic)
-    - [Initial Flow](#initial-flow)
+    - [Data Model](#data-model)
     - [Python](#python)
     - [JavaScript](#javascript)
   - [Features](#features)
@@ -142,7 +142,7 @@ Some example user stories which will affect the design and project functionality
 
 ### Wireframes
 
-Below are some wireframe that I designed to help build and represent the design the website.
+Below are some wireframe that I designed to help build and represent the design of the website.
 
 #### Homepage - PC
 
@@ -189,7 +189,7 @@ Below are some wireframe that I designed to help build and represent the design 
 The 4 main colour's hex codes for this site are: D63600, F8F9FA, 262626, 151515.\
 This 4 colours contrast very nicely against each other, and the white text against the other 3 colours pass WCAG contrast scores.
 
-![Colour scheme](./README_Images/colour_scheme_text_example.png)
+![Colour scheme site example](./README_Images/colour_scheme_text_example.png)
 
 ![Colour scheme](./README_Images/colour_scheme.png)
 
@@ -201,7 +201,11 @@ This 4 colours contrast very nicely against each other, and the white text again
 
 ## Logic
 
-### Initial Flow
+### Data Model
+
+The below entity relationship diagram (ERD) is a graphical representation that depicts relationships between the different models in this project. It also shows the different attributes and their types for each class.
+
+![Entity relationship diagram (ERD)](./README_Images/erd.png)
 
 ### Python
 
