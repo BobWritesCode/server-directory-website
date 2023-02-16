@@ -234,6 +234,64 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 
 ### Existing Features
 
+#### Navbar
+
+The navbar was design to be simple and vibrant. Early versions the Navbar was off-white but feedback suggested that it was not completely obvious there was a nav bar as it would tend to merge in with the browser bar if using a PC to access the website.
+
+Depending if the user is flagged as a staff member will determine if they can see the 'Admin' nav button.
+
+<details><summary>PC</summary>
+
+![Navbar PC](./README_Images/site_navbar_pc.png)
+</details>
+
+<details><summary>Mobile</summary>
+
+![Navbar Mobile](./README_Images/site_navbar_mobile.png)
+</details>
+
+```html
+<!-- base.html -->
+<div class="collapse navbar-collapse" style="flex-grow: unset;" id="navbarTogglerDemo02">
+    <ul class="navbar-nav mt-2 mt-lg-0">
+        <!-- Here we check to see if the requesting user is logged in -->
+        {% if user.is_authenticated %}
+        <li class="navbar-text text-light">
+            <strong>Hi {{ user.username }}!</strong>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-light" href="{% url 'my-account' %}">My Account</a>
+        </li>
+        <!-- Here we check to see if the requesting user is a staff member -->
+        {% if user.is_staff %}
+        <li class="nav-item text-light">
+            <a class="nav-link text-light" href="{% url 'staff_account' %}">Admin</a>
+        </li>
+        {% endif %}
+        <li class="nav-item text-light">
+            <a class="ms-1 me-3 btn btn-outline-light" href="{% url 'logout' %}">Log Out</a>
+        </li>
+        <!-- If requesting user is not logged in -->
+        {% else %}
+        <li class="nav-item">
+            <a class="ms-1 nav-link text-light" href="{% url 'login' %}">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="ms-1 me-3 btn btn-outline-light" href="{% url 'signup' %}">Sign Up</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+```
+
+#### Homepage
+
+<details><summary>Homepage</summary>
+
+![Homepage](./README_Images/site_homepage.png)
+</details>
+
+
 #### Select2
 
 [Select2](https://select2.org/)
