@@ -1020,7 +1020,7 @@ def call_server(request: object):
                     return render(request, "unauthorized.html")
 
             case 'get_tag_details':
-                if request.user.is_staff:
+                if request.user:
                     tag = get_object_or_404(Tag, pk=content[1])
                     result = {
                         'success': True,
