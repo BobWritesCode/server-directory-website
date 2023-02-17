@@ -381,15 +381,53 @@ The full listing page provides the user a much more detailed insight about the s
 
 On this page their is a section just under the tags where a user can interact with, here a user can:
 
-- Bump the listing
-- Find the discord invite link
-- Find the TikTok profile link (if available, if not this button will not be shown)
+- Bump the listing,
+- Find the discord invite link,
+- Find the TikTok profile link (if available, if not this button will not be shown).
 
 If the user is a staff member then the staff view panel will also be shown, where a staff user can quickly go to the owner's profile or edit the listing.
 
-![Server listings](./README_Images/feat_listing_panel.gif)
+![Server listings panel](./README_Images/feat_listing_panel.gif)
 
 #### Bumps
+
+![Bumps](./README_Images/feat_bump.gif)
+
+Bumps allow user to help promote a listing. Bumping a server will push it to the top of the listings. And similar to how search engine results work, the higher up the list you are the more views you will get.
+
+To help promote active servers bumps expire after the duration set by the site owner, currently stored in the `constants.py` file, but at a later date there will be an option to be able to change this in a super admin panel. Making it easier for an end user to update themselves.
+
+A user can only bump up to a specific amount of listings at a time, and will have to wait until their bump expires. Currently it is set to expire the next date for the purposes of this project demonstration.
+
+A user can only bump a single list once at a time.
+Once a user has used up their allocated bumps they will see a message saying they are out of bumps.
+A user has to be signed in to bump otherwise they will see a message saying they need to login first.
+![Bump login](./README_Images/feat_bump_login.png) ![Out of bumps!](./README_Images/feat_bump_out_of.png)
+
+This is what the user Bumps list looks like in their 'My Account' page.
+
+![Bump list](./README_Images/feat_bump_list.png)
+
+The way the bumps are automatically expired is by setting a automated task that run at midnight everyday or at server restart. The task will query for bumps that are less than or, equal to the current date and delete them. Print messages are produced purely as a way to check there are no issues.
+
+*You can read more about how the automated jobs work by checking out the APScheduler section of this README.*
+
+```python
+#jobs.py
+def clear_bumps():
+    """
+    Automated task: Finds expired bumps and deletes them.
+    """
+    print('clear_bumps(): Starting automated task.')
+    # Get bumps that have expired
+    # __lte means 'less than or, equal to', this is used oppose to '<='>
+    query = Q(expiry__lte=datetime.now())
+    queryset = Bumps.objects.filter(query)
+    print(f'clear_bumps(): Deleting {len(queryset)} bump(s).')
+    # Delete expired bumps
+    queryset.delete()
+    print('clear_bumps(): Completed automated task.')
+```
 
 #### User Authentication
 
