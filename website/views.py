@@ -1164,12 +1164,19 @@ def login_view(request: object):
         render(): Loads html page.
     """
     error_message = None
+
+    # If user already logged in, just direct them to My Account page.
+    if request.user:
+        return redirect("my-account")
+
     if request.method == 'POST':
+        # Get from request user input.
         email = request.POST['email']
         password = request.POST['password']
         # Check credentials are found and a match.
         user = authenticate(request, email=email, password=password)
         if user is None:
+            # ERROR: User not found, or password mismatch.
             error_message = (
                 "Either user does not exist or password does not "
                 "match account."
@@ -1177,13 +1184,16 @@ def login_view(request: object):
         else:
             # Check if user is banned.
             if user.is_banned:
+                # ERROR: User account has been flagged as banned.
                 error_message = "This account is banned."
                 user = None
             # All being okay, log user in.
             else:
                 login(request, user)
                 return redirect("my-account")
+
     form = LoginForm()
+
     return render(
         request,
         "registration/login.html",
