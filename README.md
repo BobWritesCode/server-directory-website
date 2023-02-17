@@ -746,6 +746,18 @@ All going well, the user will be shown a password change page to confirm the cha
 
 ##### Delete account
 
+At the bottom of the 'My Account' page is the 'Delete account' section. Here the user can completely delete their account which also delete associated listings and bumps.
+
+When the user clicks on the trash can button a modal will come up asking the user to delete their account. As part of **defensive programming**, to stop the user accidentally performing a irreversible action, the user actually needs to input a phrase into the input box before be able to finalise the action.
+
+![Delete account modal](./README_Images/feat_delete_account.png)
+
+<details><summary>Screenshot</summary>
+
+![Account deleted page](./README_Images/site_account_deleted.png)
+</details>
+Finally the user is taken an 'Account Deleted' page to confirm the account has been removed from the database.
+
 ##### My Listings
 
 Management panel
