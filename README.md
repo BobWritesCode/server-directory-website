@@ -541,7 +541,7 @@ The Gamer's-verse team
 
 ![Verification email](./README_Images/feat_signup_email_verify.png)
 
-Once the user visits the link in the email they will be taken to the page to show that their emaila ddress is now verified and they can now login.
+Once the user visits the link in the email they will be taken to the page to show that their email address is now verified and they can now login.
 
 <details><summary>Screenshot</summary>
 
@@ -554,6 +554,71 @@ Once the user visits the link in the email they will be taken to the page to sho
 
 ![Login page](./README_Images/site_login.png)
 </details>
+
+The login screen as many of us would expect is a nice simple user form to input their email address and password.
+
+If the user cannot be found, or password does not match the correct account they will get a notification them so.
+
+![Login error](./README_Images/feat_login_mismatch.png)
+
+Also if the user has been flagged as banned they will also get told so.
+
+![Login banned](./README_Images/feat_login_banned.png)
+
+Once user has been authenticated they will then be redirected to their 'My Account' page.
+
+```python
+# views.py
+def login_view(request: object):
+    """
+    Login-view and process login.
+
+    Args:
+        request (object): GET/POST request from user..
+
+    Returns:
+        render(): Loads html page.
+    """
+    error_message = None
+
+    # If user already logged in, just direct them to My Account page.
+    if request.user:
+        return redirect("my-account")
+
+    if request.method == 'POST':
+        # Get from request user input.
+        email = request.POST['email']
+        password = request.POST['password']
+        # Check credentials are found and a match.
+        user = authenticate(request, email=email, password=password)
+        if user is None:
+            # ERROR: User not found, or password mismatch.
+            error_message = (
+                "Either user does not exist or password does not "
+                "match account."
+            )
+        else:
+            # Check if user is banned.
+            if user.is_banned:
+                # ERROR: User account has been flagged as banned.
+                error_message = "This account is banned."
+                user = None
+            # All being okay, log user in.
+            else:
+                login(request, user)
+                return redirect("my-account")
+
+    form = LoginForm()
+
+    return render(
+        request,
+        "registration/login.html",
+        {
+            "form": form,
+            "error_message": error_message,
+        },
+    )
+```
 
 ##### Forgotten password
 
