@@ -1020,7 +1020,7 @@ def call_server(request: object):
                     return render(request, "unauthorized.html")
 
             case 'get_tag_details':
-                if request.user:
+                if request.user.is_staff:
                     tag = get_object_or_404(Tag, pk=content[1])
                     result = {
                         'success': True,
@@ -1080,7 +1080,7 @@ def call_server(request: object):
                 }
 
             case 'get_game_tags':
-                if request.user.is_staff:
+                if request.user:
                     game = get_object_or_404(Game, id=content[1])
                     tags = game.tags.all().order_by('name')
                     all_tags_for_game = []
