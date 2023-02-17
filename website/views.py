@@ -1204,37 +1204,6 @@ def login_view(request: object):
     )
 
 
-def password_reset_view(request: object):
-    """
-    Password reset view and process.
-
-    Args:
-        request (object): GET/POST request from user..
-
-    Returns:
-        redirect(): Loads html page.
-        render(): Loads html page.
-    """
-    if request.method == "POST":
-        form = PasswordResetForm({'email': request.POST['email']})
-        if form.is_valid():
-            form.save(
-                subject_template_name=(
-                    'email_templates/password_reset_email.txt'),
-                email_template_name=(
-                    'email_templates/password_reset_email.html'),
-                request=request
-            )
-            return redirect("password_reset_done")
-    return render(
-        request,
-        "registration/password_reset_form.html",
-        {
-            "form": PasswordResetForm(),
-        },
-    )
-
-
 @staff_member_required
 @login_required
 def game_management(request: object):
