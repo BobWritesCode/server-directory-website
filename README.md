@@ -372,6 +372,23 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
 
 #### Server detailed page
 
+<details><summary>Screenshot</summary>
+
+![Server listings](./README_Images/site_listing.png)
+</details>
+
+The full listing page provides the user a much more detailed insight about the server listing. It allows the server owner to provide a long description so they can describe as much detail as they want about the server to attract new players.
+
+On this page their is a section just under the tags where a user can interact with, here a user can:
+
+- Bump the listing
+- Find the discord invite link
+- Find the TikTok profile link (if available, if not this button will not be shown)
+
+If the user is a staff member then the staff view panel will also be shown, where a staff user can quickly go to the owner's profile or edit the listing.
+
+![Server listings](./README_Images/feat_listing_panel.gif)
+
 #### Bumps
 
 #### User Authentication
