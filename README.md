@@ -434,7 +434,126 @@ def clear_bumps():
 
 ##### Sign up
 
+<details><summary>Screenshot</summary>
+
+![Sign up form](./README_Images/site_signup.png)
+</details>
+
+It's important that user's can easily sign up, the sign up form it self is designed to be simplistic. Asking for a username, email address, and password. Email and password will be what is required to login but the username will be used to identify the user to other site users and staff. Both the username and email address have to be unique and the user will be notified if they are not.
+
+![Username already in user](./README_Images/feat_signup_username.png)
+
+![Email already in user](./README_Images/feat_signup_email.png)
+
+```python
+# views.py
+def sign_up_view(request):
+    """
+    Loads sign up view.
+
+    Args:
+        request (object): GET/POST request from user.
+
+    Returns:
+        redirect (function): Email verification view.
+        render (function): Loads view.
+    """
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        # Check user has completed form as required.
+        if form.is_valid():
+            # Save new user to database.
+            user.save()
+            send_email_verification(request, user)
+            return redirect('signup_verify_email')
+    else:
+        form = SignupForm()
+    return render(request, 'registration/signup.html', {'form': form})
+```
+
+##### Email verification
+
+Once the user has successfully input the their sign up details they will be directed to a screen explaining that they have been sent an email to verify their email address.
+
+<details><summary>Screenshot</summary>
+
+![Verify email address page](./README_Images/site_verify_email_address.png)
+</details>
+
+```python
+# views.py
+def send_email_verification(request: object, user: object):
+    '''
+    Send email address verification to user.
+
+    Parameters:
+        request (object): GET/POST request from user.
+        user (object): Target user model object.
+    '''
+    current_site = get_current_site(request)
+    mail_subject = 'Verify your email address.'
+    message = render_to_string('email_templates/verify_email_address.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': default_token_generator.make_token(user),
+    })
+
+    # Send email to user.
+    send_mail(
+        subject=mail_subject,
+        message=message,
+        from_email='contact@warwickhart.com',
+        recipient_list=[user.email]
+    )
+```
+
+To make sure your emails send you need to make sure you set up the following settings correctly in your settings.py
+
+```python
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+```
+
+The user will receive a email notification, you can personalise the email using a template. This is a very basic template but for the purpose of this project serves the projects need's.
+
+```html
+{% autoescape off %}
+Hi {{ user.username }},
+
+Please click on the link to confirm your registration,
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+If you think, it's not you, then just ignore this email.
+
+Kind regards
+The Gamer's-verse team
+
+{% endautoescape %}
+```
+
+![Verification email](./README_Images/feat_signup_email_verify.png)
+
+Once the user visits the link in the email they will be taken to the page to show that their emaila ddress is now verified and they can now login.
+
+<details><summary>Screenshot</summary>
+
+![Email address verified page](./README_Images/site_signup_email_address_verified.png)
+</details>
+
 ##### Login
+
+<details><summary>Screenshot</summary>
+
+![Login page](./README_Images/site_login.png)
+</details>
 
 ##### Forgotten password
 
