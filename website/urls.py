@@ -4,7 +4,7 @@ All urls for app.
 
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import (
-    PasswordChangeForm, SetPasswordForm
+    PasswordChangeForm, SetPasswordForm, PasswordResetForm
 )
 from django.urls import path
 
@@ -67,8 +67,21 @@ urlpatterns = [
 
     path(
         'accounts/password_reset',
-        views.password_reset_view,
+        auth_views.PasswordResetView.as_view(
+            template_name="registration/password_reset_form.html",
+            form_class=PasswordResetForm,
+            subject_template_name='email_templates/password_reset_subject.txt',
+            email_template_name='email_templates/password_reset_email.html',
+            success_url='password_reset_done',
+        ),
         name='password_reset'
+    ),
+
+    path(
+        'accounts/password_reset_done',
+        auth_views.PasswordResetDoneView.as_view(
+        ),
+        name='password_reset_done'
     ),
 
     path(
