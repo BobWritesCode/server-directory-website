@@ -95,12 +95,10 @@ async function askServer(url = '', data = {}) {
  * @param {*} arg... [...] Any other data you wish to send to server.
  */
 function action(...args) {
-  console.log(args);
   askServer('/call_server', {
     args,
   })
     .then((data) => {
-      console.log(data);
       if (data.result.success) {
         // Show BootStrap toast
         window.location.href = 'my_account';
