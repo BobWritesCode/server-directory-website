@@ -703,21 +703,52 @@ path(
 
 #### My Account
 
+<details><summary>Screenshot</summary>
+
+![My Account page](./README_Images/site_my_account.png)
+</details>
+
+The 'My Account' is the main hub for a user to mange their profile, see their active bumps, create and manage their listings, and delete their account.
+
 ##### Profile
+
+Starting from the top of the 'My Account' page and working our way down, the first section is the 'Profile' section. In this section the user can see their username and their current email address. Currently the user cannot update their username but this is something that could be available in a future update.
 
 ##### Email update
 
+By clicking on the Update email address button the user will see a modal come up with instructions on how to change their email address.
+
+![Email update modal](./README_Images/feat_email_update_modal.png)
+
+If the user tries to change their email address to an email address already in use, they will receive an error notification.
+
+![Email already in use](./README_Images/feat_email_update_taken.png)
+
+Once the form is completed the user's email address will be updated but the the email address will now be unverified. The user will also be sent an email to verify their new email address just like they did when they originally signed up to the website.
+
+![Unverified email](./README_Images/feat_email_update_unverified.png)
+
 ##### Password change
 
-##### Delete account
+<details><summary>Screenshot</summary>
 
-##### My Bumps
+![Password change page](./README_Images/site_password_change.png)
+</details>
+
+Takes you to the password change page where the user is required to enter their current password, and then their new password twice.
+
+<details><summary>Screenshot</summary>
+
+![Password change page](./README_Images/site_password_change.png)
+</details>
+
+All going well, the user will be shown a password change page to confirm the change was successful.
+
+##### Delete account
 
 ##### My Listings
 
 Management panel
-
-##### Create Listing
 
 ### Admin Account Page
 
