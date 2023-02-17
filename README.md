@@ -144,7 +144,7 @@ Some example user stories which will affect the design and project functionality
 
 Below are some wireframe that I designed to help build and represent the design of the website.
 
-#### Homepage
+#### Homepage design
 
 <details><summary>PC</summary>
 
@@ -155,7 +155,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![Homepage on mobile](./README_Images/wireframe_homepage_mobile.png)
 </details>
 
-#### Listings
+#### Listings design
 
 <details><summary>PC</summary>
 
@@ -166,7 +166,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![Listings on mobile](./README_Images/wireframe_listings_mobile.png)
 </details>
 
-#### Full listing - PC
+#### Full listing design
 
 <details><summary>PC</summary>
 
@@ -177,7 +177,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![Full listing on mobile](./README_Images/wireframe_full_listing_mobile.png)
 </details>
 
-#### My Account
+#### My Account design
 
 <details><summary>PC</summary>
 
@@ -188,7 +188,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![My Account on mobile](./README_Images/wireframe_my_account_mobile.png)
 </details>
 
-#### Create Listing
+#### Create Listing design
 
 <details><summary>PC</summary>
 
@@ -248,7 +248,7 @@ Depending if the user is flagged as a staff member will determine if they can se
 <details><summary>Mobile</summary>
 
 ![Navbar Mobile](./README_Images/site_navbar_mobile.png)
-</details><br>
+</details>
 
 ```html
 <!-- base.html -->
@@ -293,7 +293,6 @@ The homepage is designed to be simple and provide a clear understanding of what 
 ![Homepage](./README_Images/site_homepage.png)
 </details>
 
-\
 The user can hover their mouse over the different game cards. This help the user understand these are intractable. For UX purpose the whole card was made a clickable link to avoid user confusion on how to proceed.
 
 ![Game cards](./README_Images/site_homepage_games.gif)
@@ -305,7 +304,7 @@ The server listing page allows the user to start looking through the different l
 <details><summary>Server listings screenshot</summary>
 
 ![Server listings](./README_Images/site_server_listings.png)
-</details><br>
+</details>
 
 ```python
 # views.py
@@ -370,9 +369,68 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
     # We can now render the page and provide tags, selected_tags and
     # tag_string as context.
 ```
-#### Server detail page
 
-#### Server listings
+#### Server detailed page
+
+#### Bumps
+
+#### User Authentication
+
+##### Sign up
+
+##### Login
+
+##### Forgotten password
+
+#### My Account
+
+##### Profile
+
+##### Email update
+
+##### Password change
+
+##### Delete account
+
+##### My Bumps
+
+##### My Listings
+
+Management panel
+
+##### Create Listing
+
+### Admin Account Page
+
+### Image Approval
+
+### Manage Users
+
+#### Updating user
+
+#### Banning user
+
+#### Send user verification email
+
+#### Assign/Resign as staff
+
+#### Delete user
+
+#### See user listings
+
+### Manage Games
+
+#### Adding a game
+
+#### Updating a game
+
+### Manage Tags
+
+#### Adding a tag
+
+#### Updating a tag
+
+---
 
 #### Select2
 
@@ -411,10 +469,6 @@ send_mail(
 ```
 
 ### Features Left to Implement
-
----
-
-## Data Model
 
 ---
 
