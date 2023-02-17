@@ -6,7 +6,7 @@
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 text-light">
     <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
         <!-- Page header -->
-        <h2 class="text-light text-center m-5">{{ server.title }}</h2>
+        <h2 class="text-light text-break text-center m-5">{{ server.title|safe }}</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
             <p class="text-light text-center">{{ server.game }}</p>
             <!-- Image -->
@@ -60,7 +60,7 @@
                 {% endif %}
             </div>
             {% if user.is_staff %}
-            <div class="d-flex border rounded mt-3">
+            <div class="d-flex border rounded mt-3 mb-3">
                 <div class="align-self-center w-100 mb-0">
                     <p class="text-center mb-0">Staff view:</p>
                 </div>
@@ -72,9 +72,9 @@
             </div>
             {% endif %}
             <!-- Short description -->
-            <p class="text-light">{{ server.short_description|safe }}</p>
+            <div class="text-light text-break">{{ server.short_description|safe }}</div>
             <!-- Long description -->
-            <p class="text-light">{{ server.long_description|safe }}</p>
+            <div class="text-light text-break">{{ server.long_description|safe }}</div>
     </div>
 </div>
 {%endblock%}
