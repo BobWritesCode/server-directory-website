@@ -502,7 +502,7 @@ def my_account(request: object):
             form_2 = ConfirmAccountDeleteForm(request.POST)
             # Check if user has typed the correct phrase and hit submit
             if form_2.is_valid() and form_2.data['confirm'] == 'remove':
-                CustomUser.objects.get(username=request.user).delete()
+                CustomUser.objects.get(pk=request.user.pk).delete()
                 return redirect(to='account_deleted')
 
     username = request.user
