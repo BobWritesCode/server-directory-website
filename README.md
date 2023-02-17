@@ -622,6 +622,85 @@ def login_view(request: object):
 
 ##### Forgotten password
 
+<details><summary>Screenshot</summary>
+
+![Forgotten Password page](./README_Images/site_forgotten_password.png)
+</details>
+
+At some point a user will forget their password. So I have made sure included within the project is a forgotten password function.
+
+Taking advantage of the Django auth_views class, we can do this with relative ease, assuming that emailing has beet set up
+
+The use will see a password reset confirmation page, to let them know that request has been accepted.
+
+<details><summary>Screenshot</summary>
+
+![Forgotten Password confirmation page](./README_Images/site_forgotten_password_part2.png)
+</details>
+
+The user will then receive an email with a link to reset their password.
+
+![Password reset email](./README_Images/feat_password_reset_email.png)
+
+After the user visits the link they will be directed to the "Enter new password" page.
+
+<details><summary>Screenshot</summary>
+
+![Enter New Password](./README_Images/site_password_reset.png)
+</details>
+
+And finally once the user has confirmed their new password, they are presented with the option to login or go to the homepage.
+
+<details><summary>Screenshot</summary>
+
+![Enter New Password](./README_Images/site_password_reset_confirm.png)
+</details>
+
+```python
+# urls.py
+
+path(
+    'accounts/password_reset',
+    auth_views.PasswordResetView.as_view(
+        template_name="registration/password_reset_form.html",
+        form_class=PasswordResetForm,
+        subject_template_name='email_templates/password_reset_subject.txt',
+        email_template_name='email_templates/password_reset_email.html',
+        success_url='password_reset_done',
+    ),
+    name='password_reset'
+),
+
+path(
+    'accounts/password_reset_done',
+    auth_views.PasswordResetDoneView.as_view(
+    ),
+    name='password_reset_done'
+),
+
+path(
+    'accounts/password_change/',
+    auth_views.PasswordChangeView.as_view(
+        template_name="registration/password_change_form.html",
+        success_url='password_change_done',
+        form_class=PasswordChangeForm,
+        extra_context={},
+    ),
+    name='password_change'
+),
+
+path(
+    'accounts/reset/<uidb64>/<token>/',
+    auth_views.PasswordResetConfirmView.as_view(
+        template_name="registration/password_reset_confirm.html",
+        success_url='password_reset_complete',
+        form_class=SetPasswordForm,
+        extra_context={},
+    ),
+    name='password_reset_confirm'
+),
+```
+
 #### My Account
 
 ##### Profile
