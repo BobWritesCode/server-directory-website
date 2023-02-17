@@ -402,6 +402,7 @@ A user can only bump up to a specific amount of listings at a time, and will hav
 A user can only bump a single list once at a time.
 Once a user has used up their allocated bumps they will see a message saying they are out of bumps.
 A user has to be signed in to bump otherwise they will see a message saying they need to login first.
+
 ![Bump login](./README_Images/feat_bump_login.png) ![Out of bumps!](./README_Images/feat_bump_out_of.png)
 
 This is what the user Bumps list looks like in their 'My Account' page.
