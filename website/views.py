@@ -595,7 +595,6 @@ def sign_up_view(request):
             # Saving user to memory as inactive.
             user = form.save(commit=False)
             user.is_active = False
-            # user.id = CustomUser.objects.order_by("-pk").first().pk + 1
             user.save()
             send_email_verification(request, user)
             return redirect('signup_verify_email')
