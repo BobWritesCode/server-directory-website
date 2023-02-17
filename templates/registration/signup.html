@@ -6,7 +6,7 @@
         <!-- Page header -->
         <h2 class="text-light text-center m-5">Sign Up</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
-        <form method="post" class="text-light" id="signup-form">
+        <form method="post" class="text-light mb-3" id="signup-form">
             {% csrf_token %}
             {{ form|crispy }}
             <div class="d-flex mb-3 border rounded">
