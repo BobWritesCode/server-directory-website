@@ -109,18 +109,30 @@ class SignupForm(UserCreationForm):
 
     Attributes
     ----------
+    username : Char
+        User's chosen username.
     email : Email
         User's primary email address.
 
     Methods
     -------
+    __init__:
+        Removed the default autofocus.
+
     none
     """
+    username = forms.CharField(
+        label="Username", max_length=20,
+        required=True, help_text='Required')
     email = forms.EmailField(max_length=200, help_text='Required')
 
     class Meta:
         model = CustomUser
         fields = ('username', 'email', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super(SignupForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget.attrs.pop("autofocus", None)
 
 
 class ConfirmAccountDeleteForm(forms.ModelForm):
