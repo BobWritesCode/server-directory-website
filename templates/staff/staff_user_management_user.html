@@ -15,7 +15,6 @@
             {% csrf_token %}
             {{ form.id | as_crispy_field }}
             {{ form.username | as_crispy_field }}
-            {{ form.first_name | as_crispy_field }}
             {{ form.email | as_crispy_field }}
             {{ form.email_verified | as_crispy_field }}
             {{ form.is_staff | as_crispy_field }}

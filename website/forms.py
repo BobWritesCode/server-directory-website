@@ -34,6 +34,8 @@ class UserForm(forms.ModelForm):
         Unique identity number for user.
     username : Char : REQUIRED
         Chosen by user to represent themselves.
+    first_name : Char
+        User's first name.
     email : Char : REQUIRED
         User's primary email address.
     email_verified : Boolean : DISABLED
@@ -61,7 +63,7 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = [
-            'id', 'username', 'first_name', 'email', 'email_verified',
+            'id', 'username', 'email', 'email_verified',
             'is_staff', 'is_active', 'is_banned'
             ]
 
