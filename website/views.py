@@ -353,6 +353,8 @@ def server_edit(request: object, _pk: int):
 
             image = Images.objects.filter(listing_id=_pk).first()
 
+            # If there is a current listing image
+            # and image trying to be saved.
             if image is not None and request.FILES:
                 # Delete old image from Cloudinary server
                 uploader.destroy(image.public_id)
@@ -362,6 +364,8 @@ def server_edit(request: object, _pk: int):
                     folder="server_directory/"
                     )
 
+            # If no current listing image
+            # and image trying to be saved.
             if image is None and request.FILES:
                 # Upload new imaged
                 new_image = uploader.upload(
@@ -372,6 +376,7 @@ def server_edit(request: object, _pk: int):
                 image.user = request.user
                 image.listing = get_object_or_404(ServerListing, pk=_pk)
 
+            # Save new image.
             if request.FILES:
                 image.date_added = date.today()
                 image.status = 0
@@ -393,6 +398,7 @@ def server_edit(request: object, _pk: int):
             item.discord = form.data['discord']
             item.tiktok = form.data['tiktok']
             item.save()
+        return redirect("my-account")
 
     # Set status text based on image.status.
     try:
