@@ -1023,7 +1023,8 @@ def call_server(request: object):
             case 'search_users-username':
                 if request.user.is_staff:
                     query = Q(username__contains=content[1])
-                    users = CustomUser.objects.filter(query)
+                    # Limited to first 100 results.
+                    users = CustomUser.objects.filter(query)[:100]
                     result = {
                         'success': True,
                         'users': serializers.serialize('json', users),
@@ -1034,7 +1035,8 @@ def call_server(request: object):
             case 'search_users-email':
                 if request.user.is_staff:
                     query = Q(email__contains=content[1])
-                    users = CustomUser.objects.filter(query)
+                    # Limited to first 100 results.
+                    users = CustomUser.objects.filter(query)[:100]
                     result = {
                         'success': True,
                         'users': serializers.serialize('json', users),
@@ -1045,7 +1047,8 @@ def call_server(request: object):
             case 'search_users-id':
                 if request.user.is_staff:
                     query = Q(id__contains=int(content[1]))
-                    users = CustomUser.objects.filter(query)
+                    # Limited to first 100 results.
+                    users = CustomUser.objects.filter(query)[:100]
                     result = {
                         'success': True,
                         'users': serializers.serialize('json', users),

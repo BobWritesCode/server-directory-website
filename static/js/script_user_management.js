@@ -21,6 +21,14 @@ function validateForm() {
 }
 
 /**
+ * Updates the number of results in the DOM.
+ * @param {object} num The number of results in the array of users received from the server.
+ */
+function updateResultCount(num) {
+  $('#id_results_number').text(`Results found: ${num}`);
+}
+
+/**
  * Performs a promise using askServer() to return a json.
  * @param {object} obj Receives users as an object from action(). Then converts
  * them into rows and appends them into a html table
@@ -76,7 +84,9 @@ function action(...args) {
   })
     .then((data) => {
       if (data.result) {
-        displayUsers(JSON.parse(data.result.users));
+        const results = JSON.parse(data.result.users);
+        displayUsers(results);
+        updateResultCount(results.length);
       }
     });
 }
