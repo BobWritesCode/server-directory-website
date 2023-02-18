@@ -772,8 +772,9 @@ Finally the user is taken an 'Account Deleted' page to confirm the account has b
 The core of the website is of course the ability for server owners to list their private servers and for players to find a new server to join.
 
 - [Create Listing](#create-listing)
-- [My List Listing](#my-listings)
+- [My Listing](#my-listings)
 - [Edit Listing](#edit-listing)
+- [Delete Listing](#delete-listing)
 
 ##### Create Listing
 
@@ -809,7 +810,7 @@ Of course, once a user has created a listing, we need to let them be able to man
 
 Each listing shows the user:
 
-- The uploaded image, including [image approval](#image-approval) status:
+- The uploaded image, including [image review](#image-review) status:
   - Awaiting Approval,
   - Approved,
   - Rejected:
@@ -849,15 +850,56 @@ If the user tries to delete a listing, as this is permanent and irreversible pro
 
 Once the user completes the instructions the listing, and image will be deleted from the database.
 
+---
+
 ### Admin Account Page
 
-### Image Approval
+<details><summary>Screenshot</summary>
+
+![Admin Account Page](./README_Images/site_admin_account_page.png)
+</details>
+
+It is important to have a front-end user friendly interface for the site owner and allocated staff members to manage the day-to-day aspects of the site.
+
+The [admin account page](#admin-account-page) currently has the following features:
+
+- [Image Review](#image-review)
+- [Manage Users](#manage-users)
+- [Manage Games](#manage-games)
+- [Manage Tags](#manage-tags)
+
+### Image Review
+
+<details><summary>Screenshot</summary>
+
+![Image Review Page](./README_Images/site_image_review.png)
+</details>
+
+The image review page allows staff members to check images that have been uploaded by users before they can be seen publicly. This is a safety precaution to make sure images that would be against the site's terms of service are not being displayed.
+
+Every image to be reviewed will has 4 options:
+
+- Approve,
+  - Makes the image public.
+- Reject,
+  - Will set the image for deletion after 3 days.
+- Ban use,
+  - Will flag the user as banned, set all images by user as rejected. To stop accidentally trigger this, a modal will appear asking the user to type a specific phrase to complete the operation.
+- Next.
+  - Will take the user to the next image to be reviewed, and no new images to be reviewed they will be taken back to the [admin account page](#admin-account-page).
 
 ### Manage Users
 
+- [Updating user](#updating-user)
+- [Ban/Unban user](#ban%2Funban-user)
+- [Send user verification email](#send-user-verification-email)
+- [Assign/Resign as staff](#assign%2Fresign-as-staff)
+- [Delete user](#delete-user)
+- [See user listings](#see-user-listings)
+
 #### Updating user
 
-#### Banning user
+#### Ban/Unban user
 
 #### Send user verification email
 
@@ -885,11 +927,11 @@ Once the user completes the instructions the listing, and image will be deleted 
 
 #### Select2
 
-[Select2](https://select2.org/)
+[Select2 website](https://select2.org/)
 
 #### tinyMCE
 
-[tinyMCE](https://django-tinymce.readthedocs.io/en/latest/)
+[tinyMCE website](https://django-tinymce.readthedocs.io/en/latest/)
 
 ### Sending email verification
 
@@ -926,6 +968,10 @@ Site owner change:
 - when bumps bumps expire.
 - how many bumps a user can have active at a time.
 - change the amount of listings a person can list at once.
+
+- Staff:
+
+- Be able to review already approved images via image ID
 
 ---
 
@@ -972,8 +1018,6 @@ pip install django-apscheduler
 ### GitHub - Create new repository from template
 
 ### GitHub - Cloning
-
-### Cloudinary
 
 ### Postgres
 
