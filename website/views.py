@@ -993,12 +993,10 @@ def call_server(request: object):
                             'text': "/staff_account",
                         }
                     else:
-                        result = {
-                            'success': True,
-                            'text': f"/staff_image_review/{image.pk}",
-                        }
+                        redirect('staff_image_review')
                 else:
                     return render(request, "unauthorized.html")
+
             case 'get_game_details':
                 if request.user.is_staff:
                     game = get_object_or_404(Game, pk=content[1])
