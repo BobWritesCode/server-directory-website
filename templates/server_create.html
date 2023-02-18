@@ -21,6 +21,7 @@
             <label for="tags-multiple" class="mb-1">Choose tags: (max: 10)*</label>
             <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple" style="width: 100%;">
             </select>
+            <div class="mb-3"></div>
             {{ form.short_description | as_crispy_field}}
             {{ form.long_description | as_crispy_field}}
             {{ form.discord | as_crispy_field}}
