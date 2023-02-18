@@ -281,17 +281,7 @@ def server_create(request: object):
                 image_form.instance.approved_by = None
                 image_form.save()
 
-            return redirect('my-account')
-
-        else:
-            return render(
-                request,
-                "server_create.html",
-                {
-                    'form': form,
-                    'image_form': image_form,
-                }
-            )
+        return redirect('my-account')
 
     return render(
         request,
