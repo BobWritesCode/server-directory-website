@@ -1653,7 +1653,6 @@ def update_user(_form: dict):
 
     # Update values
     user.username = _form["username"]
-    user.first_name = _form["first_name"]
     user.email = _form["email"]
     user.is_active = _form["is_active"]
 
