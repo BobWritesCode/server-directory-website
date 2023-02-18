@@ -189,6 +189,8 @@ window.addEventListener('DOMContentLoaded', () => {
     validateForm();
     if ($('.error-message').length === 0) {
       submitForm();
+    } else {
+      window.scrollTo(0, 0);
     }
   });
   dropDownGame.on('input', () => {
