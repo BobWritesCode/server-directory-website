@@ -18,7 +18,7 @@
                 Select tag
             </div>
             <!-- Drop down using Select2 -->
-            <select id="tag-select-drop-down" class="tag-select-drop-down" name="state">
+            <select id="tag-select-drop-down" class="tag-select-drop-down" name="state" style="width: 100%;">
                 {% for tag in tags %}
                 <option value="{{tag.id}}">{{tag.name}}</option>
                 {% endfor %}

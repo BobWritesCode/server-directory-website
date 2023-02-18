@@ -34,7 +34,7 @@
             {{ image_form.image | as_crispy_field}}
             <!-- Tag selection using Select2 -->
             <label for="tags-multiple" class="mb-1">Choose tags: (max: 10)*</label>
-            <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple">
+            <select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple" style="width: 100%;">
             </select>
             {{ form.short_description | as_crispy_field}}
             {{ form.long_description | as_crispy_field}}
