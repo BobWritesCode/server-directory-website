@@ -208,6 +208,17 @@ def staff_image_review(request: object, item_pk: int = None):
     Returns:
         render() (func): Loads the html page.
     """
+    if request.method == request.POST:
+
+        query = Q(status=0)
+        image_count = Images.objects.filter(query).count()
+        # If no image is currently waiting be approved,
+        # then handle request.
+        if image_count > 0:
+            return redirect('staff_image_review')
+        else:
+            return redirect('staff_account')
+
     # If ID has been entered in URL.
     if item_pk:
         query = Q(pk=item_pk)
@@ -234,11 +245,16 @@ def staff_image_review(request: object, item_pk: int = None):
         case 2:
             image.status_txt = "Image declined, User banned"
 
+    user = get_object_or_404(CustomUser, pk=image.user_id)
+    listing = get_object_or_404(ServerListing, pk=image.listing_id)
+
     return render(
         request,
         "staff/staff_image_review.html",
         {
             'image': image,
+            'user': user,
+            'listing': listing,
         },
     )
 
@@ -978,22 +994,6 @@ def call_server(request: object):
                         'success': True,
                         'text': "Rejected and user banned"
                     }
-                else:
-                    return render(request, "unauthorized.html")
-
-            case 'image_approval_next':
-                if request.user.is_staff:
-                    query = Q(status=0)
-                    image = Images.objects.filter(query).first()
-                    # If no image is currently waiting be approved,
-                    # then handle request.
-                    if image is None:
-                        result = {
-                            'success': True,
-                            'text': "/staff_account",
-                        }
-                    else:
-                        redirect('staff_image_review')
                 else:
                     return render(request, "unauthorized.html")
 

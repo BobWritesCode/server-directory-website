@@ -5,6 +5,7 @@ const btnApprove = $('#btnApprove');
 const btnReject = $('#btnReject');
 const btnBan = $('#btnBan');
 const btnNext = $('#btnNext');
+const banForm = $('#user-ban-form');
 
 async function askServer(url = '', data = {}) {
   const csrftoken = document.querySelector(
@@ -40,6 +41,31 @@ function action(...args) {
   });
 }
 
+/**
+ * Check user input matches expected input before ban, then bans user.
+ */
+function UserBanConfirm() {
+  // Clear any current error messages from screen.
+  $('.error-message').remove();
+  // Check user has input correct string.
+  if ($('#ban_confirm').val() !== 'ban') {
+    $('#ban_confirm')
+      .after(
+        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+      );
+  }
+  // If no error messages then send request to server.
+  if ($('.error-message').length === 0) {
+    const input = $('<input>')
+      .attr('type', 'hidden')
+      .attr('name', 'id')
+      .val(banForm.find('#ban_confirm_id').val());
+    banForm.append(input);
+    action('image_approval_ban', $('#current_id').text());
+    banForm.submit();
+  }
+}
+
 // Listeners
 window.addEventListener('DOMContentLoaded', () => {
   btnApprove.on('click', () => {
@@ -49,7 +75,7 @@ window.addEventListener('DOMContentLoaded', () => {
     action('image_approval_reject', $('#current_id').text());
   });
   btnBan.on('click', () => {
-    action('image_approval_ban', $('#current_id').text());
+    UserBanConfirm();
   });
   btnNext.on('click', () => {
     action('image_approval_next');
