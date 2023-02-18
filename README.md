@@ -881,19 +881,62 @@ Every image to be reviewed will has 4 options:
 
 - Approve,
   - Makes the image public.
+
+    ```python
+    # views.py
+    item = get_object_or_404(Images, pk=content[1])
+    item.status = 1
+    item.expiry = None
+    item.reviewed_by = request.user
+    item.save()
+    ```
 - Reject,
   - Will set the image for deletion after 3 days.
+
+    ```python
+    # views.py
+    item = get_object_or_404(Images, pk=content[1])
+    item.status = 2
+    item.expiry = date.today() + timedelta(
+        days=DAYS_TO_EXPIRE_IMAGE)
+    item.reviewed_by = request.user
+    item.save()
+    ```
+
 - Ban use,
   - Will flag the user as banned, set all images by user as rejected. To stop accidentally trigger this, a modal will appear asking the user to type a specific phrase to complete the operation.
+
+    ```python
+    # views.py
+    item = get_object_or_404(Images, pk=content[1])
+    item.status = 3
+    item.expiry = date.today() + timedelta(
+        days=DAYS_TO_EXPIRE_IMAGE)
+    item.reviewed_by = request.user
+    item.save()
+    ban_user(request, item.user_id)
+    ```
+
 - Next.
   - Will take the user to the next image to be reviewed, and no new images to be reviewed they will be taken back to the [admin account page](#admin-account-page).
+
+    ```python
+    query = Q(status=0)
+    image_count = Images.objects.filter(query).count()
+    # If no image is currently waiting be approved,
+    # then handle request.
+    if image_count > 0:
+        return redirect('staff_image_review')
+    else:
+        return redirect('staff_account')
+    ```
 
 ### Manage Users
 
 - [Updating user](#updating-user)
-- [Ban/Unban user](#ban%2Funban-user)
+- [Ban/Unban user](#banunban-user)
 - [Send user verification email](#send-user-verification-email)
-- [Assign/Resign as staff](#assign%2Fresign-as-staff)
+- [Assign/Resign as staff](#assignresign-as-staff)
 - [Delete user](#delete-user)
 - [See user listings](#see-user-listings)
 
