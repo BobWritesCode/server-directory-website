@@ -370,7 +370,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
     # tag_string as context.
 ```
 
-#### Server detailed page
+#### View Listing
 
 <details><summary>Screenshot</summary>
 
@@ -405,13 +405,13 @@ A user has to be signed in to bump otherwise they will see a message saying they
 
 ![Bump login](./README_Images/feat_bump_login.png) ![Out of bumps!](./README_Images/feat_bump_out_of.png)
 
-This is what the user Bumps list looks like in their 'My Account' page.
+This is what the user Bumps list looks like in their [My Account](#my-account) page.
 
 ![Bump list](./README_Images/feat_bump_list.png)
 
 The way the bumps are automatically expired is by setting a automated task that run at midnight everyday or at server restart. The task will query for bumps that are less than or, equal to the current date and delete them. Print messages are produced purely as a way to check there are no issues.
 
-*You can read more about how the automated jobs work by checking out the APScheduler section of this README.*
+*You can read more about how the automated jobs work by checking out the [APScheduler](#django-apscheduler) section of this README.*
 
 ```python
 #jobs.py
@@ -565,7 +565,7 @@ Also if the user has been flagged as banned they will also get told so.
 
 ![Login banned](./README_Images/feat_login_banned.png)
 
-Once user has been authenticated they will then be redirected to their 'My Account' page.
+Once user has been authenticated they will then be redirected to their [My Account](#my-account) page.
 
 ```python
 # views.py
@@ -708,11 +708,16 @@ path(
 ![My Account page](./README_Images/site_my_account.png)
 </details>
 
-The 'My Account' is the main hub for a user to mange their profile, see their active bumps, create and manage their listings, and delete their account.
+The [My Account](#my-account) is the main hub for a user to mange their profile, see their active bumps, create and manage their listings, and delete their account.
+
+- [Profile](#profile)
+- [Email update](#email-update)
+- [Password change](#password-change)
+- [Delete account](#delete-account)
 
 ##### Profile
 
-Starting from the top of the 'My Account' page and working our way down, the first section is the 'Profile' section. In this section the user can see their username and their current email address. Currently the user cannot update their username but this is something that could be available in a future update.
+Starting from the top of the [My Account](#my-account) page and working our way down, the first section is the 'Profile' section. In this section the user can see their username and their current email address. Currently the user cannot update their username but this is something that could be available in a future update.
 
 ##### Email update
 
@@ -746,7 +751,7 @@ All going well, the user will be shown a password change page to confirm the cha
 
 ##### Delete account
 
-At the bottom of the 'My Account' page is the 'Delete account' section. Here the user can completely delete their account which also delete associated listings and bumps.
+At the bottom of the [My Account](#my-account) page is the 'Delete account' section. Here the user can completely delete their account which also delete associated listings and bumps.
 
 When the user clicks on the trash can button a modal will come up asking the user to delete their account. As part of **defensive programming**, to stop the user accidentally performing a irreversible action, the user actually needs to input a phrase into the input box before be able to finalise the action.
 
@@ -758,9 +763,91 @@ When the user clicks on the trash can button a modal will come up asking the use
 </details>
 Finally the user is taken an 'Account Deleted' page to confirm the account has been removed from the database.
 
-##### My Listings
+---
 
-Management panel
+### Listings
+
+[Go to top.](#server-directory-website)
+
+The core of the website is of course the ability for server owners to list their private servers and for players to find a new server to join.
+
+- [Create Listing](#create-listing)
+- [My List Listing](#my-listings)
+- [Edit Listing](#edit-listing)
+
+##### Create Listing
+
+Once a user has signed up and logged in they can go to [My Account](#my-account) and scroll down to 'Your Listings' and click the button to 'Create Listing'.
+
+![Create Listing Button](./README_Images/site_create_listing_button.gif)
+
+The user can currently create up to 3 listings. But in future feature this will be something that the site-owner will be able to adjust in the front end.
+
+<details><summary>Screenshot</summary>
+
+![Create Listing page](./README_Images/site_create_listing.png)
+</details>
+
+On the create listing page the user will be need complete all the mandatory fields. This page also includes two widgets that are not part of Django. They are:
+
+- [Select2](#select2) for the tags dropdown, and,
+- [TinyMCE](#tinymce) for the short and long description boxes.
+
+The image upload is done via [Cloudinary](#cloudinary).
+
+If the user tries to submit the form uncompleted they will receive error messages to let hem know, and the page will automatically scroll back to the top, just so the user can see something happened after pressing the submit button.
+
+![Create Listing error](./README_Images/feat_create_listing_error.png)
+
+Once the form has been completed correctly and submitted the new listing will be saved to the database. And the user will be able to see and manage the listing from their [My Account](#my-account) page.
+
+#### My Listings
+
+Of course, once a user has created a listing, we need to let them be able to manage that listing. Which we do from the [My Account](#my-account) page.
+
+![My Listings](./README_Images/feat_your_listings.png)
+
+Each listing shows the user:
+
+- The uploaded image, including [image approval](#image-approval) status:
+  - Awaiting Approval,
+  - Approved,
+  - Rejected:
+    - Rejected images are automatically deleted after a certain time.
+  - If no image uploaded there will be a placeholder saying 'Awaiting image'.
+- Server name,
+- Tags,
+- Short description,
+- Management panel.
+
+##### My Listings management panel
+
+This panel allows the user quick access to options to help manage their listing. The panel includes:
+
+- View if listing status is to published or draft,
+- View active [bumps](#bumps),
+- Go to [live listing](#view-listing).
+- Go to [edit listing](#edit-listing).
+- Delete listing.
+
+![My Listings management panel](./README_Images/feat_my_listings_panel.gif)
+
+##### Edit Listing
+
+<details><summary>Screenshot</summary>
+
+![Edit Listing page](./README_Images/site_edit_listing.png)
+</details>
+
+The view is very similar to [create listing](#create-listing) view but with the added extra elements of seeing the current uploaded image (which can be replaced), and the [delete listing](#delete-listing) button at the bottom of the page.
+
+##### Delete Listing
+
+If the user tries to delete a listing, as this is permanent and irreversible process, defensive programming has been implemented.  When the user click the delete listing button a modal will open which requires the user to type a specific phrase before the operation will be completed.
+
+![Delete listing modal](./README_Images/feat_delete_listing_modal.png)
+
+Once the user completes the instructions the listing, and image will be deleted from the database.
 
 ### Admin Account Page
 
@@ -793,6 +880,8 @@ Management panel
 #### Updating a tag
 
 ---
+
+#### Cloudinary
 
 #### Select2
 
@@ -831,6 +920,12 @@ send_mail(
 ```
 
 ### Features Left to Implement
+
+Site owner change:
+
+- when bumps bumps expire.
+- how many bumps a user can have active at a time.
+- change the amount of listings a person can list at once.
 
 ---
 
