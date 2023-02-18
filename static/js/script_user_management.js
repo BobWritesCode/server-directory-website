@@ -13,7 +13,8 @@ function validateForm() {
   $('.error-message').remove();
   // Check game name field is not blank.
   if (!userSearchForm.find('#search-name').val()) {
-    userSearchForm.find('#search-name')
+    userSearchForm
+      .find('#search-name')
       .after(
         "<div class='error-message alert alert-warning mt-1' role='alert'>Must not be blank</div>",
       );
@@ -40,9 +41,33 @@ function displayUsers(users) {
     const user = users[i];
     const row = $('<tr>').appendTo(tableBody);
     $('<th>', { scope: 'row', text: i + 1 }).appendTo(row);
-    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.pk })).appendTo(row);
-    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.username })).appendTo(row);
-    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.email })).appendTo(row);
+    $('<td>')
+      .append(
+        $('<a>', {
+          href: `staff_user_management_user/${user.pk}`,
+          class: 'text-decoration-none link-light',
+          text: user.pk,
+        }),
+      )
+      .appendTo(row);
+    $('<td>')
+      .append(
+        $('<a>', {
+          href: `staff_user_management_user/${user.pk}`,
+          class: 'text-decoration-none link-light',
+          text: user.fields.username,
+        }),
+      )
+      .appendTo(row);
+    $('<td>')
+      .append(
+        $('<a>', {
+          href: `staff_user_management_user/${user.pk}`,
+          class: 'text-decoration-none link-light',
+          text: user.fields.email,
+        }),
+      )
+      .appendTo(row);
   }
 }
 
@@ -54,10 +79,7 @@ function displayUsers(users) {
  * @returns {json}
  */
 async function askServer(url = '', data = {}) {
-  const csrftoken = document.querySelector(
-    '[name=csrfmiddlewaretoken]',
-  )
-    .value;
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
@@ -82,14 +104,13 @@ async function askServer(url = '', data = {}) {
 function action(...args) {
   askServer('/call_server', {
     args,
-  })
-    .then((data) => {
-      if (data.result) {
-        const results = JSON.parse(data.result.users);
-        displayUsers(results);
-        updateResultCount(results.length);
-      }
-    });
+  }).then((data) => {
+    if (data.result) {
+      const results = JSON.parse(data.result.users);
+      displayUsers(results);
+      updateResultCount(results.length);
+    }
+  });
 }
 
 // Listeners
