@@ -30,18 +30,19 @@ function updateResultCount(num) {
 
 /**
  * Performs a promise using askServer() to return a json.
- * @param {object} obj Receives users as an object from action(). Then converts
- * them into rows and appends them into a html table
+ * @param {object} users Receives users as an object from action(). Then converts
+ * them into rows and appends them into a html table.
  */
-function displayUsers(obj) {
-  $('#user-search-display-table').find('tbody').html('');
-  for (let i = 0; i < obj.length; i += 1) {
-    const newTr = document.createElement('tr');
-    $(newTr).append(`<th scope="row">${i + 1}</th>`)
-      .append(`<td><a href=staff_user_management_user/${obj[i].pk}  class="text-decoration-none link-light">${obj[i].pk}</a>`)
-      .append(`<td><a href=staff_user_management_user/${obj[i].pk}  class="text-decoration-none link-light">${obj[i].fields.username}</a></td>`)
-      .append(`<td><a href=staff_user_management_user/${obj[i].pk}  class="text-decoration-none link-light">${obj[i].fields.email}</a>`);
-    $('#user-search-display-table').find('tbody').append(newTr);
+function displayUsers(users) {
+  const tableBody = $('#user-search-display-table tbody');
+  tableBody.empty();
+  for (let i = 0; i < users.length; i += 1) {
+    const user = users[i];
+    const row = $('<tr>').appendTo(tableBody);
+    $('<th>', { scope: 'row', text: i + 1 }).appendTo(row);
+    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.pk })).appendTo(row);
+    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.username })).appendTo(row);
+    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.email })).appendTo(row);
   }
 }
 
