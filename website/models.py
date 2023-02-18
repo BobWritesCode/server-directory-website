@@ -1,10 +1,13 @@
 """
 All models for app
 """
+import uuid
 import json
 from datetime import timedelta, date
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
+from django.utils.text import slugify
 
 from cloudinary.models import CloudinaryField
 from tinymce import models as tinymce_models
@@ -24,8 +27,11 @@ class CustomUser(AbstractUser):
     ----------
     username : str : REQUIRED
         Chosen by user to represent themselves.
+    username_lower : str : REQUIRED
+        Username converted to lowercase. To stop two usernames being the same
+        just differing by case.
     first_name : str
-        Optional to put real first name.
+        User's first name.
     email : str : USERNAME_FIELD
         User's primary email address.
     email_verified : bool
@@ -46,9 +52,18 @@ class CustomUser(AbstractUser):
 
     to_json():
         converts class into a json string.
+
+    save():
+        Saves object. Also checks to make sure username is not already taken by
+        checking converting username to lower case and comparing against
+        username_lower.
     """
+
     username = models.CharField(max_length=20, unique=True, blank=False)
-    first_name = models.CharField(max_length=20)
+    username_lower = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50, default=None,
+                                 null=True, blank=True)
     email = models.EmailField(unique=True, blank=False)
     email_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
@@ -87,6 +102,28 @@ class CustomUser(AbstractUser):
         return json.dumps(
             self, default=lambda o: o.__dict__, sort_keys=True, indent=4
             )
+
+    def save(self, *args, **kwargs):
+        """
+        Save object after checking that their are no duplicates within username_lower.
+
+        Args:
+            None
+
+        Returns:
+            no return.
+        """
+        self.username_lower = self.username.lower()
+        if not self.pk:  # Add a new object
+            existing_usernames = CustomUser.objects.filter(
+                username_lower=self.username_lower
+                )
+        else:  # updating an existing object
+            existing_usernames = CustomUser.objects.filter(
+                username_lower=self.username_lower).exclude(pk=self.pk)
+        if existing_usernames:
+            raise ValidationError('This username is already taken.')
+        super().save(*args, **kwargs)
 
 
 class Tag(models.Model):
