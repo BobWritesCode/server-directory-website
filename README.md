@@ -306,7 +306,7 @@ The server listing page allows the user to start looking through the different l
 ![Server listings](./README_Images/site_server_listings.png)
 </details>
 
-```python
+```py
 # views.py
 # These are snippets from the code to provide the filtering by essentially
 # building tag string in the url. I removed other parts of this method not
@@ -413,7 +413,7 @@ The way the bumps are automatically expired is by setting a automated task that 
 
 *You can read more about how the automated jobs work by checking out the [APScheduler](#django-apscheduler) section of this README.*
 
-```python
+```py
 #jobs.py
 def clear_bumps():
     """
@@ -445,7 +445,7 @@ It's important that user's can easily sign up, the sign up form it self is desig
 
 ![Email already in user](./README_Images/feat_signup_email.png)
 
-```python
+```py
 # views.py
 def sign_up_view(request):
     """
@@ -480,7 +480,7 @@ Once the user has successfully input the their sign up details they will be dire
 ![Verify email address page](./README_Images/site_verify_email_address.png)
 </details>
 
-```python
+```py
 # views.py
 def send_email_verification(request: object, user: object):
     '''
@@ -510,7 +510,7 @@ def send_email_verification(request: object, user: object):
 
 To make sure your emails send you need to make sure you set up the following settings correctly in your settings.py
 
-```python
+```py
 # settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MAILER_EMAIL_BACKEND = EMAIL_BACKEND
@@ -567,7 +567,7 @@ Also if the user has been flagged as banned they will also get told so.
 
 Once user has been authenticated they will then be redirected to their [My Account](#my-account) page.
 
-```python
+```py
 # views.py
 def login_view(request: object):
     """
@@ -656,7 +656,7 @@ And finally once the user has confirmed their new password, they are presented w
 ![Enter New Password](./README_Images/site_password_reset_confirm.png)
 </details>
 
-```python
+```py
 # urls.py
 
 path(
@@ -868,6 +868,8 @@ The [admin account page](#admin-account-page) currently has the following featur
 - [Manage Games](#manage-games)
 - [Manage Tags](#manage-tags)
 
+---
+
 ### Image Review
 
 <details><summary>Screenshot</summary>
@@ -882,7 +884,7 @@ Every image to be reviewed will has 4 options:
 - Approve,
   - Makes the image public.
 
-    ```python
+    ```py
     # views.py
     item = get_object_or_404(Images, pk=content[1])
     item.status = 1
@@ -890,10 +892,11 @@ Every image to be reviewed will has 4 options:
     item.reviewed_by = request.user
     item.save()
     ```
+
 - Reject,
   - Will set the image for deletion after 3 days.
 
-    ```python
+    ```py
     # views.py
     item = get_object_or_404(Images, pk=content[1])
     item.status = 2
@@ -906,7 +909,7 @@ Every image to be reviewed will has 4 options:
 - Ban use,
   - Will flag the user as banned, set all images by user as rejected. To stop accidentally trigger this, a modal will appear asking the user to type a specific phrase to complete the operation.
 
-    ```python
+    ```py
     # views.py
     item = get_object_or_404(Images, pk=content[1])
     item.status = 3
@@ -920,7 +923,7 @@ Every image to be reviewed will has 4 options:
 - Next.
   - Will take the user to the next image to be reviewed, and no new images to be reviewed they will be taken back to the [admin account page](#admin-account-page).
 
-    ```python
+    ```py
     query = Q(status=0)
     image_count = Images.objects.filter(query).count()
     # If no image is currently waiting be approved,
@@ -931,8 +934,13 @@ Every image to be reviewed will has 4 options:
         return redirect('staff_account')
     ```
 
+---
+
 ### Manage Users
 
+Another crucial feature of the website is the ability for staff user's to be able to find user's and manage them. The Manage user section has many sub-features to it, including:
+
+- [User Search](#user-search)
 - [Updating user](#updating-user)
 - [Ban/Unban user](#banunban-user)
 - [Send user verification email](#send-user-verification-email)
@@ -940,9 +948,56 @@ Every image to be reviewed will has 4 options:
 - [Delete user](#delete-user)
 - [See user listings](#see-user-listings)
 
-#### Updating user
+#### User Search
 
-#### Ban/Unban user
+<details><summary>Screenshot</summary>
+
+![User Search Page](./README_Images/site_user_search.png)
+</details>
+
+This is a simple search, which will allow the user to search for another using using either id, username or email address.
+
+The results are limited to the first 100 in case the database grows significantly.
+
+This python codeblock is an email of the email search getting the first 100 users it finds that match the email string input by the user in the front end.
+
+```py
+query = Q(email__contains=content[1])
+# Limited to first 100 results.
+users = CustomUser.objects.filter(query)[:100]
+result = {
+    'success': True,
+    'users': serializers.serialize('json', users),
+}
+```
+
+This JavaScript codeblock is that the DOM being updated with the returned results.
+
+```js
+/**
+ * Performs a promise using askServer() to return a json.
+ * @param {object} users Receives users as an object from action(). Then converts
+ * them into rows and appends them into a html table.
+ */
+function displayUsers(users) {
+  const tableBody = $('#user-search-display-table tbody');
+  tableBody.empty();
+  for (let i = 0; i < users.length; i += 1) {
+    const user = users[i];
+    const row = $('<tr>').appendTo(tableBody);
+    $('<th>', { scope: 'row', text: i + 1 }).appendTo(row);
+    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.pk })).appendTo(row);
+    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.username })).appendTo(row);
+    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.email })).appendTo(row);
+  }
+}
+```
+
+The user can then click on any of the results to go to the user management screen.
+
+#### Updating User
+
+#### Ban/Unban User
 
 #### Send user verification email
 
@@ -984,7 +1039,7 @@ There were some changes to be made due to potentially using newer version of Dja
 
 Instead of using `EmailMessage()`, I used `send_mail()`.
 
-```python
+```py
 # ORIGINAL CODE
 email = EmailMessage(
     subject=mail_subject,
@@ -994,7 +1049,7 @@ email = EmailMessage(
 email.send()
 ```
 
-```python
+```py
 # NEW CODE
 send_mail(
     subject=mail_subject,
