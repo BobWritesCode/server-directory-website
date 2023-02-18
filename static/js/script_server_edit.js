@@ -153,7 +153,7 @@ function validateForm() {
   }
   // Check has discord server
   if (!form.find('#id_discord').val()) {
-    form.find('#id_discord')
+    form.find('#id_discord').parent()
       .after(
         "<div class='error-message alert alert-warning mt-1' role='alert'>Must provide discord invite code</div>",
       );
