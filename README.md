@@ -986,9 +986,33 @@ function displayUsers(users) {
     const user = users[i];
     const row = $('<tr>').appendTo(tableBody);
     $('<th>', { scope: 'row', text: i + 1 }).appendTo(row);
-    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.pk })).appendTo(row);
-    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.username })).appendTo(row);
-    $('<td>').append($('<a>', { href: `staff_user_management_user/${user.pk}`, class: 'text-decoration-none link-light', text: user.fields.email })).appendTo(row);
+    $('<td>')
+      .append(
+        $('<a>', {
+          href: `staff_user_management_user/${user.pk}`,
+          class: 'text-decoration-none link-light',
+          text: user.pk,
+        }),
+      )
+      .appendTo(row);
+    $('<td>')
+      .append(
+        $('<a>', {
+          href: `staff_user_management_user/${user.pk}`,
+          class: 'text-decoration-none link-light',
+          text: user.fields.username,
+        }),
+      )
+      .appendTo(row);
+    $('<td>')
+      .append(
+        $('<a>', {
+          href: `staff_user_management_user/${user.pk}`,
+          class: 'text-decoration-none link-light',
+          text: user.fields.email,
+        }),
+      )
+      .appendTo(row);
   }
 }
 ```
