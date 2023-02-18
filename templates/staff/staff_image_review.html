@@ -27,10 +27,10 @@
                 <td>{{image.listing_id}}</td>
             </tr>
         </table>
-        <button type="button" class="btn btn-success m-1" id="btnApprove">Approve</button>
-        <button type="button" class="btn btn-danger m-1" id="btnReject">Reject</button>
-        <button type="button" class="btn btn-warning m-1" id="btnBan">Ban User</button>
-        <button type="button" class="btn btn-primary m-1" id="btnNext" disabled>Next</button>
+        <button type="button" class="btn btn-success mb-2" id="btnApprove" data-bs-toggle="tooltip" title="Approve"><i class="bi bi-check-circle"></i></button>
+        <button type="button" class="btn btn-danger mb-2" id="btnReject" data-bs-toggle="tooltip" title="Reject"><i class="bi bi-x-circle"></i></button>
+        <button type="button" class="btn btn-warning mb-2" id="btnBan" data-bs-toggle="tooltip" title="Ban User"><i class="bi bi-slash-circle"></i></button>
+        <button type="button" class="btn btn-primary mb-3" id="btnNext" disabled data-bs-toggle="tooltip" title="Next"><i class="bi bi-arrow-right-circle"></i></button>
     </div>
 </div>
 {% endblock %}
