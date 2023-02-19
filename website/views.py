@@ -1662,53 +1662,6 @@ def demote_user_from_staff(request: object, target_id: int):
         user.save()
 
 
-# def update_user(_form: dict):
-#     """
-#     Updates target user from form.
-
-#     Args:
-#         _form (dict): Data to update user.
-#     """
-#     # Get correct user from database
-#     user = get_object_or_404(CustomUser, pk=_form["id"])
-
-#     # Validate user inputs conform
-#     result = check_username(_form["username"])
-#     if not result['result']:
-#         return result
-
-#     result = check_email(_form["email"])
-#     if not result['result']:
-#         return result
-
-#     # Update values
-#     user.username = _form["username"]
-#     user.email = _form["email"]
-#     user.is_active = _form["is_active"]
-
-#     # Save user object
-#     try:
-#         user.save()
-#     except IntegrityError as err:
-#         print(err)
-#         if 'UNIQUE constraint failed: auth_user.username' in err.args:
-#             raise ValidationError({
-#                 'field': 'username',
-#                 'message': 'Username already taken. (Aardvark)'
-#                 })
-#         if 'UNIQUE constraint failed: auth_user.email' in err.args:
-#             raise ValidationError({
-#                 'field': 'email',
-#                 'message': 'Email address already taken. (Aardwolf)'
-#                 })
-#     except ValidationError as err:
-#         raise ValidationError({
-#                 'field': 'email',
-#                 'message': 'Username already taken. (Albatross)'
-#                 })
-#     return {'result': True, 'reason': "No problems"}
-
-
 def delete_user(form: object):
     """
     Delete target user from database.
