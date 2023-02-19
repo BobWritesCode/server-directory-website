@@ -1120,6 +1120,7 @@ def ban_user(request: object, _id: int):
         if session.get_decoded().get('_auth_user_id') == user.pk:
             session.delete()
 
+    # Flag user as banned.
     user.is_banned = True
     user.save()
 
