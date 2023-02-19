@@ -69,12 +69,14 @@ class UserForm(forms.ModelForm):
         label="Account Active?", required=False)
     is_banned = forms.BooleanField(
         label="Is Banned?", disabled=True, required=False)
+    is_superuser = forms.BooleanField(
+        label="Is Superuser?", disabled=True, required=False)
 
     class Meta:
         model = CustomUser
         fields = [
             'id', 'username', 'email', 'email_verified',
-            'is_staff', 'is_active', 'is_banned'
+            'is_active', 'is_banned', 'is_staff', 'is_superuser'
             ]
 
 
