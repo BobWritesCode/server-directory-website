@@ -781,13 +781,13 @@ Finally the user is taken an 'Account Deleted' page to confirm the account has b
 The core of the website is of course the ability for server owners to list their private servers and for players to find a new server to join.
 
 - [Create Listing](#create-listing)
-- [My Listing](#my-listings)
+- [Your Listing](#your-listings)
 - [Edit Listing](#edit-listing)
 - [Delete Listing](#delete-listing)
 
 #### Create Listing
 
-Once a user has signed up and logged in they can go to [My Account](#my-account) and scroll down to 'Your Listings' and click the button to 'Create Listing'.
+Once a user has signed up and logged in they can go to [My Account](#my-account) and scroll down to [Your Listing](#your-listings) and click the button to 'Create Listing'.
 
 ![Create Listing Button](./README_Images/site_create_listing_button.gif)
 
@@ -811,7 +811,7 @@ If the user tries to submit the form uncompleted they will receive error message
 
 Once the form has been completed correctly and submitted the new listing will be saved to the database. And the user will be able to see and manage the listing from their [My Account](#my-account) page.
 
-#### My Listings
+#### Your Listings
 
 Of course, once a user has created a listing, we need to let them be able to manage that listing. Which we do from the [My Account](#my-account) page.
 
@@ -1179,13 +1179,19 @@ def demote_user_from_staff(request: object, target_id: int):
         user.save()
 ```
 
-#### Delete user
+#### Delete User
 
 This function allows a staff user to delete a target user from the database.
 
+As this is a major, permanent and irreversible action, defence programming is implemented, the user will need to type a specific phrase to complete the operation.
+
 ![Demote staff modal](./README_Images/feat_delete_user_modal.png)
 
-#### See user listings
+#### See User Listings
+
+The lower section of view displays the target user's listing, just how you would see your own listings in [Your Listing](#your-listings).
+
+A staff member has the same abilities as a the listing owner to view, edit and delete each listing.
 
 ---
 
