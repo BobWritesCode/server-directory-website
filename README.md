@@ -146,55 +146,55 @@ Below are some wireframe that I designed to help build and represent the design 
 
 #### Homepage design
 
-<details><summary>PC</summary>
+<details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
 ![Homepage](./README_Images/wireframe_homepage.png)
 </details>
-<details><summary>Mobile</summary>
+<details><summary>Mobile</summary> <!-- markdownlint-disable-line -->
 
 ![Homepage on mobile](./README_Images/wireframe_homepage_mobile.png)
 </details>
 
 #### Listings design
 
-<details><summary>PC</summary>
+<details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
 ![Listings](./README_Images/wireframe_listings.png)
 </details>
-<details><summary>Mobile</summary>
+<details><summary>Mobile</summary> <!-- markdownlint-disable-line -->
 
 ![Listings on mobile](./README_Images/wireframe_listings_mobile.png)
 </details>
 
 #### Full listing design
 
-<details><summary>PC</summary>
+<details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
 ![Full listing](./README_Images/wireframe_full_listing.png)
 </details>
-<details><summary>Mobile</summary>
+<details><summary>Mobile</summary> <!-- markdownlint-disable-line -->
 
 ![Full listing on mobile](./README_Images/wireframe_full_listing_mobile.png)
 </details>
 
 #### My Account design
 
-<details><summary>PC</summary>
+<details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
 ![My Account](./README_Images/wireframe_my_account.png)
 </details>
-<details><summary>Mobile</summary>
+<details><summary>Mobile</summary> <!-- markdownlint-disable-line -->
 
 ![My Account on mobile](./README_Images/wireframe_my_account_mobile.png)
 </details>
 
 #### Create Listing design
 
-<details><summary>PC</summary>
+<details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
 ![Create Listing](./README_Images/wireframe_create_listing.png)
 </details>
-<details><summary>Mobile</summary>
+<details><summary>Mobile</summary> <!-- markdownlint-disable-line -->
 
 ![Create Listing on mobile](./README_Images/wireframe_create_listing_mobile.png)
 </details>
@@ -240,12 +240,12 @@ The navbar was design to be simple and vibrant. Early versions the Navbar was of
 
 Depending if the user is flagged as a staff member will determine if they can see the 'Admin' nav button.
 
-<details><summary>PC</summary>
+<details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
 ![Navbar PC](./README_Images/site_navbar_pc.png)
 </details>
 
-<details><summary>Mobile</summary>
+<details><summary>Mobile</summary> <!-- markdownlint-disable-line -->
 
 ![Navbar Mobile](./README_Images/site_navbar_mobile.png)
 </details>
@@ -288,7 +288,7 @@ Depending if the user is flagged as a staff member will determine if they can se
 
 The homepage is designed to be simple and provide a clear understanding of what the website is about when a first time user visits.
 
-<details><summary>Homepage screenshot</summary>
+<details><summary>Homepage screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Homepage](./README_Images/site_homepage.png)
 </details>
@@ -301,7 +301,7 @@ The user can hover their mouse over the different game cards. This help the user
 
 The server listing page allows the user to start looking through the different listings. The user can filter their search down using the tags filter on the right. They can select up to as many tags as they like and also easily remove tags. This provides a much more bespoke list that is filled only with that user's interests.
 
-<details><summary>Server listings screenshot</summary>
+<details><summary>Server listings screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Server listings](./README_Images/site_server_listings.png)
 </details>
@@ -372,7 +372,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
 
 #### View Listing
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Server listings](./README_Images/site_listing.png)
 </details>
@@ -434,7 +434,7 @@ def clear_bumps():
 
 ##### Sign up
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Sign up form](./README_Images/site_signup.png)
 </details>
@@ -449,7 +449,9 @@ It's important that user's can easily sign up, the sign up form it self is desig
 # views.py
 def sign_up_view(request):
     """
-    Loads sign up view.
+    GET: Loads sign up view
+    POST: Attempts to create a new user, unless there is an error
+    then displays error to the user.
 
     Args:
         request (object): GET/POST request from user.
@@ -462,10 +464,19 @@ def sign_up_view(request):
         form = SignupForm(request.POST)
         # Check user has completed form as required.
         if form.is_valid():
+            # Original code before modifications, check ReadMe:
+            # https://shafikshaon.medium.com/
+            # user-registration-with-email-verification-in-django-8aeff5ce498d
             # Save new user to database.
-            user.save()
-            send_email_verification(request, user)
-            return redirect('signup_verify_email')
+            try:
+                user = form.save()
+                send_email_verification(request, user)
+                return redirect('signup_verify_email')
+            except Exception as e:
+                # Display errors if any.
+                form.add_error(
+                    field=e.args[0]['field'],
+                    error=e.args[0]['message'])
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
@@ -475,7 +486,7 @@ def sign_up_view(request):
 
 Once the user has successfully input the their sign up details they will be directed to a screen explaining that they have been sent an email to verify their email address.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Verify email address page](./README_Images/site_verify_email_address.png)
 </details>
@@ -543,14 +554,14 @@ The Gamer's-verse team
 
 Once the user visits the link in the email they will be taken to the page to show that their email address is now verified and they can now login.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Email address verified page](./README_Images/site_signup_email_address_verified.png)
 </details>
 
 ##### Login
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Login page](./README_Images/site_login.png)
 </details>
@@ -622,7 +633,7 @@ def login_view(request: object):
 
 ##### Forgotten password
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Forgotten Password page](./README_Images/site_forgotten_password.png)
 </details>
@@ -633,7 +644,7 @@ Taking advantage of the Django auth_views class, we can do this with relative ea
 
 The use will see a password reset confirmation page, to let them know that request has been accepted.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Forgotten Password confirmation page](./README_Images/site_forgotten_password_part2.png)
 </details>
@@ -644,14 +655,14 @@ The user will then receive an email with a link to reset their password.
 
 After the user visits the link they will be directed to the "Enter new password" page.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Enter New Password](./README_Images/site_password_reset.png)
 </details>
 
 And finally once the user has confirmed their new password, they are presented with the option to login or go to the homepage.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Enter New Password](./README_Images/site_password_reset_confirm.png)
 </details>
@@ -703,7 +714,7 @@ path(
 
 #### My Account
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![My Account page](./README_Images/site_my_account.png)
 </details>
@@ -735,14 +746,14 @@ Once the form is completed the user's email address will be updated but the the 
 
 ##### Password change
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Password change page](./README_Images/site_password_change.png)
 </details>
 
 Takes you to the password change page where the user is required to enter their current password, and then their new password twice.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Password change page](./README_Images/site_password_change.png)
 </details>
@@ -757,7 +768,7 @@ When the user clicks on the trash can button a modal will come up asking the use
 
 ![Delete account modal](./README_Images/feat_delete_account.png)
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Account deleted page](./README_Images/site_account_deleted.png)
 </details>
@@ -776,7 +787,7 @@ The core of the website is of course the ability for server owners to list their
 - [Edit Listing](#edit-listing)
 - [Delete Listing](#delete-listing)
 
-##### Create Listing
+#### Create Listing
 
 Once a user has signed up and logged in they can go to [My Account](#my-account) and scroll down to 'Your Listings' and click the button to 'Create Listing'.
 
@@ -784,7 +795,7 @@ Once a user has signed up and logged in they can go to [My Account](#my-account)
 
 The user can currently create up to 3 listings. But in future feature this will be something that the site-owner will be able to adjust in the front end.
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Create Listing page](./README_Images/site_create_listing.png)
 </details>
@@ -835,7 +846,7 @@ This panel allows the user quick access to options to help manage their listing.
 
 ##### Edit Listing
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Edit Listing page](./README_Images/site_edit_listing.png)
 </details>
@@ -854,7 +865,7 @@ Once the user completes the instructions the listing, and image will be deleted 
 
 ### Admin Account Page
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Admin Account Page](./README_Images/site_admin_account_page.png)
 </details>
@@ -872,7 +883,7 @@ The [admin account page](#admin-account-page) currently has the following featur
 
 ### Image Review
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![Image Review Page](./README_Images/site_image_review.png)
 </details>
@@ -941,6 +952,7 @@ Every image to be reviewed will has 4 options:
 Another crucial feature of the website is the ability for staff user's to be able to find user's and manage them. The Manage user section has many sub-features to it, including:
 
 - [User Search](#user-search)
+- [User Management Page](#user-management-page)
 - [Updating user](#updating-user)
 - [Ban/Unban user](#banunban-user)
 - [Send user verification email](#send-user-verification-email)
@@ -950,7 +962,7 @@ Another crucial feature of the website is the ability for staff user's to be abl
 
 #### User Search
 
-<details><summary>Screenshot</summary>
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
 ![User Search Page](./README_Images/site_user_search.png)
 </details>
@@ -1019,8 +1031,6 @@ function displayUsers(users) {
 
 The user can then click on any of the results to go to the user management screen.
 
-#### Updating User
-
 #### Ban/Unban User
 
 #### Send user verification email
@@ -1031,11 +1041,15 @@ The user can then click on any of the results to go to the user management scree
 
 #### See user listings
 
+---
+
 ### Manage Games
 
 #### Adding a game
 
 #### Updating a game
+
+---
 
 ### Manage Tags
 
