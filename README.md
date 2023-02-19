@@ -18,8 +18,6 @@ Cloudinary, SELECT2 and tinyMCE.
 
 [GitHub repository](https://github.com/BobWritesCode/server-directory-website)
 
----
-
 ## Table of Contents
 
 - [Gamer's-verse](#Gamer's-verse)
@@ -59,8 +57,8 @@ Cloudinary, SELECT2 and tinyMCE.
     - [Current](#current)
     - [Resolved](#resolved)
   - [Development](#development)
-    - [GitHub - Create new repository from template](#github---create-new-repository-from-template)
-    - [GitHub - Cloning](#github---cloning)
+    - [GitHub - Create new repository from template](#githubreate-new-repository-from-template)
+    - [GitHub - Cloning](#githubloning)
     - [Cloudinary](#cloudinary)
     - [Postgres](#postgres)
     - [Heroku](#heroku)
@@ -68,8 +66,6 @@ Cloudinary, SELECT2 and tinyMCE.
     - [Content](#content)
     - [Media](#media)
     - [Acknowledgements](#acknowledgements)
-
----
 
 ## Objective
 
@@ -88,8 +84,6 @@ The goal of this website are:
 - to provide a private server directory that users can visit to find a private server based on the game they wish to find that server on.
 - for server owners to be able to list their own server to be found by potential players.
 - to have a front-end admin access section that allows "staff" to moderate listings. As well as manage users, listings, games and tags.
-
----
 
 ## UX &#8722; User Experience Design
 
@@ -135,8 +129,6 @@ Some example user stories which will affect the design and project functionality
 > *"As a site admin I can manually feature a listening so that they get extra awareness."*
 >
 > *"As a site admin I want to be able to manage the site from a user-friendly admin panel."*
-
----
 
 ## Development
 
@@ -212,8 +204,6 @@ This 4 colours contrast very nicely against each other, and the white text again
 
 ### Imagery
 
----
-
 ## Logic
 
 ### Data Model
@@ -227,8 +217,6 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 ### Python
 
 ### JavaScript
-
----
 
 ## Features
 
@@ -772,8 +760,6 @@ At the bottom of the [My Account](#my-account) page is the 'Delete account' sect
 </details>
 Finally the user is taken an 'Account Deleted' page to confirm the account has been removed from the database.
 
----
-
 ### Listings
 
 [Go to top.](#server-directory-website)
@@ -859,8 +845,6 @@ The view is very similar to [create listing](#create-listing) view but with the 
 
 Once the user completes the instructions the listing, and image will be deleted from the database.
 
----
-
 ### Admin Account Page
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -876,8 +860,6 @@ The [admin account page](#admin-account-page) currently has the following featur
 - [Manage Users](#manage-users)
 - [Manage Games](#manage-games)
 - [Manage Tags](#manage-tags)
-
----
 
 ### Image Review
 
@@ -942,8 +924,6 @@ Every image to be reviewed will has 4 options:
     else:
         return redirect('staff_account')
     ```
-
----
 
 ### Manage Users
 
@@ -1193,8 +1173,6 @@ The lower section of view displays the target user's listing, just how you would
 
 A staff member has the same abilities as a the listing owner to view, edit and delete each listing.
 
----
-
 ### Manage Games
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -1202,7 +1180,7 @@ A staff member has the same abilities as a the listing owner to view, edit and d
 ![Manage Game page](./README_Images/site_manage_game.png)
 </details>
 
-For game management there are two sections. You can either choose a game from the dropdown menu that already exists in the database, or click the '+' icon to add a new game to the database.
+For game management there are two sections. You can either choose a game from the dropdown menu that already exists in the database to update, or click the '+' icon to add a new game to the database.
 
 - [Adding A Game](#adding-a-game),
 - [Updating A Game](#updating-a-game).
@@ -1241,24 +1219,71 @@ window.addEventListener('keyup', () => {
 ![Manage Game page - Update game.](./README_Images/site_manage_game_update.png)
 </details>
 
-Using the [SELECT2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the game you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the game](#adding-a-game) please the added feature now to delete the game.
+Using the [SELECT2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the game you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the game](#adding-a-game) plus the added feature now to delete the game.
 
 **Important:** As this is a major, permanent and irreversible action, defence programming is implemented, the user will need to type a specific phrase to complete the operation.
 
 ![Manage Game page - Delete game modal](./README_Images/feat_delete_game_modal.png)
 
----
-
 ### Manage Tags
+
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
+
+![Manage tag page - Update tag.](./README_Images/site_manage_tag.png)
+</details>
+
+For tag management there are two sections. You can either choose a tag from the dropdown menu that already exists in the database to update, or click the '+' icon to add a new tag to the database.
 
 - [Adding A tag](#adding-a-tag),
 - [Updating A tag](#updating-a-tag).
 
-#### Adding a tag
+#### Adding A Tag
 
-#### Updating a tag
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
----
+![Manage tag page - Update tag.](./README_Images/site_manage_tag_add.png)
+</details>
+
+For each tag you add you will need to supply:
+
+- Tag name.
+
+The slug is automatically generated by the tag title. It also appears live thanks for JavaScript.
+
+```js
+window.addEventListener('keyup', () => {
+  form.find('#id_slug').val(form.find('#id_name').val().replace(/\s+/g, '-').toLowerCase());
+});
+```
+
+#### Updating A Tag
+
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
+
+![Manage tag page - Update tag.](./README_Images/site_manage_tag_update.png)
+</details>
+
+Using the [SELECT2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the tag you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the tag](#adding-a-tag) plus the added feature now to delete the tag.
+
+**Important:** As this is a major, permanent and irreversible action, defence programming is implemented, the user will need to type a specific phrase to complete the operation.
+
+![Manage tag page - Delete tag modal](./README_Images/feat_delete_tag_modal.png)
+
+### Features Left to Implement
+
+Site owner change:
+
+- when bumps bumps expire.
+- how many bumps a user can have active at a time.
+- change the amount of listings a person can list at once.
+
+Staff:
+
+- Be able to review already approved images via image ID
+
+UX
+
+- Add success messages when data is updated.
 
 #### Cloudinary
 
@@ -1298,24 +1323,6 @@ send_mail(
 )
 ```
 
-### Features Left to Implement
-
-Site owner change:
-
-- when bumps bumps expire.
-- how many bumps a user can have active at a time.
-- change the amount of listings a person can list at once.
-
-Staff:
-
-- Be able to review already approved images via image ID
-
-UX
-
-- Add success messages when data is updated.
-
----
-
 ## Technologies Used
 
 ### Python Packages
@@ -1332,8 +1339,6 @@ pip install django-apscheduler
 
 ### Other Tech
 
----
-
 ## Testing
 
 ### Extensive Testing
@@ -1344,15 +1349,11 @@ pip install django-apscheduler
 
 ### JavaScript
 
----
-
 ## Bugs
 
 ### Current
 
 ### Resolved
-
----
 
 ## Development
 
@@ -1363,8 +1364,6 @@ pip install django-apscheduler
 ### Postgres
 
 ### Heroku
-
----
 
 ## Credits
 
