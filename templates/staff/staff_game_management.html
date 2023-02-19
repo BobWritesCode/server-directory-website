@@ -83,10 +83,9 @@
             <form method="post" id="game-delete-form">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <p> Deleting this game is permanent and irreversible.
-                        <br>It will also delete all listings that are linked to this game.
-                        <br>Please consider if to unpublish game would be enough.
-                    </p>
+                    <p>Deleting this game is permanent and irreversible.</p>
+                    <p>It will also delete all listings that are linked to this game.</p>
+                    <p>Please consider if to unpublish game would be enough.</p>
                     {{ form_2|crispy }}
                 </div>
                 <div class="modal-footer">
