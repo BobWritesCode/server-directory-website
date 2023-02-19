@@ -64,14 +64,19 @@ class CustomUser(AbstractUser):
         unique=True,
         blank=False,
         error_messages={
-            'unique': 'Username already taken. (Panda)',
-            }
-        )
+            'unique': 'Username already taken. (Panda)', })
     username_lower = models.CharField(max_length=100)
     first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50, default=None,
-                                 null=True, blank=True)
-    email = models.EmailField(unique=True, blank=False)
+    last_name = models.CharField(
+        max_length=50,
+        default=None,
+        null=True,
+        blank=True)
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        error_messages={
+            'unique': 'Email already taken. (Cobra)', })
     email_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -121,14 +126,25 @@ class CustomUser(AbstractUser):
         Returns:
             no return.
         """
+        # convert email address to lowercase to stop duplication.
+        self.email = self.email.lower()
+        # convert username to lowercase to stop duplication.
         self.username_lower = self.username.lower()
         if not self.pk:  # Add a new object
             existing_usernames = CustomUser.objects.filter(
-                username_lower=self.username_lower
-                )
+                username_lower=self.username_lower)
+            existing_emails = CustomUser.objects.filter(
+                email=self.email)
         else:  # updating an existing object
             existing_usernames = CustomUser.objects.filter(
                 username_lower=self.username_lower).exclude(pk=self.pk)
+            existing_emails = CustomUser.objects.filter(
+                email=self.email).exclude(pk=self.pk)
+        if existing_emails:
+            raise ValidationError({
+                'field': 'email',
+                'message': 'Email already taken. (Jackal)'
+                })
         if existing_usernames:
             raise ValidationError({
                 'field': 'username',
