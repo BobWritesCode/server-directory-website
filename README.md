@@ -472,11 +472,9 @@ def sign_up_view(request):
                 user = form.save()
                 send_email_verification(request, user)
                 return redirect('signup_verify_email')
-            except Exception as e:
-                # Display errors if any.
-                form.add_error(
-                    field=e.args[0]['field'],
-                    error=e.args[0]['message'])
+            except ValidationError as err:
+                for field, errors in err.message_dict.items():
+                    form.add_error(field, errors)
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
@@ -1030,6 +1028,29 @@ function displayUsers(users) {
 ```
 
 The user can then click on any of the results to go to the user management screen.
+
+#### User Management Page
+
+<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
+
+![User Management Page](./README_Images/site_user_management.png)
+</details>
+
+This view allows the user to update other user from one page. Within this one view the user can see the user's attributes, perform actions, and review the user's listings.
+
+For managing the User settings there is a management control panel
+
+![User Management Page](./README_Images/feat_user_management_panel.gif)
+
+#### Updating User
+
+Users can update username, email address and if account is active. After making any changes the user needs to click on the 'Save' icon in the control panel.
+
+If 'Account Active?' is unchecked and the user saved, that user will no longer be able to [login](#login). And they will not receive any message to indicate that there account has been made inactive. Where as a banned user will get a message notifying their account is banned on a [login](#login) attempt.
+
+Once successfully saved the user will receive a toast to let them know the operation was successful.
+
+![User Management Toast](./README_Images/feat_user_management_toast.png)
 
 #### Ban/Unban User
 
