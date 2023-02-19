@@ -1038,7 +1038,7 @@ The user can then click on any of the results to go to the user management scree
 
 This view allows the user to update other user from one page. Within this one view the user can see the user's attributes, perform actions, and review the user's listings.
 
-For managing the User settings there is a management control panel
+For managing the user settings there is a management control panel
 
 ![User Management Page](./README_Images/feat_user_management_panel.gif)
 
@@ -1048,11 +1048,60 @@ Users can update username, email address and if account is active. After making 
 
 If 'Account Active?' is unchecked and the user saved, that user will no longer be able to [login](#login). And they will not receive any message to indicate that there account has been made inactive. Where as a banned user will get a message notifying their account is banned on a [login](#login) attempt.
 
-Once successfully saved the user will receive a toast to let them know the operation was successful.
-
-![User Management Toast](./README_Images/feat_user_management_toast.png)
+Once successfully the page will refresh and the new details stored in the database.
 
 #### Ban/Unban User
+
+There is a ban/unban function within the control panel.
+
+Banning a user will:
+
+- Prohibit them from logging in,
+- Sign them out from any current sessions,
+- Set all their uploaded images for deletion,
+- Unpublish any listings they may have.
+
+As this function performs major actions, defensive programming is implemented here, a modal opens and the user needs to type a specific phrase to complete the operation.
+
+Pressing the same button on the control panel on a banned user will unban them.
+
+![Ban modal](./README_Images/feat_ban_modal.png)
+
+```py
+def ban_user(request: object, _id: int):
+    """
+    Bans user and prevents user login, rejects all images for deletion,
+    unpublish listings.
+
+    Decorators:
+        @login_required: User required to be logged in
+        @staff_member_required: Logged in user must be staff.
+
+    Parameters:
+        request (object): GET/POST request from user.#
+        _id (int): Target user to be banned.
+    """
+    # Get target user.
+    user = get_object_or_404(CustomUser, pk=_id)
+
+    # Delete all current user sessions (in case logged in on multiple devices)
+    for session in Session.objects.all():
+        if session.get_decoded().get('_auth_user_id') == user.pk:
+            session.delete()
+
+    # Flag user as banned.
+    user.is_banned = True
+    user.save()
+
+    # Unpublish all listings
+    query = Q(owner_id=_id)
+    ServerListing.objects.filter(query).update(status=0)
+
+    # Unpublish all images and set for deletion
+    query = Q(user_id=_id)
+    image_expire = date.today() + timedelta(days=DAYS_TO_EXPIRE_IMAGE)
+    Images.objects.filter(query).update(status=3, expiry=image_expire)
+```
 
 #### Send user verification email
 
@@ -1126,9 +1175,13 @@ Site owner change:
 - how many bumps a user can have active at a time.
 - change the amount of listings a person can list at once.
 
-- Staff:
+Staff:
 
 - Be able to review already approved images via image ID
+
+UX
+
+- Add success messages when data is updated.
 
 ---
 
