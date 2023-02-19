@@ -49,7 +49,9 @@ class UserForm(forms.ModelForm):
 
     Methods
     -------
-    none
+    check_duplicates:
+        checks to make sure no duplicate for username or email address.
+        Raise an error if duplicates found.
     """
     id = forms.IntegerField(
         label="ID")

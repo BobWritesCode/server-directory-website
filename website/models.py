@@ -1,13 +1,11 @@
 """
 All models for app
 """
-import uuid
 import json
 from datetime import timedelta, date
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
-from django.utils.text import slugify
 
 from cloudinary.models import CloudinaryField
 from tinymce import models as tinymce_models
@@ -72,7 +70,8 @@ class CustomUser(AbstractUser):
         max_length=50,
         default=None,
         null=True,
-        blank=True)
+        blank=True
+        )
     email = models.EmailField(
         unique=True,
         blank=False,
@@ -93,7 +92,7 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         """
-        Returns email address as the class str.
+        Returns pk. id, email, and user name as string.
 
         Args:
             None
@@ -101,7 +100,8 @@ class CustomUser(AbstractUser):
         Returns:
             email: str
         """
-        return f"{self.email}"
+        return (f'PK: {self.id} - id: {self.id} - email: {self.email} '
+                '- username: {self.username}')
 
     def to_json(self):
         """
@@ -119,8 +119,10 @@ class CustomUser(AbstractUser):
 
     def save(self, *args, **kwargs):
         """
-        Save object after checking that their are no duplicates within
-        username_lower or email.
+        Save object after checking conformity:
+        - No duplicate usernames
+        - No duplicate emails
+        - No spaces in username
 
         Args:
             None
@@ -145,14 +147,21 @@ class CustomUser(AbstractUser):
                 username_lower=self.username_lower).exclude(pk=self.pk)
             existing_emails = CustomUser.objects.filter(
                 email=self.email).exclude(pk=self.pk)
-        # If any duplicates create error messages and raise ValidationError
-        if existing_emails or existing_usernames:
-            errors = {}
-            if existing_emails:
-                errors['email'] = ['Email already taken. (Jackal)']
-            if existing_usernames:
-                errors['username'] = ['Username already taken. (Lion)']
+
+        errors = {}
+        # No space in username.
+        if ' ' in self.username_lower:
+            errors['username'] = ['No spaces allowed. (Anaconda)']
+        # No duplicate email addresses.
+        if existing_emails:
+            errors['email'] = ['Email already taken. (Jackal)']
+        # No duplicate usernames.
+        if existing_usernames:
+            errors['username'] = ['Username already taken. (Lion)']
+        # If any errors raise ValidationError.
+        if errors:
             raise ValidationError(errors)
+
         super().save(*args, **kwargs)
 
 

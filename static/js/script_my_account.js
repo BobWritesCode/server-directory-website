@@ -122,6 +122,12 @@ function action(...args) {
                 '<div class="error-message alert alert-danger mt-1" role="alert">Email address already taken</div>',
               );
             break;
+
+          default:
+            emailForm.find('#id_email')
+              .after(
+                `<div class="error-message alert alert-danger mt-1" role="alert"> ${data.result.reason} </div>`,
+              );
           // skip default case
         }
       }

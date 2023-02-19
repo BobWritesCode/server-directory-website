@@ -9,7 +9,6 @@ import re
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sessions.models import Session
 from django.contrib.sites.shortcuts import get_current_site
@@ -611,11 +610,9 @@ def sign_up_view(request):
                 user = form.save()
                 send_email_verification(request, user)
                 return redirect('signup_verify_email')
-            except Exception as e:
-                # Display errors if any.
-                form.add_error(
-                    field=e.args[0]['field'],
-                    error=e.args[0]['message'])
+            except ValidationError as err:
+                for field, errors in err.message_dict.items():
+                    form.add_error(field, errors)
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
@@ -1064,18 +1061,20 @@ def call_server(request: object):
                 else:
                     return render(request, "unauthorized.html")
 
-            case 'user_management_save':
-                if request.user.is_staff:
-                    success = update_user(content[1])
-                    result = {
-                        'success': success['result'],
-                        'reason': success['reason']
-                    }
-                else:
-                    return render(request, "unauthorized.html")
+            # case 'user_management_save':
+            #     if request.user.is_staff:
+            #         success = update_user(content[1])
+            #         result = {
+            #             'success': success['result'],
+            #             'reason': success['reason']
+            #         }
+            #     else:
+            #         return render(request, "unauthorized.html")
 
             case 'update_email':
-                success = update_email(request, content[1])
+                email1 = str(content[1]['email1']).lower()
+                email2 = str(content[1]['email2']).lower()
+                success = update_email(request, [email1, email2])
                 result = {
                     'success': success['result'],
                     'reason': success['reason']
@@ -1502,26 +1501,23 @@ def staff_user_management_user(request: object, _id: int):
     user = get_object_or_404(CustomUser, id=_id)
     listings = ServerListing.objects.filter(
         owner=user.pk).order_by('-created_on')
-    form = UserForm(instance=user)
-    if request.method == "POST":
 
-        if "user_management_save" in request.POST:
-            form = UserForm(request.POST)
-            if form.is_valid():
-                user.username = form.cleaned_data["username"]
-                user.email = form.cleaned_data["email"].lower()
-                user.is_active = True if (
-                    "is_active" in request.POST) else False
-                try:
-                    user.save()
-                    return redirect(
-                        "staff_user_management_user", _id=request.POST['id'])
-                except Exception as e:
-                    for key in e:
-                        form.add_error(
-                            field=key[0],
-                            error=key[1]
-                            )
+    if request.method != 'POST':
+        form = UserForm(instance=user)
+
+    if (request.method == 'POST' and "user_management_save" in request.POST):
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            user.username = form.cleaned_data["username"]
+            user.email = form.cleaned_data["email"].lower()
+            user.is_active = "is_active" in request.POST
+            try:
+                user.save()
+                return redirect(
+                    "staff_user_management_user", _id=request.POST['id'])
+            except ValidationError as err:
+                for field, errors in err.message_dict.items():
+                    form.add_error(field, errors)
 
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
@@ -1653,55 +1649,51 @@ def demote_user_from_staff(request: object, target_id: int):
         user.save()
 
 
-def update_user(_form: dict):
-    """
-    Updates target user from form.
+# def update_user(_form: dict):
+#     """
+#     Updates target user from form.
 
-    Args:
-        _form (dict): Data to update user.
-    """
-    # Get correct user from database
-    user = get_object_or_404(CustomUser, pk=_form["id"])
+#     Args:
+#         _form (dict): Data to update user.
+#     """
+#     # Get correct user from database
+#     user = get_object_or_404(CustomUser, pk=_form["id"])
 
-    # Validate user inputs conform
-    result = check_username(_form["username"])
-    if not result['result']:
-        return result
+#     # Validate user inputs conform
+#     result = check_username(_form["username"])
+#     if not result['result']:
+#         return result
 
-    result = check_email(_form["email"])
-    if not result['result']:
-        return result
+#     result = check_email(_form["email"])
+#     if not result['result']:
+#         return result
 
-    # Update values
-    user.username = _form["username"]
-    user.email = _form["email"]
-    user.is_active = _form["is_active"]
+#     # Update values
+#     user.username = _form["username"]
+#     user.email = _form["email"]
+#     user.is_active = _form["is_active"]
 
-    # Save user object
-    try:
-        user.save()
-    except IntegrityError as err:
-        print(err)
-        if 'UNIQUE constraint failed: auth_user.username' in err.args:
-            raise ValidationError({
-                'field': 'username',
-                'message': 'Username already taken. (Aardvark)'
-                })
-            return {'result': False, 'reason': "Username already taken"}
-        if 'UNIQUE constraint failed: auth_user.email' in err.args:
-            raise ValidationError({
-                'field': 'email',
-                'message': 'Email address already taken. (Aardwolf)'
-                })
-            return {'result': False, 'reason': "Email address already taken"}
-    except ValidationError as err:
-        raise ValidationError({
-                'field': 'email',
-                'message': 'Username already taken. (Albatross)'
-                })
-        if 'This username is already taken.' in err.args:
-            return {'result': False, 'reason': "Username already taken"}
-    return {'result': True, 'reason': "No problems"}
+#     # Save user object
+#     try:
+#         user.save()
+#     except IntegrityError as err:
+#         print(err)
+#         if 'UNIQUE constraint failed: auth_user.username' in err.args:
+#             raise ValidationError({
+#                 'field': 'username',
+#                 'message': 'Username already taken. (Aardvark)'
+#                 })
+#         if 'UNIQUE constraint failed: auth_user.email' in err.args:
+#             raise ValidationError({
+#                 'field': 'email',
+#                 'message': 'Email address already taken. (Aardwolf)'
+#                 })
+#     except ValidationError as err:
+#         raise ValidationError({
+#                 'field': 'email',
+#                 'message': 'Username already taken. (Albatross)'
+#                 })
+#     return {'result': True, 'reason': "No problems"}
 
 
 def delete_user(form: object):
@@ -1763,28 +1755,28 @@ def check_email(email: str):
     return {'result': True, 'reason': ""}
 
 
-def update_email(request: object, _obj: object):
+def update_email(request: object, _list: list):
     """
     Update user email after checking it conforms.
 
     Args:
         request (object): GET/POST request from user.
-        _obj (object): Object with email address 1 and 2.
+        _list (list): List with email address 1 and 2.
 
     Returns:
         {result (bool), reason (string)}
 
     """
-    result = check_email(_obj['email1'])
+    result = check_email(_list[0])
     if not result['result']:
         return result
 
-    if _obj['email1'] != _obj['email2']:
+    if _list[0] != _list[1]:
         return {'result': False, 'reason': "Does not match"}
 
     # Get correct user from database
     user = get_object_or_404(CustomUser, pk=request.user.pk)
-    user.email = _obj['email1']
+    user.email = _list[0]
     user.email_verified = False
     # Save user object
     try:
@@ -1792,6 +1784,9 @@ def update_email(request: object, _obj: object):
     except IntegrityError as err:
         if 'UNIQUE constraint failed: auth_user.email' in err.args:
             return {'result': False, 'reason': "Email address already taken"}
+    except ValidationError as e:
+        for errors in e.message_dict.items():
+            return {'result': False, 'reason': errors[1]}
 
     # Send verification email to the user.
     send_email_verification(request, user)
