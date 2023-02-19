@@ -588,7 +588,9 @@ def my_account(request: object):
 
 def sign_up_view(request):
     """
-    Loads sign up view.
+    GET: Loads sign up view
+    POST: Attempts to create a new user, unless there is an error
+    then displays error to the user.
 
     Args:
         request (object): GET/POST request from user.
@@ -610,6 +612,7 @@ def sign_up_view(request):
                 send_email_verification(request, user)
                 return redirect('signup_verify_email')
             except Exception as e:
+                # Display errors if any.
                 form.add_error(
                     field=e.args[0]['field'],
                     error=e.args[0]['message'])
@@ -1496,10 +1499,30 @@ def staff_user_management_user(request: object, _id: int):
     Returns:
         render (function): Loads html page
     """
-    user = get_object_or_404(CustomUser, pk=_id)
+    user = get_object_or_404(CustomUser, id=_id)
     listings = ServerListing.objects.filter(
         owner=user.pk).order_by('-created_on')
+    form = UserForm(instance=user)
     if request.method == "POST":
+
+        if "user_management_save" in request.POST:
+            form = UserForm(request.POST)
+            if form.is_valid():
+                user.username = form.cleaned_data["username"]
+                user.email = form.cleaned_data["email"].lower()
+                user.is_active = True if (
+                    "is_active" in request.POST) else False
+                try:
+                    user.save()
+                    return redirect(
+                        "staff_user_management_user", _id=request.POST['id'])
+                except Exception as e:
+                    for key in e:
+                        form.add_error(
+                            field=key[0],
+                            error=key[1]
+                            )
+
         # Let's see if the user is trying to delete a user.
         if "delete_confirm" in request.POST:
             form = DeleteConfirmForm(request.POST)
@@ -1548,12 +1571,12 @@ def staff_user_management_user(request: object, _id: int):
                 "staff_user_management_user", _id=request.POST['id']
                 )
 
-        else:
-            form = UserForm(request.POST)
-            update_user(form)
-            return redirect(
-                "staff_user_management_user", _id=request.POST['id']
-                )
+        # else:
+        #     form = UserForm(request.POST)
+        #     update_user(form)
+        #     return redirect(
+        #         "staff_user_management_user", _id=request.POST['id']
+        #         )
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
@@ -1594,7 +1617,7 @@ def staff_user_management_user(request: object, _id: int):
         request,
         "staff/staff_user_management_user.html",
         {
-            "form": UserForm(instance=user),
+            "form": form,
             "form_2": DeleteConfirmForm(),
             "server_listings": listings
         },
@@ -1665,11 +1688,24 @@ def update_user(_form: dict):
     try:
         user.save()
     except IntegrityError as err:
+        print(err)
         if 'UNIQUE constraint failed: auth_user.username' in err.args:
+            raise ValidationError({
+                'field': 'username',
+                'message': 'Username already taken. (Aardvark)'
+                })
             return {'result': False, 'reason': "Username already taken"}
         if 'UNIQUE constraint failed: auth_user.email' in err.args:
+            raise ValidationError({
+                'field': 'email',
+                'message': 'Email address already taken. (Aardwolf)'
+                })
             return {'result': False, 'reason': "Email address already taken"}
     except ValidationError as err:
+        raise ValidationError({
+                'field': 'email',
+                'message': 'Username already taken. (Albatross)'
+                })
         if 'This username is already taken.' in err.args:
             return {'result': False, 'reason': "Username already taken"}
     return {'result': True, 'reason': "No problems"}

@@ -21,7 +21,7 @@
             {{ form.is_active | as_crispy_field }}
             {{ form.is_banned | as_crispy_field }}
             <div class="row d-flex border rounded w-100 mb-3 ms-0">
-                <button type="button" id="btnUpdate" name="user_management_save" class="col btn btn-dark" data-bs-toggle="tooltip" title="Save"><i class="bi bi-save"></i></button>
+                <button type="submit" id="btnUpdate" name="user_management_save" class="col btn btn-dark" data-bs-toggle="tooltip" title="Save"><i class="bi bi-save"></i></button>
                 {% if form.is_banned.value == 1 %}
                 <button type="button" id="btnUnban" class="col btn btn-dark" data-bs-toggle="tooltip" title="Unban user"><i class="bi bi-circle"></i></i></button>
                 {% else %}

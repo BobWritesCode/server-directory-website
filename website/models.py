@@ -61,10 +61,11 @@ class CustomUser(AbstractUser):
 
     username = models.CharField(
         max_length=20,
-        unique=True,
         blank=False,
+        unique=True,
         error_messages={
-            'unique': 'Username already taken. (Panda)', })
+            'unique': 'Username already taken. (Panda)', }
+        )
     username_lower = models.CharField(max_length=100)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(
@@ -76,7 +77,8 @@ class CustomUser(AbstractUser):
         unique=True,
         blank=False,
         error_messages={
-            'unique': 'Email already taken. (Cobra)', })
+            'unique': 'Email already taken. (Cobra)', }
+        )
     email_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -118,7 +120,7 @@ class CustomUser(AbstractUser):
     def save(self, *args, **kwargs):
         """
         Save object after checking that their are no duplicates within
-        username_lower.
+        username_lower or email.
 
         Args:
             None
@@ -126,30 +128,31 @@ class CustomUser(AbstractUser):
         Returns:
             no return.
         """
-        # convert email address to lowercase to stop duplication.
-        self.email = self.email.lower()
-        # convert username to lowercase to stop duplication.
-        self.username_lower = self.username.lower()
-        if not self.pk:  # Add a new object
+        # Convert email address to lowercase to stop duplication.
+        self.email = str(self.email).lower()
+        # Convert username to lowercase to stop duplication.
+        self.username_lower = str(self.username).lower()
+
+        if not self.pk:
+            # Adding a new object.
             existing_usernames = CustomUser.objects.filter(
                 username_lower=self.username_lower)
             existing_emails = CustomUser.objects.filter(
                 email=self.email)
-        else:  # updating an existing object
+        else:
+            # Updating an existing object.
             existing_usernames = CustomUser.objects.filter(
                 username_lower=self.username_lower).exclude(pk=self.pk)
             existing_emails = CustomUser.objects.filter(
                 email=self.email).exclude(pk=self.pk)
-        if existing_emails:
-            raise ValidationError({
-                'field': 'email',
-                'message': 'Email already taken. (Jackal)'
-                })
-        if existing_usernames:
-            raise ValidationError({
-                'field': 'username',
-                'message': 'Username already taken. (Lion)'
-                })
+        # If any duplicates create error messages and raise ValidationError
+        if existing_emails or existing_usernames:
+            errors = {}
+            if existing_emails:
+                errors['email'] = ['Email already taken. (Jackal)']
+            if existing_usernames:
+                errors['username'] = ['Username already taken. (Lion)']
+            raise ValidationError(errors)
         super().save(*args, **kwargs)
 
 
