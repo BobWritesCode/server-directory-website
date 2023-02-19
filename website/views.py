@@ -1556,6 +1556,8 @@ def staff_user_management_user(request: object, _id: int):
     # Let's see if the user is trying to send a email verification
     # to the target user.
     if "email-verify" in request.POST:
+        user.email_verified = False
+        user.save()
         # Send email verification to the user
         send_email_verification(request, user)
         return redirect(
