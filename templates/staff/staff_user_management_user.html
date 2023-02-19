@@ -222,12 +222,12 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
             <form method="post" id="user-ban-form">
                 {% csrf_token %}
                 <div class="modal-body">
-                    <p>All listings will be deleted permanently and user will not be able to log back in.</p>
+                    <p>All listings will be unpublished, user's images will be deleted and user will not be able to login.</p>
                     <p>Type 'ban' in box to confirm ban.</p>
                     <input type="text" name="ban_confirm" id="ban_confirm" class="form-control w-100">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" name="user-ban-confirm">Confirm</button>
+                    <button type="button" class="btn btn-warning" name="user-ban-confirm">Confirm</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </form>
