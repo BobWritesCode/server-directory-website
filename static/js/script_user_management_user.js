@@ -8,7 +8,7 @@ const banForm = $('#user-ban-form');
 const promoteForm = $('#user-promote-form');
 const demoteForm = $('#user-demote-form');
 
-const btnUpdate = $('button[name="user_management_save"]');
+// const btnUpdate = $('button[name="user_management_save"]');
 const btnUnban = $('#btnUnban');
 
 const btnDeleteConfirm = userDeleteForm.find('button[name="user-delete-confirm"]');
@@ -251,22 +251,23 @@ window.addEventListener('DOMContentLoaded', () => {
     form.append(input).submit();
   });
 
-  btnUpdate.on('click', (e) => {
-    e.preventDefault();
-    $('.error-message').remove();
-    const formData = {};
-    if ($('.error-message').length === 0) {
-      // Convert form data into an object with correct values.
-      Array.prototype.forEach.call(form[0], (i) => {
-        if (i.type === 'checkbox') {
-          formData[i.name] = i.checked;
-        } else {
-          formData[i.name] = i.value;
-        }
-      });
-      action('user_management_save', formData);
-    }
-  });
+  // btnUpdate.on('click', (e) => {
+  //   e.preventDefault();
+  //   $('.error-message').remove();
+  //   const formData = {};
+  //   if ($('.error-message').length === 0) {
+  //     // Convert form data into an object with correct values.
+  //     Array.prototype.forEach.call(form[0], (i) => {
+  //       if (i.type === 'checkbox') {
+  //         formData[i.name] = i.checked;
+  //       } else {
+  //         formData[i.name] = i.value;
+  //       }
+  //     });
+  //     form.submit();
+  //     // action('user_management_save', formData);
+  //   }
+  // });
   btnListingDeleteConfirm.on('click', () => {
     ListingDeleteConfirm();
   });
