@@ -1061,16 +1061,6 @@ def call_server(request: object):
                 else:
                     return render(request, "unauthorized.html")
 
-            # case 'user_management_save':
-            #     if request.user.is_staff:
-            #         success = update_user(content[1])
-            #         result = {
-            #             'success': success['result'],
-            #             'reason': success['reason']
-            #         }
-            #     else:
-            #         return render(request, "unauthorized.html")
-
             case 'update_email':
                 email1 = str(content[1]['email1']).lower()
                 email2 = str(content[1]['email2']).lower()
@@ -1523,7 +1513,7 @@ def staff_user_management_user(request: object, _id: int):
     # Let's see if the user is trying to delete target user.
     if "delete_confirm" in request.POST:
         form = DeleteConfirmForm(request.POST)
-        delete_user(form)
+        delete_user(request, form)
         return redirect("staff_user_management_search")
 
     # Let's see if the user is trying to ban target user.
@@ -1662,19 +1652,21 @@ def demote_user_from_staff(request: object, target_id: int):
         user.save()
 
 
-def delete_user(form: object):
+def delete_user(request: object, form: object):
     """
     Delete target user from database.
 
     Args:
-        form (dict): Data to delete user.
+        request (object): GET/POST request from user.
+        form (object): Data to delete user.
     """
     if form.data["delete_confirm"] == "delete" and form.data["id"]:
         item_id = form.data["id"]
         # Get user object
         user = get_object_or_404(CustomUser, id=item_id)
-        # Delete user from database
-        user.delete()
+        if user.is_superuser and not request.user.is_superuser:
+            # Delete user from database
+            user.delete()
 
 
 def check_username(username: str):
