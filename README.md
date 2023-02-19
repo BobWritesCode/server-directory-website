@@ -1040,6 +1040,8 @@ This view allows the user to update other user from one page. Within this one vi
 
 For managing the user settings there is a management control panel
 
+**Please note**: That the assign/resign staff member button only appears for superusers.
+
 ![User Management Page](./README_Images/feat_user_management_panel.gif)
 
 #### Updating User
@@ -1125,6 +1127,51 @@ if "email-verify" in request.POST:
 ```
 
 #### Assign/Resign as staff
+
+**IMPORTANT**: This function is only available to superusers.
+
+Allow the superuser to easily assign target user's as staff members or resign them as a staff member.
+
+![Promote staff modal](./README_Images/feat_staff_promote_modal.png)
+
+![Demote staff modal](./README_Images/feat_staff_demote_modal.png)
+
+```py
+def promote_user_to_staff(request: object, target_id: int):
+    """
+    Promotes target user to staff member.
+
+    Args:
+        request (object): GET/POST request from user.
+        target_id (int): Target user ID.
+    """
+    # Check request user has correct level before proceeding
+    if request.user.is_superuser:
+        # Get target user object.
+        user = get_object_or_404(CustomUser, id=target_id)
+        # Change flag.
+        user.is_staff = True
+        # Save user.
+        user.save()
+
+
+def demote_user_from_staff(request: object, target_id: int):
+    """
+    Demote target user as staff member.
+
+    Args:
+        request (object): GET/POST request from user.
+        target_id (int): Target user ID.
+    """
+    # Check request user has correct level before proceeding
+    if request.user.is_superuser:
+        # Get target user object.
+        user = get_object_or_404(CustomUser, id=target_id)
+        # Change flag.
+        user.is_staff = False
+        # Save user.
+        user.save()
+```
 
 #### Delete user
 
