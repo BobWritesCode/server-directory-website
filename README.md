@@ -1105,6 +1105,25 @@ def ban_user(request: object, _id: int):
 
 #### Send user verification email
 
+If a staff member updates an email address on a user's behalf, to make sure that the email address belongs to them they send a [verification email](#email-verification) to them. The email will contain a link to confirm that they have access to the email address provided.
+
+![Email verify modal](./README_Images/feat_veri_email_modal.png)
+
+On sending the email, the user's account email_verified will be changed to False.
+
+```py
+# Let's see if the user is trying to send a email verification
+# to the target user.
+if "email-verify" in request.POST:
+    user.email_verified = False
+    user.save()
+    # Send email verification to the user
+    send_email_verification(request, user)
+    return redirect(
+        "staff_user_management_user", _id=request.POST['id']
+        )
+```
+
 #### Assign/Resign as staff
 
 #### Delete user
