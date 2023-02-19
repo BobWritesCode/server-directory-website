@@ -169,6 +169,7 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
         </div>
     </div>
 </div>
+{% if user.is_superuser %}
 <!-- user Promote Confirm Modal -->
 <div class="modal fade text-dark" id="user-promote-modal" tabindex="-1" role="dialog" aria-labelledby="User Promote Modal"
     aria-hidden="true">
@@ -211,6 +212,7 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
         </div>
     </div>
 </div>
+{% endif %}
 <!-- user Ban Modal -->
 <div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="User Ban Modal"
     aria-hidden="true">
