@@ -1571,13 +1571,6 @@ def staff_user_management_user(request: object, _id: int):
                 "staff_user_management_user", _id=request.POST['id']
                 )
 
-        # else:
-        #     form = UserForm(request.POST)
-        #     update_user(form)
-        #     return redirect(
-        #         "staff_user_management_user", _id=request.POST['id']
-        #         )
-
     # Get images for server listings
     # Makes sure they are status 1: approved.
     _list = [x[0] for x in listings.values_list('id')]
