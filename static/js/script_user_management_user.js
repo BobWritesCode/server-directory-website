@@ -176,42 +176,42 @@ function action(...args) {
           case 'Username already taken':
             form.find('#id_username')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Username already taken</div>",
+                "<div class='error-message alert alert-danger mt-1 mb-0' role='alert'>Username already taken</div>",
               );
             break;
 
           case 'No spaces allowed':
             form.find('#id_username')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>No spaces allowed</div>",
+                "<div class='error-message alert alert-danger mt-1 mb-0' role='alert'>No spaces allowed</div>",
               );
             break;
 
           case 'Must be at least 5 characters long':
             form.find('#id_username')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Must be at least 5 characters long</div>",
+                "<div class='error-message alert alert-danger mt-1 mb-0' role='alert'>Must be at least 5 characters long</div>",
               );
             break;
 
           case 'Must be at 20 characters or less':
             form.find('#id_username')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Must be at 20 characters or less</div>",
+                "<div class='error-message alert alert-danger mt-1 mb-0' role='alert'>Must be at 20 characters or less</div>",
               );
             break;
 
           case 'Email address already taken':
             form.find('#id_email')
               .after(
-                "<div class='error-message alert alert-danger mt-1' role='alert'>Email address already taken</div>",
+                "<div class='error-message alert alert-danger mt-1 mb-0' role='alert'>Email address already taken</div>",
               );
             break;
 
           case 'Email address not valid':
             form.find('#id_email')
               .after(
-                "<div class='error-message alert alert-warning mt-1' role='alert'>Email address not valid</div>",
+                "<div class='error-message alert alert-warning mt-1 mb-0' role='alert'>Email address not valid</div>",
               );
             break;
         }
