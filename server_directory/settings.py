@@ -21,12 +21,12 @@ if os.path.exists('env.py'):
     import env
 
 # If True use localhost
-user_localhost = False
+user_localhost = True
 # If True use local database
-user_local_db = False
+user_local_db = True
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Set DEBUG in env to '' for False, any string for True.
+DEBUG = bool(os.environ.get('DEBUG'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
