@@ -1040,9 +1040,15 @@ This view allows the user to update other user from one page. Within this one vi
 
 For managing the user settings there is a management control panel
 
-**Please note**: That the assign/resign staff member button only appears for superusers.
+**IMPORTANT**: That the assign/resign staff member button only appears for superusers.
 
+**IMPORTANT**: When the target user is a superuser, only other superusers can manage them.
+
+*Management control panel when no restrictions apply:*
 ![User Management Page](./README_Images/feat_user_management_panel.gif)
+
+*Panel when target user is a superuser but user is not:*
+![User Management Page](./README_Images/feat_managment_panel_superuser.png)
 
 #### Updating User
 
@@ -1174,6 +1180,10 @@ def demote_user_from_staff(request: object, target_id: int):
 ```
 
 #### Delete user
+
+This function allows a staff user to delete a target user from the database.
+
+![Demote staff modal](./README_Images/feat_delete_user_modal.png)
 
 #### See user listings
 
