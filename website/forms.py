@@ -51,14 +51,22 @@ class UserForm(forms.ModelForm):
     -------
     none
     """
-    id = forms.IntegerField(label="ID")
-    username = forms.CharField(label="Username", max_length=20, required=True)
-    first_name = forms.CharField(label="First name", max_length=20)
-    email = forms.EmailField(label="Email", required=True)
-    email_verified = forms.BooleanField(label="Email verified?", disabled=True)
-    is_staff = forms.BooleanField(label="Is Staff?", disabled=True)
-    is_active = forms.BooleanField(label="Account Active?")
-    is_banned = forms.BooleanField(label="Is Banned?", disabled=True)
+    id = forms.IntegerField(
+        label="ID")
+    username = forms.CharField(
+        label="Username", max_length=20, required=True)
+    first_name = forms.CharField(
+        label="First name", max_length=20, required=False)
+    email = forms.EmailField(
+        label="Email", required=True)
+    email_verified = forms.BooleanField(
+        label="Email verified?", disabled=True, required=False)
+    is_staff = forms.BooleanField(
+        label="Is Staff?", disabled=True, required=False)
+    is_active = forms.BooleanField(
+        label="Account Active?", required=False)
+    is_banned = forms.BooleanField(
+        label="Is Banned?", disabled=True, required=False)
 
     class Meta:
         model = CustomUser
