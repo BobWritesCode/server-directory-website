@@ -1503,10 +1503,10 @@ def staff_user_management_user(request: object, _id: int):
     listings = ServerListing.objects.filter(
         owner=user.pk).order_by('-created_on')
 
-    if request.method != 'POST':
-        form = UserForm(instance=user)
+    form = UserForm(instance=user)
 
-    if (request.method == 'POST' and "user_management_save" in request.POST):
+    # Let's see if the user is trying to update target user.
+    if "user_management_save" in request.POST:
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             user.username = form.cleaned_data["username"]
@@ -1520,53 +1520,63 @@ def staff_user_management_user(request: object, _id: int):
                 for field, errors in err.message_dict.items():
                     form.add_error(field, errors)
 
-        # Let's see if the user is trying to delete a user.
-        if "delete_confirm" in request.POST:
-            form = DeleteConfirmForm(request.POST)
-            delete_user(form)
-            return redirect("staff_user_management_search")
+    # Let's see if the user is trying to delete target user.
+    if "delete_confirm" in request.POST:
+        form = DeleteConfirmForm(request.POST)
+        delete_user(form)
+        return redirect("staff_user_management_search")
 
-        elif "ban_confirm" in request.POST:
-            _id = request.POST['id']
-            ban_user(request, _id)
+    # Let's see if the user is trying to ban target user.
+    if "ban_confirm" in request.POST:
+        _id = request.POST['id']
+        ban_user(request, _id)
+        return redirect(
+            "staff_user_management_user", _id=request.POST['id']
+            )
+
+    # Let's see if the user is trying to unban target user.
+    if "unban" in request.POST:
+        _id = request.POST['id']
+        unban_user(request, _id)
+        return redirect(
+            "staff_user_management_user", _id=request.POST['id']
+            )
+
+    # Let's see if the user is trying to delete a listing of the
+    # target user.
+    if "delete_listing_confirm" in request.POST:
+        # Let's see if the user is trying to delete the listing.
+        if request.POST["delete_listing_confirm"] == "delete":
+            item = get_object_or_404(ServerListing, id=request.POST['id'])
+            item.delete()
             return redirect(
                 "staff_user_management_user", _id=request.POST['id']
                 )
 
-        elif "unban" in request.POST:
-            _id = request.POST['id']
-            unban_user(request, _id)
-            return redirect(
-                "staff_user_management_user", _id=request.POST['id']
-                )
+    # Let's see if the user is trying to send a email verification
+    # to the target user.
+    if "email-verify" in request.POST:
+        # Send email verification to the user
+        send_email_verification(request, user)
+        return redirect(
+            "staff_user_management_user", _id=request.POST['id']
+            )
 
-        elif "delete_listing_confirm" in request.POST:
-            # Let's see if the user is trying to delete the listing.
-            if request.POST["delete_listing_confirm"] == "delete":
-                item = get_object_or_404(ServerListing, id=request.POST['id'])
-                item.delete()
-                return redirect(
-                    "staff_user_management_user", _id=request.POST['id']
-                    )
+    # Let's see if the user is trying to assign the target user
+    # as a staff member.
+    if "promote" in request.POST:
+        promote_user_to_staff(request, request.POST['id'])
+        return redirect(
+            "staff_user_management_user", _id=request.POST['id']
+            )
 
-        elif "email-verify" in request.POST:
-            # Send email verification to the user
-            send_email_verification(request, user)
-            return redirect(
-                "staff_user_management_user", _id=request.POST['id']
-                )
-
-        elif "promote" in request.POST:
-            promote_user_to_staff(request, request.POST['id'])
-            return redirect(
-                "staff_user_management_user", _id=request.POST['id']
-                )
-
-        elif "demote" in request.POST:
-            demote_user_from_staff(request, request.POST['id'])
-            return redirect(
-                "staff_user_management_user", _id=request.POST['id']
-                )
+    # Let's see if the user is trying to resign the target user
+    # as a staff member.
+    if "demote" in request.POST:
+        demote_user_from_staff(request, request.POST['id'])
+        return redirect(
+            "staff_user_management_user", _id=request.POST['id']
+            )
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
