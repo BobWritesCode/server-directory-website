@@ -59,7 +59,14 @@ class CustomUser(AbstractUser):
         username_lower.
     """
 
-    username = models.CharField(max_length=20, unique=True, blank=False)
+    username = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=False,
+        error_messages={
+            'unique': 'Username already taken. (Panda)',
+            }
+        )
     username_lower = models.CharField(max_length=100)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50, default=None,
@@ -105,7 +112,8 @@ class CustomUser(AbstractUser):
 
     def save(self, *args, **kwargs):
         """
-        Save object after checking that their are no duplicates within username_lower.
+        Save object after checking that their are no duplicates within
+        username_lower.
 
         Args:
             None
@@ -122,7 +130,10 @@ class CustomUser(AbstractUser):
             existing_usernames = CustomUser.objects.filter(
                 username_lower=self.username_lower).exclude(pk=self.pk)
         if existing_usernames:
-            raise ValidationError('This username is already taken.')
+            raise ValidationError({
+                'field': 'username',
+                'message': 'Username already taken. (Lion)'
+                })
         super().save(*args, **kwargs)
 
 

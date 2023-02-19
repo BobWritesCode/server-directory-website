@@ -605,9 +605,14 @@ def sign_up_view(request):
             # https://shafikshaon.medium.com/
             # user-registration-with-email-verification-in-django-8aeff5ce498d
             # Save new user to database.
-            user = form.save()
-            send_email_verification(request, user)
-            return redirect('signup_verify_email')
+            try:
+                user = form.save()
+                send_email_verification(request, user)
+                return redirect('signup_verify_email')
+            except Exception as e:
+                form.add_error(
+                    field=e.args[0]['field'],
+                    error=e.args[0]['message'])
     else:
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
