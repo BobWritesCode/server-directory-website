@@ -21,9 +21,9 @@ if os.path.exists('env.py'):
     import env
 
 # If True use localhost
-user_localhost = True
+user_localhost = False
 # If True use local database
-user_local_db = True
+user_local_db = False
 
 # Set DEBUG in env to '' for False, any string for True.
 DEBUG = bool(os.environ.get('DEBUG'))
