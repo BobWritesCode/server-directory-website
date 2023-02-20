@@ -461,7 +461,7 @@ This is what the user Bumps list looks like in their [My Account](#my-account) p
 
 The way the bumps are automatically expired is by setting a automated task that run at midnight everyday or at server restart. The task will query for bumps that are less than or, equal to the current date and delete them. Print messages are produced purely as a way to check there are no issues.
 
-*You can read more about how the automated jobs work by checking out the [APScheduler](#django-apscheduler) section of this README.*
+*You can read more about how the automated jobs work by checking out the [APScheduler](#apscheduler) section of this README.*
 
 ```py
 #jobs.py
