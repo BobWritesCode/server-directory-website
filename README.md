@@ -85,15 +85,15 @@ Cloudinary, Select2 and tinyMCE.
   - [Technologies Used](#technologies-used)
     - [Logic](#logic) (OUTSTANDING)
       - [Data Model](#data-model)
-      - [Python](#python) (OUTSTANDING)
+      - [Python](#python)
         - [Python Packages](#python-packages)
           - [DateTime](#datetime)
           - [APScheduler](#apscheduler)
           - [Django Crispy Forms](#django-crispy-forms)
-      - [JavaScript](#javascript) (OUTSTANDING)
-        - [JQuery](#jquery) (OUTSTANDING)
-      - [CSS](#css) (OUTSTANDING)
-        - [BootStrap](#bootstrap) (OUTSTANDING)
+      - [JavaScript](#javascript)
+        - [JQuery](#jquery)
+      - [CSS](#css)
+        - [BootStrap](#bootstrap)
     - [Widgets](#widgets)
       - [Cloudinary](#cloudinary)
       - [Select2](#select2)
@@ -1427,7 +1427,11 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 
 #### Python
 
+[Python website](https://www.python.org/)
+
 #### Python Packages
+
+Here are a list of packages used in this project and how to install them.
 
 - [DateTime](#datetime)
 - [APScheduler](#apscheduler)
@@ -1609,9 +1613,35 @@ Then inside your form you list each field like this
 
 ### JavaScript
 
+[JavaScript website](https://www.javascript.com/)
+
+- [JQuery](#jquery)
+
 [Back to top🔝](#table-of-contents)
 
 #### JQuery
+
+[jQuery website](https://jquery.com/)
+
+JQuery was used very significantly whenever this project needed to use JavaScript.
+
+As the JQuery website describes it:
+
+"**What is jQuery?**
+
+jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the way that millions of people write JavaScript."
+
+**Set up:**
+
+To use the JQuery framework there are a few different ways, they way I did it was using a CDN.
+
+At the bottom of the `base.html` I included this CDN script:
+
+```html
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+    integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+```
 
 [Back to top🔝](#table-of-contents)
 
@@ -1619,9 +1649,42 @@ Then inside your form you list each field like this
 
 ### CSS
 
+[W3C CSS Homepage](https://www.w3.org/Style/CSS/)
+
 [Back to top🔝](#table-of-contents)
 
 #### BootStrap
+
+[BootStrap website](https://getbootstrap.com/)
+
+BootStrap is a powerful framework that mainly focuses on providing each to implement CSS with some powerful JS features such as modals.
+
+The project was built using BootStrap 5. 99% of the styling is done using BootStrap with only little bit down in the projects own CSS file, such as colours.
+
+There are a few ways to install BootStrap, for this project we used CDNs. We also used BootStrap icons, which is a Free, high quality, open source icon library with over 1,800 icons.
+
+At the top of the `base.html` include these two CSS CDNs:
+
+```html
+<!-- BootStrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<!-- BootStrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+```
+
+At the bottom of the `base.html` include these two JS CDNs:
+
+```html
+<!-- Popper JS -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<!-- BootStrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+```
 
 [Back to top🔝](#table-of-contents)
 
