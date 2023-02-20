@@ -1538,41 +1538,41 @@ Choose 'Log in'
 
  On the Login screen you can either log in if you have an account or you cant set up a new account.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_3_log_in_page.png)
+![ElephantSQL - Log in page](./README_Images/deployment/elephantsql_3_log_in_page.png)
 
 Their are options for you to log in / sign up with GitHub or Google, or create a new account via an email address.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_4_log_in_options.png)
+![ElephantSQL - Log in options](./README_Images/deployment/elephantsql_4_log_in_options.png)
 
 Once logged in you will see the Instances dashboard, which will be empty if you this is a new account.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_5_instances.png)
+![ElephantSQL - Instances dashboard](./README_Images/deployment/elephantsql_5_instances.png)
 
 Click '+ Create New Instance'
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_6_create_new.png)
+![ElephantSQL - Create new instance](./README_Images/deployment/elephantsql_6_create_new.png)
 
 Provide a project name of your choice.
 
 You can choose Tiny Turtle (Free) as the plan choice.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_7_select_plan.png)
+![ElephantSQL - Select plan](./README_Images/deployment/elephantsql_7_select_plan.png)
 
 Choose a data center near you.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_8_select_location.png)
+![ElephantSQL - Select location](./README_Images/deployment/elephantsql_8_select_location.png)
 
 Now just confirm what you have done is correct and click 'Create Instance'.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_9_confirm.png)
+![ElephantSQL - Confirm](./README_Images/deployment/elephantsql_9_confirm.png)
 
 you should now see your new instance in your dashboard, click on the 'Edit' button next to it.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_10_click_edit.png)
+![ElephantSQL - Edit](./README_Images/deployment/elephantsql_10_click_edit.png)
 
 Here you will find the details you need to put into this project to connect it to your database.
 
-![ElephantSQL - ](./README_Images/deployment/elephantsql_11_details.png)
+![ElephantSQL - Credentials](./README_Images/deployment/elephantsql_11_details.png)
 
 ### Heroku
 
