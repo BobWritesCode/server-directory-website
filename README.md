@@ -2,7 +2,7 @@
 
 ## Gamer's-verse
 
-## Full stack website
+## Full Stack Website
 
 **Built using**:\
 Django, Python, JavaScript, BootStrap, CSS and HTML.
@@ -12,27 +12,32 @@ Cloudinary, SELECT2 and tinyMCE.
 
 ## Live Site
 
-[Hosted on Herokuapp](https://server-directory-website.herokuapp.com/)
+[Hosted on Heroku](https://server-directory-website.herokuapp.com/)
 
 ## Repository
 
 [GitHub repository](https://github.com/BobWritesCode/server-directory-website)
 
-## Table of Contents
+## Table Of Contents
 
-- [Gamer's-verse](#Gamer's-verse)
+- [Gamer's-verse](#gamers-verse)
   - [Live Site](#live-site)
   - [Repository](#repository)
   - [Table of Contents](#table-of-contents)
   - [Objective](#objective)
   - [Brief](#brief)
-    - [Gamer's-verse - Server Directory Website](#gamer's-verse-server-directory-website)
-  - [UX &#8722; User Experience Design](#ux--user-experience-design)
+    - [Gamer's-verse - Server Directory Website](#gamers-verse---server-directory-website)
+  - [UX - User Experience Design](#ux---user-experience-design)
     - [Site-visitor](#site-visitor)
     - [Server-Owner](#server-owner)
-    - [Site Admin](#site-admin)
-  - [Development](#initial-concept)
+    - [Site-Admin](#site-admin)
+  - [Development](#development)
     - [Wireframes](#wireframes)
+      - [Homepage Design](#homepage-design)
+      - [Listings Design](#listings-design)
+      - [Full Listing Design](#full-listing-design)
+      - [My Account Design](#my-account-design)
+      - [Create Listing Design](#create-listing-design)
     - [Colour Scheme](#colour-scheme)
     - [Typography](#typography)
     - [Imagery](#imagery)
@@ -42,6 +47,44 @@ Cloudinary, SELECT2 and tinyMCE.
     - [JavaScript](#javascript)
   - [Features](#features)
     - [Existing Features](#existing-features)
+      - [Navbar](#navbar)
+      - [Homepage](#homepage)
+      - [Server Listings](#server-listings)
+      - [View Listing](#view-listing)
+      - [Bumps](#bumps)
+      - [User Authentication](#user-authentication)
+        - [Sign Up](#sign-up)
+        - [Email verification](#email-verification)
+        - [Login](#login)
+        - [Forgotten password](#forgotten-password)
+      - [My Account](#my-account)
+        - [Profile](#profile)
+        - [Email Update](#email-update)
+        - [Password Change](#password-change)
+        - [Delete Account](#delete-account)
+        - [Listings](#listings)
+          - [Create Listing](#create-listing)
+          - [Your Listings](#your-listings)
+            - [Your Listings - Management Panel](#your-listings---management-panel)
+          - [Edit Listing](#edit-listing)
+          - [Delete Listing](#delete-listing)
+      - [Admin Account Page](#admin-account-page)
+        - [Image Review](#image-review)
+        - [Manage Users](#manage-users)
+          - [User Search](#user-search)
+          - [User Management Page](#user-management-page)
+            - [Updating User](#updating-user)
+            - [Ban/Unban User](#banunban-user)
+            - [Send User Verification Email](#send-user-verification-email)
+            - [Assign/Resign As Staff](#assignresign-as-staff)
+            - [Delete User](#delete-user)
+            - [See User's Listings](#see-users-listings)
+        - [Manage Games](#manage-games)
+          - [Adding A Game](#adding-a-game)
+          - [Updating A Game](#updating-a-game)
+        - [Manage Tags](#manage-tags)
+          - [Adding A Tag](#adding-a-tag)
+          - [Updating A Tag](#updating-a-tag)
     - [Features Left to Implement](#features-left-to-implement)
   - [Data Model](#data-model)
   - [Technologies Used](#technologies-used)
@@ -51,14 +94,12 @@ Cloudinary, SELECT2 and tinyMCE.
   - [Testing](#testing)
     - [Extensive Testing](#extensive-testing)
     - [Testers](#testers)
-    - [Python](#python)
-    - [JavaScript](#javascript)
   - [Bugs](#bugs)
     - [Current](#current)
     - [Resolved](#resolved)
   - [Development](#development)
-    - [GitHub - Create new repository from template](#githubreate-new-repository-from-template)
-    - [GitHub - Cloning](#githubloning)
+    - [GitHub - Create new repository from template](#github---create-new-repository-from-template)
+    - [GitHub - Cloning](#github---cloning)
     - [Cloudinary](#cloudinary)
     - [Postgres](#postgres)
     - [Heroku](#heroku)
@@ -85,11 +126,11 @@ The goal of this website are:
 - for server owners to be able to list their own server to be found by potential players.
 - to have a front-end admin access section that allows "staff" to moderate listings. As well as manage users, listings, games and tags.
 
-## UX &#8722; User Experience Design
+## UX - User Experience Design
 
 Some example user stories which will affect the design and project functionality.
 
-### Site-visitor
+### Site-Visitor
 
 > *"As a site user there is a easy to navigate homepage so that I can get to the correct part of the website without confusion."*
 >
@@ -124,7 +165,7 @@ Some example user stories which will affect the design and project functionality
 >
 > *"As a server owner I can upload images for my server profile so that site users can get a better feel for my server."*
 
-### Site Admin
+### Site-Admin
 
 > *"As a site admin I can manually feature a listening so that they get extra awareness."*
 >
@@ -136,7 +177,7 @@ Some example user stories which will affect the design and project functionality
 
 Below are some wireframe that I designed to help build and represent the design of the website.
 
-#### Homepage design
+#### Homepage Design
 
 <details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
@@ -147,7 +188,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![Homepage on mobile](./README_Images/wireframe_homepage_mobile.png)
 </details>
 
-#### Listings design
+#### Listings Design
 
 <details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
@@ -158,7 +199,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![Listings on mobile](./README_Images/wireframe_listings_mobile.png)
 </details>
 
-#### Full listing design
+#### Full Listing Design
 
 <details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
@@ -169,7 +210,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![Full listing on mobile](./README_Images/wireframe_full_listing_mobile.png)
 </details>
 
-#### My Account design
+#### My Account Design
 
 <details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
@@ -180,7 +221,7 @@ Below are some wireframe that I designed to help build and represent the design 
 ![My Account on mobile](./README_Images/wireframe_my_account_mobile.png)
 </details>
 
-#### Create Listing design
+#### Create Listing Design
 
 <details><summary>PC</summary> <!-- markdownlint-disable-line -->
 
@@ -285,7 +326,7 @@ The user can hover their mouse over the different game cards. This help the user
 
 ![Game cards](./README_Images/site_homepage_games.gif)
 
-#### Server listings
+#### Server Listings
 
 The server listing page allows the user to start looking through the different listings. The user can filter their search down using the tags filter on the right. They can select up to as many tags as they like and also easily remove tags. This provides a much more bespoke list that is filled only with that user's interests.
 
@@ -418,9 +459,9 @@ def clear_bumps():
     print('clear_bumps(): Completed automated task.')
 ```
 
-#### User Authentication
+### User Authentication
 
-##### Sign up
+#### Sign Up
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -468,7 +509,7 @@ def sign_up_view(request):
     return render(request, 'registration/signup.html', {'form': form})
 ```
 
-##### Email verification
+#### Email Verification
 
 Once the user has successfully input the their sign up details they will be directed to a screen explaining that they have been sent an email to verify their email address.
 
@@ -545,7 +586,7 @@ Once the user visits the link in the email they will be taken to the page to sho
 ![Email address verified page](./README_Images/site_signup_email_address_verified.png)
 </details>
 
-##### Login
+#### Login
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -617,7 +658,7 @@ def login_view(request: object):
     )
 ```
 
-##### Forgotten password
+#### Forgotten password
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -698,7 +739,7 @@ path(
 ),
 ```
 
-#### My Account
+### My Account
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -712,11 +753,11 @@ The [My Account](#my-account) is the main hub for a user to mange their profile,
 - [Password change](#password-change)
 - [Delete account](#delete-account)
 
-##### Profile
+#### Profile
 
 Starting from the top of the [My Account](#my-account) page and working our way down, the first section is the 'Profile' section. In this section the user can see their username and their current email address. Currently the user cannot update their username but this is something that could be available in a future update.
 
-##### Email update
+#### Email Update
 
 By clicking on the Update email address button the user will see a modal come up with instructions on how to change their email address.
 
@@ -730,7 +771,7 @@ Once the form is completed the user's email address will be updated but the the 
 
 ![Unverified email](./README_Images/feat_email_update_unverified.png)
 
-##### Password change
+#### Password Change
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -746,7 +787,7 @@ Takes you to the password change page where the user is required to enter their 
 
 All going well, the user will be shown a password change page to confirm the change was successful.
 
-##### Delete account
+#### Delete Account
 
 At the bottom of the [My Account](#my-account) page is the 'Delete account' section. Here the user can completely delete their account which also delete associated listings and bumps.
 
@@ -816,7 +857,7 @@ Each listing shows the user:
 - Short description,
 - Management panel.
 
-##### My Listings management panel
+##### Your Listings - Management Panel
 
 This panel allows the user quick access to options to help manage their listing. The panel includes:
 
@@ -828,7 +869,7 @@ This panel allows the user quick access to options to help manage their listing.
 
 ![My Listings management panel](./README_Images/feat_my_listings_panel.gif)
 
-##### Edit Listing
+#### Edit Listing
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -861,7 +902,7 @@ The [admin account page](#admin-account-page) currently has the following featur
 - [Manage Games](#manage-games)
 - [Manage Tags](#manage-tags)
 
-### Image Review
+#### Image Review
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -925,7 +966,7 @@ Every image to be reviewed will has 4 options:
         return redirect('staff_account')
     ```
 
-### Manage Users
+#### Manage Users
 
 Another crucial feature of the website is the ability for staff user's to be able to find user's and manage them. The Manage user section has many sub-features to it, including:
 
@@ -936,9 +977,9 @@ Another crucial feature of the website is the ability for staff user's to be abl
 - [Send user verification email](#send-user-verification-email)
 - [Assign/Resign as staff](#assignresign-as-staff)
 - [Delete user](#delete-user)
-- [See user listings](#see-user-listings)
+- [See user's listings](#see-users-listings)
 
-#### User Search
+##### User Search
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -1009,7 +1050,7 @@ function displayUsers(users) {
 
 The user can then click on any of the results to go to the user management screen.
 
-#### User Management Page
+##### User Management Page
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -1030,7 +1071,7 @@ For managing the user settings there is a management control panel
 *Panel when target user is a superuser but user is not:*
 ![User Management Page](./README_Images/feat_managment_panel_superuser.png)
 
-#### Updating User
+###### Updating User
 
 Users can update username, email address and if account is active. After making any changes the user needs to click on the 'Save' icon in the control panel.
 
@@ -1038,7 +1079,7 @@ If 'Account Active?' is unchecked and the user saved, that user will no longer b
 
 Once successfully the page will refresh and the new details stored in the database.
 
-#### Ban/Unban User
+###### Ban/Unban User
 
 There is a ban/unban function within the control panel.
 
@@ -1091,7 +1132,7 @@ def ban_user(request: object, _id: int):
     Images.objects.filter(query).update(status=3, expiry=image_expire)
 ```
 
-#### Send user verification email
+###### Send User Verification Email
 
 If a staff member updates an email address on a user's behalf, to make sure that the email address belongs to them they send a [verification email](#email-verification) to them. The email will contain a link to confirm that they have access to the email address provided.
 
@@ -1112,7 +1153,7 @@ if "email-verify" in request.POST:
         )
 ```
 
-#### Assign/Resign as staff
+###### Assign/Resign As Staff
 
 **IMPORTANT**: This function is only available to superusers.
 
@@ -1167,13 +1208,13 @@ This function allows a staff user to delete a target user from the database.
 
 ![Demote staff modal](./README_Images/feat_delete_user_modal.png)
 
-#### See User Listings
+#### See User's Listings
 
 The lower section of view displays the target user's listing, just how you would see your own listings in [Your Listing](#your-listings).
 
 A staff member has the same abilities as a the listing owner to view, edit and delete each listing.
 
-### Manage Games
+#### Manage Games
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -1185,7 +1226,7 @@ For game management there are two sections. You can either choose a game from th
 - [Adding A Game](#adding-a-game),
 - [Updating A Game](#updating-a-game).
 
-#### Adding A Game
+##### Adding A Game
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -1225,7 +1266,7 @@ Using the [SELECT2](#select2) dropdown at the top of the page, you can either se
 
 ![Manage Game page - Delete game modal](./README_Images/feat_delete_game_modal.png)
 
-### Manage Tags
+#### Manage Tags
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
