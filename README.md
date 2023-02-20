@@ -101,9 +101,9 @@ Cloudinary, Select2 and tinyMCE.
   - [Testing](#testing) (OUTSTANDING)
     - [Extensive Testing](#extensive-testing) (OUTSTANDING)
     - [Testers](#testers) (OUTSTANDING)
-  - [Bugs](#bugs) (OUTSTANDING)
-    - [Current](#current) (OUTSTANDING)
-    - [Resolved](#resolved) (OUTSTANDING)
+  - [Bugs](#bugs)
+    - [Unresolved](#unresolved)
+    - [Resolved](#resolved)
   - [Deployment](#development)
     - [GitHub - Cloning](#github---cloning)
     - [TinyMCE Deployment](#tinymce-deployment)
@@ -1899,9 +1899,19 @@ body {
 
 ## Bugs
 
-### Current
+When a bug is identified a user can raise an issue in GitHub to flag it. The user will need to complete a bug report but this helps identify the bug and know what the user expected. As I work through the project numerous of bugs would come up, but to make sure I stayed on track and focused at 1 task at a time, I raised a issue to handle the bug later.
+
+![Bug Report ](./README_Images/feat_bug_report.png)
+
+![Bug Report ](./README_Images/feat_bugs.png)
+
+### Unresolved
+
+[Link to unresolved bugs](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
 
 ### Resolved
+
+[Link to resolved bugs](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+is%3Aclose+label%3Abug)
 
 [Back to top🔝](#table-of-contents)
 
