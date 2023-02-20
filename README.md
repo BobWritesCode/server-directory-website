@@ -98,7 +98,7 @@ Cloudinary, Select2 and tinyMCE.
       - [Cloudinary](#cloudinary)
       - [Select2](#select2)
       - [tinyMCE](#tinymce)
-    - [VS Code Extensions](#vs-code-extensions) (OUTSTANDING)
+    - [VS Code Extensions](#vs-code-extensions)
     - [Other Tech](#other-tech) (OUTSTANDING)
   - [Testing](#testing) (OUTSTANDING)
     - [Extensive Testing](#extensive-testing) (OUTSTANDING)
@@ -1820,6 +1820,29 @@ body {
 ---
 
 ### VS Code Extensions
+
+These are some notable VS extensions that have really helped me with this project.
+
+- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+
+- [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
+
+- [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite)
+
+- [Auto Close Tag](https://open-vsx.gitpod.io/extension/formulahendry/auto-close-tag)
+
+- [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+
+- [empty-indent](https://marketplace.visualstudio.com/items?itemName=DmitryDorofeev.empty-indent)
+
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+
+- [indent-rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)
+
+- [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
 
 ### Other Tech
 
