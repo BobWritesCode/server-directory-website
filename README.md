@@ -83,8 +83,9 @@ Cloudinary, Select2 and tinyMCE.
           - [Updating A Tag](#updating-a-tag)
     - [Features Left to Implement](#features-left-to-implement)
   - [Technologies Used](#technologies-used)
-    - [Logic](#logic) (OUTSTANDING)
+    - [Logic](#logic)
       - [Data Model](#data-model)
+      - [Django](#django)
       - [Python](#python)
         - [Python Packages](#python-packages)
           - [DateTime](#datetime)
@@ -1422,6 +1423,20 @@ Using the [Select2](#select2) dropdown at the top of the page, you can either se
 
 ### Logic
 
+- [Data Model](#data-model)
+- [Django](#django)
+- [Python](#python)
+  - [Python Packages](#python-packages)
+    - [DateTime](#datetime)
+    - [APScheduler](#apscheduler)
+    - [Django Crispy Forms](#django-crispy-forms)
+- [JavaScript](#javascript)
+  - [JQuery](#jquery)
+- [CSS](#css)
+  - [BootStrap](#bootstrap)
+
+[Back to top🔝](#table-of-contents)
+
 #### Data Model
 
 The below entity relationship diagram (ERD) is a graphical representation that depicts relationships between the different models in this project. It also shows the different attributes and their types for each class.
@@ -1429,6 +1444,18 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 ![Entity relationship diagram (ERD)](./README_Images/erd.png)
 
 *Created using: [app.diagrams.net](https://app.diagrams.net)*
+
+#### Django
+
+[Django website](https://www.djangoproject.com/)
+
+The core framework of this project is Django.
+
+As Django put it:
+
+"Django is a high-level Python web framework that encourages rapid development and clean, pragmatic design. Built by experienced developers, it takes care of much of the hassle of web development, so you can focus on writing your app without needing to reinvent the wheel. It’s free and open source."
+
+You can follow the [Django tutorial on creating your first app](https://docs.djangoproject.com/en/4.1/intro/tutorial01/).
 
 #### Python
 
