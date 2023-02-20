@@ -1423,7 +1423,181 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 
 #### Python Packages
 
+#### datetime
+
+[Documentation for datatime](https://apscheduler.readthedocs.io/en/3.x/)
+
+datetime is an object-oriented interface to dates and times with similar functionality to the `time` module.
+
+To install in the terminal use: `pip install datetime`.
+
+#### APScheduler
+
+[Documentation for APScheduler](https://docs.python.org/3/library/datetime.html)\
+[Documentation for django-apscheduler](https://pypi.org/project/django-apscheduler/)
+
+This project uses APSchedule to run regular jobs server side to clear user bumps and remove expired images from Cloudinary storage.
+
+**Set up:**
+
+To install in the terminal use:  `pip install apscheduler` and `pip install django-apscheduler`.
+
+In `apps.py` we need to add this code block app class, like so:
+
+```py
+# apps.py
+# This should already be there.
+class WebsiteConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'website'
+
+        # Add this.
+        def ready(self):
+            from website import updater
+            updater.start()
+            from website import jobs
+            jobs.daily_jobs()
+```
+
+This initiate the methods.
+
+We also need to create a `updater.py` and add it into our app. And include the following code:
+
+```py
+# updater.py
+"""
+Initiates task intervals.
+Tasks found in jobs.py
+"""
+from apscheduler.schedulers.background import BackgroundScheduler
+from .jobs import daily_jobs
+
+
+def start():
+    """ Run when project starts """
+    scheduler = BackgroundScheduler()
+    # add_job() Runs at midnight every night.
+    scheduler.add_job(daily_jobs, 'cron', hour='0')
+    scheduler.start()
+```
+
+This creates a cron for our tasks to run at midnight every night.
+
+And also we need a `jobs.py` within our app with the following code:
+
+```py
+# jobs.py
+"""
+Automated task to be completed.
+Initiated by updater.py
+"""
+from datetime import datetime
+from django.db.models import Q
+from cloudinary import uploader
+from .models import Bumps, Images
+
+
+def daily_jobs():
+    """
+    Lists functions that are run daily or at each server start.
+
+    Decorators:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    clear_bumps()
+    delete_rejected_images()
+
+
+def clear_bumps():
+    """
+    Automated task: Finds expired bumps and deletes them.
+
+    Decorators:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    print('clear_bumps(): Starting automated task.')
+    # Get bumps that have expired
+    query = Q(expiry__lte=datetime.now())
+    queryset = Bumps.objects.filter(query)
+    print(f'clear_bumps(): Deleting {len(queryset)} bump(s).')
+    # Delete expired bumps
+    queryset.delete()
+    print('clear_bumps(): Completed automated task.')
+
+
+def delete_rejected_images():
+    """
+    Automated task: Finds rejected and expired images and delete
+    from the Cloudinary server.
+
+    Decorators:
+        None
+
+    Args:
+        None
+
+    Returns:
+        None
+    """
+    print('delete_rejected_images(): Starting automated task.')
+    # Get images that have been marked as rejected and expired
+    query = Q(expiry__lte=datetime.now()) & Q(status__in=[2, 3])
+    queryset = Images.objects.filter(query)
+    print(f'delete_rejected_images(): Deleting {len(queryset)} image(s).')
+    # Loop through and delete images meeting criteria
+    for query in queryset:
+        uploader.destroy(query.public_id)
+        print(f'delete_rejected_images(): Deleted: {query.public_id}')
+    # Delete expired images
+    queryset.delete()
+    print('delete_rejected_images(): Completed automated task.')
+```
+
+and that's it we have set up two automated tasks.
+
+#### Crispy Forms
+
 [Back to top🔝](#table-of-contents)
+
+### Sending email verification
+
+To help me get this set up, I followed this [guide](https://shafikshaon.medium.com/user-registration-with-email-verification-in-django-8aeff5ce498d).
+
+There were some changes to be made due to potentially using newer version of Django.
+
+Instead of using `EmailMessage()`, I used `send_mail()`.
+
+```py
+# ORIGINAL CODE
+email = EmailMessage(
+    subject=mail_subject,
+    body=message,
+    to=[to_email]
+)
+email.send()
+```
+
+```py
+# NEW CODE
+send_mail(
+    subject=mail_subject,
+    message=message,
+    from_email='contact@warwickhart.com',
+    recipient_list=[to_email]
+)
+```
 
 ---
 
@@ -1609,48 +1783,9 @@ body {
 
 [Back to top🔝](#table-of-contents)
 
-### Sending email verification
-
-To help me get this set up, I followed this [guide](https://shafikshaon.medium.com/user-registration-with-email-verification-in-django-8aeff5ce498d).
-
-There were some changes to be made due to potentially using newer version of Django.
-
-Instead of using `EmailMessage()`, I used `send_mail()`.
-
-```py
-# ORIGINAL CODE
-email = EmailMessage(
-    subject=mail_subject,
-    body=message,
-    to=[to_email]
-)
-email.send()
-```
-
-```py
-# NEW CODE
-send_mail(
-    subject=mail_subject,
-    message=message,
-    from_email='contact@warwickhart.com',
-    recipient_list=[to_email]
-)
-```
-
 [Back to top🔝](#table-of-contents)
 
 ---
-
-### Python Packages
-
-#### datetime
-
-pip install datetime
-
-#### django-apscheduler
-
-pip install django-apscheduler
-
 ---
 
 ### VS Code Extensions
@@ -1666,10 +1801,6 @@ pip install django-apscheduler
 ### Extensive Testing
 
 ### Testers
-
-### Python
-
-### JavaScript
 
 [Back to top🔝](#table-of-contents)
 
