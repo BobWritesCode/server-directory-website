@@ -39,8 +39,8 @@ Cloudinary, Select2 and tinyMCE.
       - [My Account Design](#my-account-design)
       - [Create Listing Design](#create-listing-design)
     - [Colour Scheme](#colour-scheme)
-    - [Typography](#typography)
-    - [Imagery](#imagery)
+    - [Typography](#typography) (OUTSTANDING)
+    - [Imagery](#imagery) (OUTSTANDING)
   - [Features](#features)
     - [Existing Features](#existing-features)
       - [Navbar](#navbar)
@@ -83,33 +83,39 @@ Cloudinary, Select2 and tinyMCE.
           - [Updating A Tag](#updating-a-tag)
     - [Features Left to Implement](#features-left-to-implement)
   - [Technologies Used](#technologies-used)
-    - [Logic](#logic)
+    - [Logic](#logic) (OUTSTANDING)
       - [Data Model](#data-model)
-      - [Python](#python)
+      - [Python](#python) (OUTSTANDING)
         - [Python Packages](#python-packages)
-      - [JavaScript](#javascript)
-        - [JQuery](#jquery)
-      - [CSS](#css)
-        - [BootStrap](#bootstrap)
+          - [DateTime](#datetime)
+          - [APScheduler](#apscheduler)
+          - [Django Crispy Forms](#django-crispy-forms)
+      - [JavaScript](#javascript) (OUTSTANDING)
+        - [JQuery](#jquery) (OUTSTANDING)
+      - [CSS](#css) (OUTSTANDING)
+        - [BootStrap](#bootstrap) (OUTSTANDING)
     - [Widgets](#widgets)
-    - [VS Code Extensions](#vs-code-extensions)
-    - [Other Tech](#other-tech)
-  - [Testing](#testing)
-    - [Extensive Testing](#extensive-testing)
-    - [Testers](#testers)
-  - [Bugs](#bugs)
-    - [Current](#current)
-    - [Resolved](#resolved)
+      - [Cloudinary](#cloudinary)
+      - [Select2](#select2)
+      - [tinyMCE](#tinymce)
+    - [VS Code Extensions](#vs-code-extensions) (OUTSTANDING)
+    - [Other Tech](#other-tech) (OUTSTANDING)
+  - [Testing](#testing) (OUTSTANDING)
+    - [Extensive Testing](#extensive-testing) (OUTSTANDING)
+    - [Testers](#testers) (OUTSTANDING)
+  - [Bugs](#bugs) (OUTSTANDING)
+    - [Current](#current) (OUTSTANDING)
+    - [Resolved](#resolved) (OUTSTANDING)
   - [Deployment](#development)
     - [GitHub - Cloning](#github---cloning)
     - [TinyMCE Deployment](#tinymce-deployment)
     - [Cloudinary Deployment](#cloudinary-deployment)
     - [ElephantSQL Deployment](#elephantsql-deployment)
     - [Heroku](#heroku)
-  - [Credits](#credits)
-    - [Content](#content)
-    - [Media](#media)
-    - [Acknowledgements](#acknowledgements)
+  - [Credits](#credits) (OUTSTANDING)
+    - [Content](#content) (OUTSTANDING)
+    - [Media](#media) (OUTSTANDING)
+    - [Acknowledgements](#acknowledgements) (OUTSTANDING)
 
 ---
 
@@ -1423,6 +1429,10 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 
 #### Python Packages
 
+- [DateTime](#datetime)
+- [APScheduler](#apscheduler)
+- [Django Crispy Forms](#django-crispy-forms)
+
 #### datetime
 
 [Documentation for datatime](https://apscheduler.readthedocs.io/en/3.x/)
@@ -1595,34 +1605,6 @@ Then inside your form you list each field like this
 {{ form.image | as_crispy_field }}
 ```
 
-### Sending email verification
-
-To help me get this set up, I followed this [guide](https://shafikshaon.medium.com/user-registration-with-email-verification-in-django-8aeff5ce498d).
-
-There were some changes to be made due to potentially using newer version of Django.
-
-Instead of using `EmailMessage()`, I used `send_mail()`.
-
-```py
-# ORIGINAL CODE
-email = EmailMessage(
-    subject=mail_subject,
-    body=message,
-    to=[to_email]
-)
-email.send()
-```
-
-```py
-# NEW CODE
-send_mail(
-    subject=mail_subject,
-    message=message,
-    from_email='contact@warwickhart.com',
-    recipient_list=[to_email]
-)
-```
-
 ---
 
 ### JavaScript
@@ -1637,11 +1619,21 @@ send_mail(
 
 ### CSS
 
+[Back to top🔝](#table-of-contents)
+
 #### BootStrap
+
+[Back to top🔝](#table-of-contents)
 
 ---
 
 ### Widgets
+
+- [Cloudinary](#cloudinary)
+- [Select2](#select2)
+- [tinyMCE](#tinymce)
+
+[Back to top🔝](#table-of-contents)
 
 #### Cloudinary
 
@@ -1825,9 +1817,6 @@ body {
 
 [Back to top🔝](#table-of-contents)
 
-[Back to top🔝](#table-of-contents)
-
----
 ---
 
 ### VS Code Extensions
@@ -2049,6 +2038,38 @@ Click View to view the deployed site.\
 ## Credits
 
 ### Content
+
+Unless specified all code written in the .py file was my own.
+
+Django provided the boilerplate framework for setting up the project.
+
+#### Sending email verification
+
+To help me get this set up, I followed this [guide](https://shafikshaon.medium.com/user-registration-with-email-verification-in-django-8aeff5ce498d).
+
+I had to make some changes as the code in the guide did not work, which I believe was because it was created using an older person of Django.
+
+Instead of using `EmailMessage()`, I used `send_mail()`.
+
+```py
+# ORIGINAL CODE
+email = EmailMessage(
+    subject=mail_subject,
+    body=message,
+    to=[to_email]
+)
+email.send()
+```
+
+```py
+# NEW CODE
+send_mail(
+    subject=mail_subject,
+    message=message,
+    from_email='contact@warwickhart.com',
+    recipient_list=[to_email]
+)
+```
 
 ### Media
 
