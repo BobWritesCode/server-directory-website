@@ -1519,18 +1519,37 @@ pip install django-apscheduler
 
 ### Cloudinary Deployment
 
+**Set up:**
+
+Go to the Cloudinary website [https://cloudinary.com/](https://cloudinary.com/).
+
+![Cloudinary - Site](./README_Images/deployment/cloudinary_1_site.png)
+
+You can either Log in if you have a current account or create a new account with your email address.
+
+![Cloudinary - Log in options](./README_Images/deployment/cloudinary_2_log_in.png)
+
+Once you have logged in or completed the registration you are taken to the main console page.
+
+![Cloudinary - Console page](./README_Images/deployment/cloudinary_3_logged_in.png)
+
+Click the 'Dashboard' button which is located in the nav bar.
+
+![Cloudinary - Dashboard button](./README_Images/deployment/cloudinary_4_dashboard_button.png)
+
+And you are now on the screen which shows you all the credential information you will require.
+
+![Cloudinary - Dashboard page](./README_Images/deployment/cloudinary_5_dashboard.png)
+
 ### ElephantSQL Deployment
 
 You can choose your own SQL database provider but for this project I used ElephantSQL which uses PostgresSQL databases.
 
 **Set up:**
 
-Go to their website [https://www.elephantsql.com/](https://www.elephantsql.com/).
-
-<details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
+Go to the ElephantSQL website [https://www.elephantsql.com/](https://www.elephantsql.com/).
 
 ![ElephantSQL Front Page](./README_Images/deployment/elephantsql_1_frontpage.png)
-</details>
 
 Choose 'Log in'
 
