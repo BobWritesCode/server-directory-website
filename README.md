@@ -98,8 +98,6 @@ Cloudinary, Select2 and tinyMCE.
       - [Cloudinary](#cloudinary)
       - [Select2](#select2)
       - [tinyMCE](#tinymce)
-    - [VS Code Extensions](#vs-code-extensions)
-    - [Other Tech](#other-tech) (OUTSTANDING)
   - [Testing](#testing) (OUTSTANDING)
     - [Extensive Testing](#extensive-testing) (OUTSTANDING)
     - [Testers](#testers) (OUTSTANDING)
@@ -113,6 +111,8 @@ Cloudinary, Select2 and tinyMCE.
     - [ElephantSQL Deployment](#elephantsql-deployment)
     - [Heroku](#heroku)
   - [Credits](#credits)
+    - [VS Code Extensions](#vs-code-extensions)
+    - [Other Tech](#other-tech)
     - [Content](#content)
     - [Media](#media)
     - [Acknowledgements](#acknowledgements)
@@ -1819,37 +1819,6 @@ body {
 
 ---
 
-### VS Code Extensions
-
-These are some notable VS extensions that have really helped me with this project.
-
-- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
-
-- [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
-
-- [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite)
-
-- [Auto Close Tag](https://open-vsx.gitpod.io/extension/formulahendry/auto-close-tag)
-
-- [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
-
-- [empty-indent](https://marketplace.visualstudio.com/items?itemName=DmitryDorofeev.empty-indent)
-
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-
-- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
-
-- [indent-rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)
-
-- [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-
-
-### Other Tech
-
-[Back to top🔝](#table-of-contents)
-
----
-
 ## Testing
 
 ### Extensive Testing
@@ -2062,10 +2031,50 @@ Click View to view the deployed site.\
 
 Here is where I acknowledge contributions to this project.
 
+- [VS Code Extensions](#vs-code-extensions)
+- [Other Tech](#other-tech)
 - [Content](#content)
   - [Sending email verification](#sending-email-verification)
 - [Media](#media)
 - [Acknowledgements](#acknowledgements)
+
+### VS Code Extensions
+
+These are some notable VS extensions that have really helped me with this project.
+
+- [Python](https://marketplace.visualstudio.com/items?itemName=ms-python.python)
+
+- [Pylance](https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance)
+
+- [SQLite](https://marketplace.visualstudio.com/items?itemName=alexcvzz.vscode-sqlite)
+
+- [Auto Close Tag](https://open-vsx.gitpod.io/extension/formulahendry/auto-close-tag)
+
+- [Code Spell Checker](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+
+- [empty-indent](https://marketplace.visualstudio.com/items?itemName=DmitryDorofeev.empty-indent)
+
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+- [markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
+
+- [indent-rainbow](https://marketplace.visualstudio.com/items?itemName=oderwat.indent-rainbow)
+
+- [prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+[Back to top🔝](#table-of-contents)
+
+### Other Tech
+
+- [Online Spellcheck](https://www.online-spellcheck.com/): To check spelling.
+
+- [Balsamiq](https://balsamiq.com/wireframes/): To create wireframe.
+
+- [diagrams.net](https://app.diagrams.net/): To create ERD.
+
+- [ShareX](https://getsharex.com/): Used to snip screenshots.
+
+[Back to top🔝](#table-of-contents)
 
 ### Content
 
