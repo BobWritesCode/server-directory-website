@@ -1774,6 +1774,24 @@ As [tiny](https://www.tiny.cloud/) put it: "TinyMCE gives you total control over
 
 You will need to get an API key from [tiny](https://www.tiny.cloud/). You can find instruction on that in the [tinyMCR Deployment](#tinymce-deployment) section of this README.
 
+In your `forms.py` you need to add the following import:
+
+```py
+from tinymce.widgets import TinyMCE
+```
+
+Then in your `forms.py`, any field you wish to have TinyMCE as the widget you just need to declare, like:
+
+```py
+short_description = forms.CharField(
+    label="Short description: (min: 100, max: 200 characters)",
+    min_length=100,
+    max_length=200,
+    widget=TinyMCE(attrs={'cols': 80, 'rows': 2}),
+    required=True,
+)
+```
+
 Where you plan to use tinyMCE you will need to make sure you have the tinyMCE CSS CDN in the `<head>`.
 
 ```html
