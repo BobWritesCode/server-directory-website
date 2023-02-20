@@ -40,7 +40,7 @@ Cloudinary, Select2 and tinyMCE.
       - [Create Listing Design](#create-listing-design)
     - [Colour Scheme](#colour-scheme)
     - [Typography](#typography) (OUTSTANDING)
-    - [Imagery](#imagery) (OUTSTANDING)
+    - [Imagery](#imagery)
   - [Features](#features)
     - [Existing Features](#existing-features)
       - [Navbar](#navbar)
@@ -114,7 +114,6 @@ Cloudinary, Select2 and tinyMCE.
     - [VS Code Extensions](#vs-code-extensions)
     - [Other Tech](#other-tech)
     - [Content](#content)
-    - [Media](#media)
     - [Acknowledgements](#acknowledgements)
 
 ---
@@ -267,6 +266,8 @@ This 4 colours contrast very nicely against each other, and the white text again
 ### Typography
 
 ### Imagery
+
+The site currently has no media on it other then what is uploaded by users. Currently this is for game cover images which are covered by 'Fair use'. To make sure that no images that would be offensive or cause complications are being publicly shown on the site, there is the [image review](#image-review) function.
 
 [Back to top🔝](#table-of-contents)
 
@@ -2098,7 +2099,6 @@ Here is where I acknowledge contributions to this project.
 - [Other Tech](#other-tech)
 - [Content](#content)
   - [Sending email verification](#sending-email-verification)
-- [Media](#media)
 - [Acknowledgements](#acknowledgements)
 
 ### VS Code Extensions
@@ -2172,10 +2172,6 @@ send_mail(
     recipient_list=[to_email]
 )
 ```
-
-### Media
-
-The site currently has no media on it other then what is uploaded by users. Currently this is for game cover images which are covered by 'Fair use'. To make sure that no images that would be offensive or cause complications are being publicly shown on the site, there is the [image review](#image-review) function.
 
 ### Acknowledgements
 
