@@ -41,10 +41,6 @@ Cloudinary, Select2 and tinyMCE.
     - [Colour Scheme](#colour-scheme)
     - [Typography](#typography)
     - [Imagery](#imagery)
-  - [Logic](#logic)
-    - [Data Model](#data-model)
-    - [Python](#python)
-    - [JavaScript](#javascript)
   - [Features](#features)
     - [Existing Features](#existing-features)
       - [Navbar](#navbar)
@@ -87,7 +83,15 @@ Cloudinary, Select2 and tinyMCE.
           - [Updating A Tag](#updating-a-tag)
     - [Features Left to Implement](#features-left-to-implement)
   - [Technologies Used](#technologies-used)
-    - [Python Packages](#python-packages)
+    - [Logic](#logic)
+      - [Data Model](#data-model)
+      - [Python](#python)
+        - [Python Packages](#python-packages)
+      - [JavaScript](#javascript)
+        - [JQuery](#jquery)
+      - [CSS](#css)
+        - [BootStrap](#bootstrap)
+    - [Widgets](#widgets)
     - [VS Code Extensions](#vs-code-extensions)
     - [Other Tech](#other-tech)
   - [Testing](#testing)
@@ -98,6 +102,7 @@ Cloudinary, Select2 and tinyMCE.
     - [Resolved](#resolved)
   - [Deployment](#development)
     - [GitHub - Cloning](#github---cloning)
+    - [TinyMCE Deployment](#tinymce-deployment)
     - [Cloudinary Deployment](#cloudinary-deployment)
     - [ElephantSQL Deployment](#elephantsql-deployment)
     - [Heroku](#heroku)
@@ -256,24 +261,6 @@ This 4 colours contrast very nicely against each other, and the white text again
 ### Typography
 
 ### Imagery
-
-[Back to top🔝](#table-of-contents)
-
----
-
-## Logic
-
-### Data Model
-
-The below entity relationship diagram (ERD) is a graphical representation that depicts relationships between the different models in this project. It also shows the different attributes and their types for each class.
-
-![Entity relationship diagram (ERD)](./README_Images/erd.png)
-
-*Created using: [app.diagrams.net](https://app.diagrams.net)*
-
-### Python
-
-### JavaScript
 
 [Back to top🔝](#table-of-contents)
 
@@ -1404,19 +1391,59 @@ Using the [Select2](#select2) dropdown at the top of the page, you can either se
 
 ### Features Left to Implement
 
-Site owner change:
+**Site owner change:**
 
-- when bumps bumps expire.
-- how many bumps a user can have active at a time.
-- change the amount of listings a person can list at once.
+- When long until bumps expire.
+- How many bumps a user can have active at a time.
+- Change the amount of listings a person can list at once.
 
-Staff:
+**Staff:**
 
 - Be able to review already approved images via image ID
 
-UX
+**UX:**
 
 - Add success messages when data is updated.
+
+---
+
+## Technologies Used
+
+### Logic
+
+#### Data Model
+
+The below entity relationship diagram (ERD) is a graphical representation that depicts relationships between the different models in this project. It also shows the different attributes and their types for each class.
+
+![Entity relationship diagram (ERD)](./README_Images/erd.png)
+
+*Created using: [app.diagrams.net](https://app.diagrams.net)*
+
+#### Python
+
+#### Python Packages
+
+[Back to top🔝](#table-of-contents)
+
+---
+
+### JavaScript
+
+[Back to top🔝](#table-of-contents)
+
+#### JQuery
+
+[Back to top🔝](#table-of-contents)
+
+---
+
+### CSS
+
+#### BootStrap
+
+---
+
+### Widgets
 
 #### Cloudinary
 
@@ -1545,7 +1572,6 @@ tinyMCE is provided by [tiny](https://www.tiny.cloud/), you can visit there webs
 
 ![tinyMCE widget](./README_Images/feat_tinymce.png)
 
-
 As [tiny](https://www.tiny.cloud/) put it: "TinyMCE gives you total control over your rich text editing. Either create a fully customized experience via the APIs or take advantage of the out-of-the-box enterprise-grade editor to build your next generation web app."
 
 You will need to get an API key from [tiny](https://www.tiny.cloud/). You can find instruction on that in the [tinyMCR Deployment](#tinymce-deployment) section of this README.
@@ -1615,8 +1641,6 @@ send_mail(
 
 ---
 
-## Technologies Used
-
 ### Python Packages
 
 #### datetime
@@ -1626,6 +1650,8 @@ pip install datetime
 #### django-apscheduler
 
 pip install django-apscheduler
+
+---
 
 ### VS Code Extensions
 
