@@ -1420,6 +1420,64 @@ UX
 
 #### Cloudinary
 
+Cloudinary is a powerful image and video hosting service that provides services to store, transform and optimize delivery of your images to your website via an API.
+
+For setting up Cloudinary check out the [Cloudinary Deployment](#cloudinary-deployment) section.
+
+In Python you need to import cloudinary into your project
+
+```py
+from cloudinary import uploader
+```
+
+The way I have used Cloudinary in this project is mainly focus on uploading images and destroying images.
+
+It was also important to bear in mind that potentially hundreds, even thousands of images could be uploaded through the website, so storage management was something to think about.
+
+One way images could build up are as images get replaced, and the storage just being filled up with images that have been replaced. So any time an image is uploaded there is a check to see if an image already exists that is replacing and if so to destroy that image first.
+
+```py
+# If game image already exists, delete from server and replace with
+# new image.
+if game.image is not None and request.FILES:
+    # Delete old image from Cloudinary server
+    uploader.destroy(game.image.public_id)
+
+    # Get public ID
+    txt = game.image.public_id
+    public_id = txt.rsplit("/", 1)[1]
+    # Upload new image
+    new_image = uploader.upload(
+        request.FILES["image"],
+        public_id=public_id,
+        overwrite=True,
+        folder="server_directory/"
+    )
+    # Save new url to game object
+    game.image = new_image["url"]
+```
+
+In `forms.py` to create a field ready for Cloudinary you need to add this import:
+
+```py
+from cloudinary.forms import CloudinaryFileField
+```
+
+And then for the field in the form you can use something like:
+
+```py
+image = CloudinaryFileField(
+    label="Upload new image:",
+    required=False,
+)
+```
+
+Finally at the top of an HTML template where you use Cloudinary to make sure you include the Cloudinary tag:
+
+```html
+{% load cloudinary %}
+```
+
 [Back to top🔝](#table-of-contents)
 
 #### Select2
