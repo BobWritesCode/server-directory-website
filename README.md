@@ -97,10 +97,9 @@ Cloudinary, SELECT2 and tinyMCE.
     - [Current](#current)
     - [Resolved](#resolved)
   - [Deployment](#development)
-    - [GitHub - Create new repository from template](#github---create-new-repository-from-template)
     - [GitHub - Cloning](#github---cloning)
     - [Cloudinary Deployment](#cloudinary-deployment)
-    - [Elephant SQL Deployment](#elephant-sql-deployment)
+    - [ElephantSQL Deployment](#elephantsql-deployment)
     - [Heroku](#heroku)
   - [Credits](#credits)
     - [Content](#content)
@@ -1513,9 +1512,24 @@ pip install django-apscheduler
 
 ## Deployment
 
-### GitHub - Create new repository from template
+- [GitHub - Cloning](#github---cloning)
+- [Cloudinary Deployment](#cloudinary-deployment)
+- [ElephantSQL Deployment](#elephantsql-deployment)
+- [Heroku](#heroku)
+
+[Back to top🔝](#table-of-contents)
 
 ### GitHub - Cloning
+
+To clone using GitHib:
+
+Go to the project you wish to clone.
+
+**Option 1:** If you have the [Google Chrome GitPod extension](https://chrome.google.com/webstore/detail/gitpod-always-ready-to-co/dodmmooeoklaejobgleioelladacbeki), you can just click on the Green GitPod button
+
+:**Option 2::** Click the 'Code' button. This open options for you to clone your preferred way.
+
+![Cloudinary - Site](./README_Images/deployment/github_cloning.png)
 
 ### Cloudinary Deployment
 
@@ -1592,6 +1606,8 @@ you should now see your new instance in your dashboard, click on the 'Edit' butt
 Here you will find the details you need to put into this project to connect it to your database.
 
 ![ElephantSQL - Credentials](./README_Images/deployment/elephantsql_11_details.png)
+
+[Back to top🔝](#table-of-contents)
 
 ### Heroku
 
