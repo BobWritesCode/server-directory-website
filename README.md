@@ -1429,6 +1429,8 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 
 datetime is an object-oriented interface to dates and times with similar functionality to the `time` module.
 
+**Set up:**
+
 To install in the terminal use: `pip install datetime`.
 
 #### APScheduler
@@ -1567,9 +1569,31 @@ def delete_rejected_images():
 
 and that's it we have set up two automated tasks.
 
-#### Crispy Forms
-
 [Back to top🔝](#table-of-contents)
+
+#### Django Crispy Forms
+
+[Documentation for Django Crispy Forms](https://django-crispy-forms.readthedocs.io/en/latest/)\
+
+Django allows your forms to be styled using BootStrap. This provide your website forms a much more control a uniformed styling.
+
+**Set up:**
+
+To install in the terminal use:  `django-crispy-forms`.
+
+At the top of any html template where you are using form fields you need to include  this tag:
+
+```html
+{% load crispy_forms_tags %}
+```
+
+Then inside your form you list each field like this
+
+```html
+{{ form.game | as_crispy_field }}
+{{ form.title | as_crispy_field }}
+{{ form.image | as_crispy_field }}
+```
 
 ### Sending email verification
 
