@@ -108,6 +108,8 @@ Cloudinary, SELECT2 and tinyMCE.
     - [Media](#media)
     - [Acknowledgements](#acknowledgements)
 
+---
+
 ## Objective
 
 Design a Full-Stack site based on business logic used to control a centrally-owned dataset. I will need to set up an authentication mechanism and provide role-based access to the site's data or other activities based on the dataset.
@@ -115,6 +117,10 @@ Design a Full-Stack site based on business logic used to control a centrally-own
 **Main Technologies that need to be used**:\
 HTML, CSS, JavaScript, Python+Django
 Relational database (recommending MySQL or Postgres)
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ## Brief
 
@@ -125,6 +131,10 @@ The goal of this website are:
 - to provide a private server directory that users can visit to find a private server based on the game they wish to find that server on.
 - for server owners to be able to list their own server to be found by potential players.
 - to have a front-end admin access section that allows "staff" to moderate listings. As well as manage users, listings, games and tags.
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ## UX - User Experience Design
 
@@ -170,6 +180,10 @@ Some example user stories which will affect the design and project functionality
 > *"As a site admin I can manually feature a listening so that they get extra awareness."*
 >
 > *"As a site admin I want to be able to manage the site from a user-friendly admin panel."*
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ## Development
 
@@ -245,6 +259,10 @@ This 4 colours contrast very nicely against each other, and the white text again
 
 ### Imagery
 
+[Back to top🔝](#table-of-contents)
+
+---
+
 ## Logic
 
 ### Data Model
@@ -258,6 +276,10 @@ The below entity relationship diagram (ERD) is a graphical representation that d
 ### Python
 
 ### JavaScript
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ## Features
 
@@ -312,6 +334,7 @@ Depending if the user is flagged as a staff member will determine if they can se
     </ul>
 </div>
 ```
+[Back to top🔝](#table-of-contents)
 
 #### Homepage
 
@@ -325,6 +348,8 @@ The homepage is designed to be simple and provide a clear understanding of what 
 The user can hover their mouse over the different game cards. This help the user understand these are intractable. For UX purpose the whole card was made a clickable link to avoid user confusion on how to proceed.
 
 ![Game cards](./README_Images/site_homepage_games.gif)
+
+[Back to top🔝](#table-of-contents)
 
 #### Server Listings
 
@@ -399,6 +424,8 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
     # tag_string as context.
 ```
 
+[Back to top🔝](#table-of-contents)
+
 #### View Listing
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -417,6 +444,8 @@ On this page their is a section just under the tags where a user can interact wi
 If the user is a staff member then the staff view panel will also be shown, where a staff user can quickly go to the owner's profile or edit the listing.
 
 ![Server listings panel](./README_Images/feat_listing_panel.gif)
+
+[Back to top🔝](#table-of-contents)
 
 #### Bumps
 
@@ -458,6 +487,8 @@ def clear_bumps():
     queryset.delete()
     print('clear_bumps(): Completed automated task.')
 ```
+
+[Back to top🔝](#table-of-contents)
 
 ### User Authentication
 
@@ -508,6 +539,8 @@ def sign_up_view(request):
         form = SignupForm()
     return render(request, 'registration/signup.html', {'form': form})
 ```
+
+[Back to top🔝](#table-of-contents)
 
 #### Email Verification
 
@@ -586,6 +619,8 @@ Once the user visits the link in the email they will be taken to the page to sho
 ![Email address verified page](./README_Images/site_signup_email_address_verified.png)
 </details>
 
+[Back to top🔝](#table-of-contents)
+
 #### Login
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -657,6 +692,8 @@ def login_view(request: object):
         },
     )
 ```
+
+[Back to top🔝](#table-of-contents)
 
 #### Forgotten password
 
@@ -739,6 +776,8 @@ path(
 ),
 ```
 
+[Back to top🔝](#table-of-contents)
+
 ### My Account
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -753,9 +792,13 @@ The [My Account](#my-account) is the main hub for a user to mange their profile,
 - [Password change](#password-change)
 - [Delete account](#delete-account)
 
+[Back to top🔝](#table-of-contents)
+
 #### Profile
 
 Starting from the top of the [My Account](#my-account) page and working our way down, the first section is the 'Profile' section. In this section the user can see their username and their current email address. Currently the user cannot update their username but this is something that could be available in a future update.
+
+[Back to top🔝](#table-of-contents)
 
 #### Email Update
 
@@ -770,6 +813,8 @@ If the user tries to change their email address to an email address already in u
 Once the form is completed the user's email address will be updated but the the email address will now be unverified. The user will also be sent an email to verify their new email address just like they did when they originally signed up to the website.
 
 ![Unverified email](./README_Images/feat_email_update_unverified.png)
+
+[Back to top🔝](#table-of-contents)
 
 #### Password Change
 
@@ -787,6 +832,8 @@ Takes you to the password change page where the user is required to enter their 
 
 All going well, the user will be shown a password change page to confirm the change was successful.
 
+[Back to top🔝](#table-of-contents)
+
 #### Delete Account
 
 At the bottom of the [My Account](#my-account) page is the 'Delete account' section. Here the user can completely delete their account which also delete associated listings and bumps.
@@ -801,6 +848,8 @@ At the bottom of the [My Account](#my-account) page is the 'Delete account' sect
 </details>
 Finally the user is taken an 'Account Deleted' page to confirm the account has been removed from the database.
 
+[Back to top🔝](#table-of-contents)
+
 ### Listings
 
 [Go to top.](#server-directory-website)
@@ -811,6 +860,8 @@ The core of the website is of course the ability for server owners to list their
 - [Your Listing](#your-listings)
 - [Edit Listing](#edit-listing)
 - [Delete Listing](#delete-listing)
+
+[Back to top🔝](#table-of-contents)
 
 #### Create Listing
 
@@ -838,6 +889,8 @@ If the user tries to submit the form uncompleted they will receive error message
 
 Once the form has been completed correctly and submitted the new listing will be saved to the database. And the user will be able to see and manage the listing from their [My Account](#my-account) page.
 
+[Back to top🔝](#table-of-contents)
+
 #### Your Listings
 
 Of course, once a user has created a listing, we need to let them be able to manage that listing. Which we do from the [My Account](#my-account) page.
@@ -857,6 +910,8 @@ Each listing shows the user:
 - Short description,
 - Management panel.
 
+[Back to top🔝](#table-of-contents)
+
 ##### Your Listings - Management Panel
 
 This panel allows the user quick access to options to help manage their listing. The panel includes:
@@ -869,6 +924,8 @@ This panel allows the user quick access to options to help manage their listing.
 
 ![My Listings management panel](./README_Images/feat_my_listings_panel.gif)
 
+[Back to top🔝](#table-of-contents)
+
 #### Edit Listing
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -877,6 +934,8 @@ This panel allows the user quick access to options to help manage their listing.
 </details>
 
 The view is very similar to [create listing](#create-listing) view but with the added extra elements of seeing the current uploaded image (which can be replaced), and the [delete listing](#delete-listing) button at the bottom of the page.
+
+[Back to top🔝](#table-of-contents)
 
 ##### Delete Listing
 
@@ -901,6 +960,8 @@ The [admin account page](#admin-account-page) currently has the following featur
 - [Manage Users](#manage-users)
 - [Manage Games](#manage-games)
 - [Manage Tags](#manage-tags)
+
+[Back to top🔝](#table-of-contents)
 
 #### Image Review
 
@@ -966,6 +1027,8 @@ Every image to be reviewed will has 4 options:
         return redirect('staff_account')
     ```
 
+[Back to top🔝](#table-of-contents)
+
 #### Manage Users
 
 Another crucial feature of the website is the ability for staff user's to be able to find user's and manage them. The Manage user section has many sub-features to it, including:
@@ -978,6 +1041,8 @@ Another crucial feature of the website is the ability for staff user's to be abl
 - [Assign/Resign as staff](#assignresign-as-staff)
 - [Delete user](#delete-user)
 - [See user's listings](#see-users-listings)
+
+[Back to top🔝](#table-of-contents)
 
 ##### User Search
 
@@ -1050,6 +1115,8 @@ function displayUsers(users) {
 
 The user can then click on any of the results to go to the user management screen.
 
+[Back to top🔝](#table-of-contents)
+
 ##### User Management Page
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -1071,6 +1138,8 @@ For managing the user settings there is a management control panel
 *Panel when target user is a superuser but user is not:*
 ![User Management Page](./README_Images/feat_managment_panel_superuser.png)
 
+[Back to top🔝](#table-of-contents)
+
 ###### Updating User
 
 Users can update username, email address and if account is active. After making any changes the user needs to click on the 'Save' icon in the control panel.
@@ -1078,6 +1147,8 @@ Users can update username, email address and if account is active. After making 
 If 'Account Active?' is unchecked and the user saved, that user will no longer be able to [login](#login). And they will not receive any message to indicate that there account has been made inactive. Where as a banned user will get a message notifying their account is banned on a [login](#login) attempt.
 
 Once successfully the page will refresh and the new details stored in the database.
+
+[Back to top🔝](#table-of-contents)
 
 ###### Ban/Unban User
 
@@ -1132,6 +1203,8 @@ def ban_user(request: object, _id: int):
     Images.objects.filter(query).update(status=3, expiry=image_expire)
 ```
 
+[Back to top🔝](#table-of-contents)
+
 ###### Send User Verification Email
 
 If a staff member updates an email address on a user's behalf, to make sure that the email address belongs to them they send a [verification email](#email-verification) to them. The email will contain a link to confirm that they have access to the email address provided.
@@ -1152,6 +1225,8 @@ if "email-verify" in request.POST:
         "staff_user_management_user", _id=request.POST['id']
         )
 ```
+
+[Back to top🔝](#table-of-contents)
 
 ###### Assign/Resign As Staff
 
@@ -1200,6 +1275,8 @@ def demote_user_from_staff(request: object, target_id: int):
         user.save()
 ```
 
+[Back to top🔝](#table-of-contents)
+
 #### Delete User
 
 This function allows a staff user to delete a target user from the database.
@@ -1208,11 +1285,15 @@ This function allows a staff user to delete a target user from the database.
 
 ![Demote staff modal](./README_Images/feat_delete_user_modal.png)
 
+[Back to top🔝](#table-of-contents)
+
 #### See User's Listings
 
 The lower section of view displays the target user's listing, just how you would see your own listings in [Your Listing](#your-listings).
 
 A staff member has the same abilities as a the listing owner to view, edit and delete each listing.
+
+[Back to top🔝](#table-of-contents)
 
 #### Manage Games
 
@@ -1225,6 +1306,8 @@ For game management there are two sections. You can either choose a game from th
 
 - [Adding A Game](#adding-a-game),
 - [Updating A Game](#updating-a-game).
+
+[Back to top🔝](#table-of-contents)
 
 ##### Adding A Game
 
@@ -1253,6 +1336,8 @@ window.addEventListener('keyup', () => {
 });
 ```
 
+[Back to top🔝](#table-of-contents)
+
 #### Updating A Game
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -1267,6 +1352,8 @@ Using the [SELECT2](#select2) dropdown at the top of the page, you can either se
 ![Manage Game page - Delete game modal](./README_Images/feat_delete_game_modal.png)
 
 #### Manage Tags
+
+[Back to top🔝](#table-of-contents)
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
@@ -1297,6 +1384,8 @@ window.addEventListener('keyup', () => {
 });
 ```
 
+[Back to top🔝](#table-of-contents)
+
 #### Updating A Tag
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
@@ -1309,6 +1398,10 @@ Using the [SELECT2](#select2) dropdown at the top of the page, you can either se
 **Important:** As this is a major, permanent and irreversible action, defence programming is implemented, the user will need to type a specific phrase to complete the operation.
 
 ![Manage tag page - Delete tag modal](./README_Images/feat_delete_tag_modal.png)
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ### Features Left to Implement
 
@@ -1328,13 +1421,19 @@ UX
 
 #### Cloudinary
 
+[Back to top🔝](#table-of-contents)
+
 #### Select2
 
 [Select2 website](https://select2.org/)
 
+[Back to top🔝](#table-of-contents)
+
 #### tinyMCE
 
 [tinyMCE website](https://django-tinymce.readthedocs.io/en/latest/)
+
+[Back to top🔝](#table-of-contents)
 
 ### Sending email verification
 
@@ -1364,6 +1463,10 @@ send_mail(
 )
 ```
 
+[Back to top🔝](#table-of-contents)
+
+---
+
 ## Technologies Used
 
 ### Python Packages
@@ -1380,6 +1483,10 @@ pip install django-apscheduler
 
 ### Other Tech
 
+[Back to top🔝](#table-of-contents)
+
+---
+
 ## Testing
 
 ### Extensive Testing
@@ -1390,11 +1497,19 @@ pip install django-apscheduler
 
 ### JavaScript
 
+[Back to top🔝](#table-of-contents)
+
+---
+
 ## Bugs
 
 ### Current
 
 ### Resolved
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ## Development
 
@@ -1406,6 +1521,10 @@ pip install django-apscheduler
 
 ### Heroku
 
+[Back to top🔝](#table-of-contents)
+
+---
+
 ## Credits
 
 ### Content
@@ -1413,3 +1532,7 @@ pip install django-apscheduler
 ### Media
 
 ### Acknowledgements
+
+[Back to top🔝](#table-of-contents)
+
+---
