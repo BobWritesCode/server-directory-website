@@ -1541,7 +1541,45 @@ See the [Select2 documentation](https://select2.org/configuration/options-api) f
 
 #### tinyMCE
 
-[tinyMCE website](https://django-tinymce.readthedocs.io/en/latest/)
+tinyMCE is provided by [tiny](https://www.tiny.cloud/), you can visit there website [https://www.tiny.cloud/](https://www.tiny.cloud/) and go [here for the Full Django documentation](https://django-tinymce.readthedocs.io/en/latest/)
+
+![tinyMCE widget](./README_Images/feat_tinymce.png)
+
+
+As [tiny](https://www.tiny.cloud/) put it: "TinyMCE gives you total control over your rich text editing. Either create a fully customized experience via the APIs or take advantage of the out-of-the-box enterprise-grade editor to build your next generation web app."
+
+You will need to get an API key from [tiny](https://www.tiny.cloud/). You can find instruction on that in the [tinyMCR Deployment](#tinymce-deployment) section of this README.
+
+Where you plan to use tinyMCE you will need to make sure you have the tinyMCE CSS CDN in the `<head>`.
+
+```html
+<script src="https://cdn.tiny.cloud/1/r8a6ywx8flmlcce7hywu1s3qtc2dt1jyqoe1iie2vy0uwyen/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+```
+
+You will also need to initialise the widget on each page you use tinyMCE but putting this script at the bottom of the HTML page.
+
+```html
+<script>
+    tinymce.init({
+        selector: 'textarea',
+        plugins: 'emoticons wordcount lists',
+        menubar: false,
+        statusbar: true,
+        branding: true,
+        elementpath: false,
+        toolbar: 'wordcount | emoticons | blocks fontsize | hr | bold italic underline strikethrough | backcolor | alignleft aligncenter alignright alignjustify | indent outdent | numlist bullist| removeformat',
+        content_css: "{% static 'css/tinymce.css' %}"  // resolved to http://domain.mine/mysite/mycontent.css
+    });
+</script>
+```
+
+If the above script you can nominate a style sheet to implement your own styling to the tinyMCE widget, as the site uses a dark background I have made the text color white
+
+```css
+body {
+    color: ghostwhite;
+}
+```
 
 [Back to top🔝](#table-of-contents)
 
@@ -1641,6 +1679,8 @@ Go to the project you wish to clone.
 :**Option 2::** Click the 'Code' button. This open options for you to clone your preferred way.
 
 ![Cloudinary - Site](./README_Images/deployment/github_cloning.png)
+
+### TinyMCE Deployment
 
 ### Cloudinary Deployment
 
