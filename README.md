@@ -1662,6 +1662,7 @@ pip install django-apscheduler
 ## Deployment
 
 - [GitHub - Cloning](#github---cloning)
+- [TinyMCE Deployment](#tinymce-deployment)
 - [Cloudinary Deployment](#cloudinary-deployment)
 - [ElephantSQL Deployment](#elephantsql-deployment)
 - [Heroku](#heroku)
@@ -1678,9 +1679,25 @@ Go to the project you wish to clone.
 
 :**Option 2::** Click the 'Code' button. This open options for you to clone your preferred way.
 
-![Cloudinary - Site](./README_Images/deployment/github_cloning.png)
+![GitHub - Cloning](./README_Images/deployment/github_cloning.png)
 
 ### TinyMCE Deployment
+
+Go to the tiny website [https://www.tiny.cloud/](https://www.tiny.cloud/).
+
+![tiny - ](./README_Images/deployment/tiny_1_page.png)
+
+You will need to sign up and log in.
+
+![tiny - ](./README_Images/deployment/tiny_2_login.png)
+
+Part of the registration you need to put in the domain you project is being hosted, if you do not do this at registration you can go to your tiny user settings an add it later.
+
+![tiny - ](./README_Images/deployment/tiny_3_domains.png)
+
+On your dashboard page you will see 'Your Tiny API Key'.
+
+![tiny - ](./README_Images/deployment/tiny_4_api.png)
 
 ### Cloudinary Deployment
 
