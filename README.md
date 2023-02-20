@@ -112,10 +112,10 @@ Cloudinary, Select2 and tinyMCE.
     - [Cloudinary Deployment](#cloudinary-deployment)
     - [ElephantSQL Deployment](#elephantsql-deployment)
     - [Heroku](#heroku)
-  - [Credits](#credits) (OUTSTANDING)
-    - [Content](#content) (OUTSTANDING)
-    - [Media](#media) (OUTSTANDING)
-    - [Acknowledgements](#acknowledgements) (OUTSTANDING)
+  - [Credits](#credits)
+    - [Content](#content)
+    - [Media](#media)
+    - [Acknowledgements](#acknowledgements)
 
 ---
 
@@ -2037,6 +2037,13 @@ Click View to view the deployed site.\
 
 ## Credits
 
+Here is where I acknowledge contributions to this project.
+
+- [Content](#content)
+  - [Sending email verification](#sending-email-verification)
+- [Media](#media)
+- [Acknowledgements](#acknowledgements)
+
 ### Content
 
 Unless specified all code written in the .py file was my own.
@@ -2073,7 +2080,11 @@ send_mail(
 
 ### Media
 
+The site currently has no media on it other then what is uploaded by users. Currently this is for game cover images which are covered by 'Fair use'. To make sure that no images that would be offensive or cause complications are being publicly shown on the site, there is the [image review](#image-review) function.
+
 ### Acknowledgements
+
+Where I have done 99% of this project by myself, my mentor **Rahul Lakhanpal** did make some design suggestions such as changing buttons with text to icons, and adding tooltips.
 
 [Back to top🔝](#table-of-contents)
 
