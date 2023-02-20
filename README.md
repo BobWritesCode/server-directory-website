@@ -8,7 +8,7 @@
 Django, Python, JavaScript, BootStrap, CSS and HTML.
 
 **Also including**:\
-Cloudinary, SELECT2 and tinyMCE.
+Cloudinary, Select2 and tinyMCE.
 
 ## Live Site
 
@@ -1319,7 +1319,7 @@ For each game you add you will need to supply:
 
 - Game name
 - Choose which tags will be connected to that game.
-  - This uses [SELECT2](#select2) dropdown widget.
+  - This uses [Select2](#select2) dropdown widget.
   - At least 1 tag must be choose to be able to save the game to the database.
 - Upload an image.
   - Image uploaded using [Cloudinary](#cloudinary).
@@ -1344,7 +1344,7 @@ window.addEventListener('keyup', () => {
 ![Manage Game page - Update game.](./README_Images/site_manage_game_update.png)
 </details>
 
-Using the [SELECT2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the game you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the game](#adding-a-game) plus the added feature now to delete the game.
+Using the [Select2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the game you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the game](#adding-a-game) plus the added feature now to delete the game.
 
 **Important:** As this is a major, permanent and irreversible action, defence programming is implemented, the user will need to type a specific phrase to complete the operation.
 
@@ -1392,7 +1392,7 @@ window.addEventListener('keyup', () => {
 ![Manage tag page - Update tag.](./README_Images/site_manage_tag_update.png)
 </details>
 
-Using the [SELECT2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the tag you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the tag](#adding-a-tag) plus the added feature now to delete the tag.
+Using the [Select2](#select2) dropdown at the top of the page, you can either search or scroll through and choose the tag you wish to update. Once you choose it will automatically appear in the lower section of the page. You can do everything you did when you [added the tag](#adding-a-tag) plus the added feature now to delete the tag.
 
 **Important:** As this is a major, permanent and irreversible action, defence programming is implemented, the user will need to type a specific phrase to complete the operation.
 
@@ -1425,6 +1425,59 @@ UX
 #### Select2
 
 [Select2 website](https://select2.org/)
+
+I wanted to use a dropdown widget that allowed the user to search for the correct result. As this project has the potential to have 100's of games and thousands of tags. Scrolling through those to find the one you are after could become very tedious for users, creating a bad user experience.
+
+Fortunately I came across Select2 which as they put it "gives you a customizable select box with support for searching, tagging, remote data sets, infinite scrolling, and many other highly used options".
+
+**Set up:**
+
+On each HTML page where I used Select2 widget I had to include the Select2 CSS CDN in the `<head>` element.
+
+```html
+<!-- Select2 CSS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+```
+
+In the `<form>` section I needed to replace:
+
+```html
+{{ form.tags | as_crispy_field }}
+```
+
+with:
+
+```html
+<!-- Tag selection using Select2 -->
+<label for="tags-multiple" class="mb-1">Tags:</label>
+<select id="tags-multiple" class="tags-multiple" name="tags" multiple="multiple" style="width: 100%;">
+    {% for tag in tags %}
+    <option value="{{tag.pk}}">{{tag.name}}</option>
+    {% endfor %}
+</select>
+```
+
+then at the bottom of the page include Select2 JS CDN:
+
+```html
+<!-- Select2 JS CDN -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+```
+
+Within your own JS script you can customize the options of the Select2 widget:
+
+```js
+// DOM Ready
+$(document).ready(() => {
+  $('.tags-multiple').select2({
+    placeholder: 'Select tags',
+    allowClear: true,
+    closeOnSelect: false,
+  });
+});
+```
+
+See the [Select2 documentation](https://select2.org/configuration/options-api) for all the JS customisable options.
 
 [Back to top🔝](#table-of-contents)
 
