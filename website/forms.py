@@ -525,41 +525,41 @@ class GameManageForm(forms.ModelForm):
         A form helper to provide the layout of the form.
     """
     id = forms.IntegerField(required=False)
-    name = forms.CharField(label="Game", max_length=50, required=True)
+    name = forms.CharField(
+        label="Game",
+        max_length=50,
+        required=True,
+        error_messages={
+            'required': 'Required.',
+        },
+        )
     slug = forms.SlugField(max_length=50)
     tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(), blank=False)
+        queryset=Tag.objects.all(),
+        blank=False,
+        error_messages={
+            'required': 'Choose at least 1 tag.'
+        },
+    )
     image = CloudinaryFileField(
         label="Upload new image:",
         required=False,
     )
     status = forms.TypedChoiceField(
         label="Set status as:",
-        choices=((0, "Unpublish"), (1, "Publish")),
+        choices=((0, "Draft"), (1, "Published")),
+        initial=0,
         coerce=int,
         widget=forms.RadioSelect,
         required=True,
+        error_messages={
+            'required': 'Required.'
+        },
     )
 
     class Meta:
         model = Game
         fields = ['id', 'name', 'slug', 'tags', 'image', 'status']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                '',
-                'id',
-                'name',
-                'slug',
-                'tags',
-                'image',
-                InlineRadios('status')
-            ),
-            Submit('submit', 'Submit', css_class='button white'),
-        )
 
 
 class TagsManageForm(forms.ModelForm):
