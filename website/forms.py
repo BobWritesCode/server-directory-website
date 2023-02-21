@@ -34,8 +34,6 @@ class UserForm(forms.ModelForm):
         Unique identity number for user.
     username : Char : REQUIRED
         Chosen by user to represent themselves.
-    first_name : Char
-        User's first name.
     email : Char : REQUIRED
         User's primary email address.
     email_verified : Boolean : DISABLED
