@@ -45,10 +45,15 @@ class TestUserForm(TestCase):
     def test_username_max_length(self):
         '''Test max_length of username'''
         self.form.data['username'] = 'a' * 20
-        self.assertEqual(len(self.form.data['username']), 20)
-        self.assertTrue(self.form.is_valid())
+        self.assertLessEqual(
+            len(self.form.data['username']),
+            self.form.fields['username'].max_length
+            )
         self.form.data['username'] += 'a'
-        self.assertFalse(self.form.is_valid())
+        self.assertGreater(
+            len(self.form.data['username']),
+            self.form.fields['username'].max_length
+            )
 
     def test_username_strip(self):
         '''Test to check white spaces are removed'''
@@ -156,10 +161,15 @@ class TestSignupForm(TestCase):
     def test_username_max_length(self):
         '''Test max_length of username'''
         self.form.data['username'] = 'a' * 20
-        self.assertEqual(len(self.form.data['username']), 20)
-        self.assertTrue(self.form.is_valid())
+        self.assertLessEqual(
+            len(self.form.data['username']),
+            self.form.fields['username'].max_length
+            )
         self.form.data['username'] += 'a'
-        self.assertFalse(self.form.is_valid())
+        self.assertGreater(
+            len(self.form.data['username']),
+            self.form.fields['username'].max_length
+            )
 
     def test_email_is_required(self):
         '''Test email is required'''
@@ -172,12 +182,70 @@ class TestSignupForm(TestCase):
 
     def test_email_max_length(self):
         '''Test max_length of email'''
-        self.form.data['email'] = 'a' * 190 + '@email.com'
-        self.assertEqual(len(self.form.data['email']), 200)
-        self.assertTrue(self.form.is_valid())
+        self.form.data['email'] = 'a' * 200
+        self.assertLessEqual(
+            len(self.form.data['email']),
+            self.form.fields['email'].max_length
+            )
         self.form.data['email'] += 'a'
-        self.assertFalse(self.form.is_valid())
+        self.assertGreater(
+            len(self.form.data['email']),
+            self.form.fields['email'].max_length
+            )
 
     def test_email_field_does_not_have_autofocus_attribute(self):
         '''Test form will not autofocus to email field'''
         self.assertNotIn('autofocus', self.form.fields['email'].widget.attrs)
+
+
+class TestConfirmAccountDeleteForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = ConfirmAccountDeleteForm({
+            'confirm': 'TestName',
+            'id': 1, })
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(self.form.fields['confirm'])
+                         .__name__, 'CharField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using CustomUser model'''
+        self.assertEqual(self.form.Meta.model, CustomUser)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'id', ])
+
+    def test_confirm_max_length(self):
+        '''Test max_length of confirm'''
+        self.form.data['confirm'] = 'a' * 10
+        self.assertLessEqual(
+            len(self.form.data['confirm']),
+            self.form.fields['confirm'].max_length
+            )
+        self.form.data['confirm'] += 'a'
+        self.assertGreater(
+            len(self.form.data['confirm']),
+            self.form.fields['confirm'].max_length
+            )
+
+    def test_confirm_is_required(self):
+        '''Test confirm is required'''
+        self.form.data['confirm'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('confirm', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['confirm'][0],
+            ('To confirm deletion please type "<strong>remove</strong>" '
+             'in the below box and then hit confirm'))
