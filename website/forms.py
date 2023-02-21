@@ -56,9 +56,10 @@ class UserForm(forms.ModelForm):
     id = forms.IntegerField(
         label="ID")
     username = forms.CharField(
-        label="Username", max_length=20, required=True)
-    first_name = forms.CharField(
-        label="First name", max_length=20, required=False)
+        label="Username",
+        max_length=20,
+        required=True,
+        strip=True)
     email = forms.EmailField(
         label="Email", required=True)
     email_verified = forms.BooleanField(
@@ -102,7 +103,12 @@ class ProfileForm(forms.ModelForm):
     -------
     none
     """
-    email = forms.EmailField(label=("Email address"), required=True)
+    email = forms.EmailField(
+        label=("Email address"),
+        required=True,
+        error_messages={
+            'required': "Email is required. (Falcon)", }
+        )
     email_verified = forms.BooleanField(label=("Verified?"), disabled=True)
 
     class Meta:
