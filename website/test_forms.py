@@ -6,7 +6,7 @@ from .forms import (
     ImageForm, LoginForm, GameListForm, GameManageForm,
     TagsManageForm, ConfirmTagDeleteForm, DeleteConfirmForm
 )
-from .models import CustomUser
+from .models import CustomUser, ServerListing
 
 
 class TestUserForm(TestCase):
@@ -248,4 +248,58 @@ class TestConfirmAccountDeleteForm(TestCase):
         self.assertEqual(
             self.form.errors['confirm'][0],
             ('To confirm deletion please type "<strong>remove</strong>" '
+             'in the below box and then hit confirm'))
+
+
+class TestConfirmServerListingDeleteForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = ConfirmServerListingDeleteForm({
+            'server_listing_delete_confirm': 'TestName',
+            'id': 1, })
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['server_listing_delete_confirm'])
+            .__name__, 'CharField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using ServerListing model'''
+        self.assertEqual(self.form.Meta.model, ServerListing)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'id', ])
+
+    def test_server_listing_delete_confirm_max_length(self):
+        '''Test max_length of server_listing_delete_confirm'''
+        self.form.data['server_listing_delete_confirm'] = 'a' * 10
+        self.assertLessEqual(
+            len(self.form.data['server_listing_delete_confirm']),
+            self.form.fields['server_listing_delete_confirm'].max_length
+            )
+        self.form.data['server_listing_delete_confirm'] += 'a'
+        self.assertGreater(
+            len(self.form.data['server_listing_delete_confirm']),
+            self.form.fields['server_listing_delete_confirm'].max_length
+            )
+
+    def test_server_listing_delete_confirm_is_required(self):
+        '''Test server_listing_delete_confirm is required'''
+        self.form.data['server_listing_delete_confirm'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('server_listing_delete_confirm', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['server_listing_delete_confirm'][0],
+            ('To confirm deletion please type "<strong>delete</strong>" '
              'in the below box and then hit confirm'))
