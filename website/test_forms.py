@@ -6,7 +6,7 @@ from .forms import (
     ImageForm, LoginForm, GameListForm, GameManageForm,
     TagsManageForm, ConfirmTagDeleteForm, DeleteConfirmForm
 )
-from .models import CustomUser, ServerListing, Game
+from .models import CustomUser, ServerListing, Game, Tag
 
 
 class TestUserForm(TestCase):
@@ -400,3 +400,269 @@ class TestUserUpdateEmailAddressForm(TestCase):
         self.assertEqual(
             self.form.errors['email_confirm'][0],
             'Required')
+
+
+class TestCreateServerListingForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tag = Tag.objects.create(
+            name='testRoleplay',
+            slug='testRoleplay',
+            )
+        cls.tag2 = Tag.objects.create(
+            name='testAction',
+            slug='testAction',
+            )
+        cls.game = Game.objects.create(
+            name='gta6',
+            slug='gta6',
+            image=None,
+            status=1,
+            )
+        # add created cls.tag to game.
+        cls.game.tags.set([cls.tag])
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.game.delete()
+        cls.tag.delete()
+        cls.tag2.delete()
+
+    def setUp(self):
+        self.form = CreateServerListingForm({
+            'game': self.game.id,
+            'tags': [self.tag.id, self.tag2.id],
+            'title': "Title",
+            'short_description': '',
+            'long_description': '',
+            'status': 1,
+            'discord': 'discord',
+            'tiktok': 'tiktok'
+            })
+        self.form.data['short_description'] = (
+            'a' * self.form.fields['short_description'].min_length
+            )
+        self.form.data['long_description'] = (
+            'a' * self.form.fields['long_description'].min_length
+            )
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['game'])
+            .__name__, 'ModelChoiceField')
+        self.assertEqual(type(
+            self.form.fields['tags'])
+                .__name__, 'ModelMultipleChoiceField')
+        self.assertEqual(type(
+            self.form.fields['title'])
+                .__name__, 'CharField')
+        self.assertEqual(type(
+            self.form.fields['short_description'])
+                .__name__, 'CharField')
+        self.assertEqual(type(
+            self.form.fields['long_description'])
+                .__name__, 'CharField')
+        self.assertEqual(type(
+            self.form.fields['status'])
+                .__name__, 'TypedChoiceField')
+        self.assertEqual(type(
+            self.form.fields['discord'])
+                .__name__, 'CharField')
+        self.assertEqual(type(
+            self.form.fields['tiktok'])
+                .__name__, 'CharField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using Game model'''
+        self.assertEqual(self.form.Meta.model, ServerListing)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'game', 'tags', 'title', 'short_description',
+            'long_description', 'status', 'discord', 'logo',
+            'tiktok'])
+
+    def test_game_is_required(self):
+        '''Test game is required'''
+        self.form.data['game'] = None
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('game', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['game'][0], (
+                'Choose a game.'
+                )
+            )
+
+    def test_tags_is_required(self):
+        '''Test tags is required'''
+        self.form.data['tags'] = None
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('tags', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['tags'][0], (
+                'Choose at least 1 tag.'
+                )
+            )
+
+    def test_title_max_length(self):
+        '''Test max_length of title'''
+        self.form.data['title'] = 'a' * 50
+        self.assertLessEqual(
+            len(self.form.data['title']),
+            self.form.fields['title'].max_length
+            )
+        self.form.data['title'] += 'a'
+        self.assertGreater(
+            len(self.form.data['title']),
+            self.form.fields['title'].max_length
+            )
+
+    def test_title_is_required(self):
+        '''Test title is required'''
+        self.form.data['title'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('title', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['title'][0], (
+                'Provide a server name.'
+                )
+            )
+
+    def test_short_description_min_length(self):
+        '''Test min_length of short_description'''
+        self.form.data['short_description'] = 'a' * 100
+        self.assertGreaterEqual(
+            len(self.form.data['short_description']),
+            self.form.fields['short_description'].min_length
+            )
+        self.form.data['short_description'] = (
+            self.form.data['short_description'][:-1])
+        self.assertLess(
+            len(self.form.data['short_description']),
+            self.form.fields['short_description'].min_length
+            )
+        self.assertEqual(
+            self.form.errors['short_description'][0], (
+                'Must be over 100 and below 200 characters.'
+                )
+            )
+
+    def test_short_description_max_length(self):
+        '''Test max_length of short_description'''
+        self.form.data['short_description'] = 'a' * 200
+        self.assertLessEqual(
+            len(self.form.data['short_description']),
+            self.form.fields['short_description'].max_length
+            )
+        self.form.data['short_description'] += 'a'
+        self.assertGreater(
+            len(self.form.data['short_description']),
+            self.form.fields['short_description'].max_length
+            )
+        self.assertEqual(
+            self.form.errors['short_description'][0], (
+                'Must be over 100 and below 200 characters.'
+                )
+            )
+
+    def test_short_description_is_required(self):
+        '''Test short_description is required'''
+        self.form.data['short_description'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('short_description', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['short_description'][0], (
+                'Required.'
+                )
+            )
+
+    def test_long_description_min_length(self):
+        '''Test min_length of long_description'''
+        self.form.data['long_description'] = 'a' * 200
+        self.assertGreaterEqual(
+            len(self.form.data['long_description']),
+            self.form.fields['long_description'].min_length
+            )
+        self.form.data['long_description'] = (
+            self.form.data['long_description'][:-1])
+        self.assertLess(
+            len(self.form.data['long_description']),
+            self.form.fields['long_description'].min_length
+            )
+        self.assertEqual(
+            self.form.errors['long_description'][0], (
+                'Must be over 200 and below 2000 characters.'
+                )
+            )
+
+    def test_long_description_max_length(self):
+        '''Test max_length of long_description'''
+        self.form.data['long_description'] = 'a' * 2000
+        self.assertLessEqual(
+            len(self.form.data['long_description']),
+            self.form.fields['long_description'].max_length
+            )
+        self.form.data['long_description'] += 'a'
+        self.assertGreater(
+            len(self.form.data['long_description']),
+            self.form.fields['long_description'].max_length
+            )
+        self.assertEqual(
+            self.form.errors['long_description'][0], (
+                'Must be over 200 and below 2000 characters.'
+                )
+            )
+
+    def test_long_description_is_required(self):
+        '''Test long_description is required'''
+        self.form.data['long_description'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('long_description', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['long_description'][0], (
+                'Required.'
+                )
+            )
+
+    def test_status_is_required(self):
+        '''Test status is required'''
+        self.form.data['status'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('status', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['status'][0], (
+                'Required.'
+                )
+            )
+
+    def test_status_choices_are_correct(self):
+        '''Test choices are correct'''
+        self.assertEqual(
+            self.form.fields['status'].choices[0], (0, 'Draft'))
+        self.assertEqual(
+            self.form.fields['status'].choices[1], (1, 'Published'))
+
+    def test_status_defaults_to_draft(self):
+        '''Test initial value is correct'''
+        form = CreateServerListingForm()
+        self.assertEqual(form.fields['status'].initial, 0)
+
+    def test_discord_is_required(self):
+        '''Test discord is required'''
+        self.form.data['discord'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('discord', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['discord'][0], (
+                'Required.'
+                )
+            )
+
+    def test_tiktok_is_not_required(self):
+        '''Test tiktok is not required'''
+        self.form.data['tiktok'] = ''
+        print(self.form.errors)
+        self.assertTrue(self.form.is_valid())
