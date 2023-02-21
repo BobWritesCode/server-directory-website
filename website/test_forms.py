@@ -909,7 +909,7 @@ class TestTagsManageForm(TestCase):
             self.form.errors['name'][0], (
                 'Required.'
                 )
-            )
+        )
 
     def test_name_max_length(self):
         '''Test max_length of name'''
@@ -917,12 +917,12 @@ class TestTagsManageForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['name']),
             self.form.fields['name'].max_length
-            )
+        )
         self.form.data['name'] += 'a'
         self.assertGreater(
             len(self.form.data['name']),
             self.form.fields['name'].max_length
-            )
+        )
 
     def test_slug_max_length(self):
         '''Test max_length of slug'''
@@ -936,3 +936,116 @@ class TestTagsManageForm(TestCase):
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
             )
+
+
+class TestConfirmTagDeleteForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = ConfirmTagDeleteForm({
+            'tag_delete_confirm': 'aaaaa',
+            }
+        )
+        self.assertTrue(self.form.is_valid())
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['tag_delete_confirm'])
+            .__name__, 'CharField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using correct model'''
+        self.assertEqual(self.form.Meta.model, Tag)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'id',
+            ]
+        )
+
+    def test_tag_delete_confirm_is_required(self):
+        '''Test tag_delete_confirm is required'''
+        self.form.data['tag_delete_confirm'] = None
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('tag_delete_confirm', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['tag_delete_confirm'][0], (
+                'Follow the instructions.'
+                )
+        )
+
+    def test_tag_delete_confirm_max_length(self):
+        '''Test max_length of tag_delete_confirm'''
+        self.form.data['tag_delete_confirm'] = 'a' * 10
+        self.assertLessEqual(
+            len(self.form.data['tag_delete_confirm']),
+            self.form.fields['tag_delete_confirm'].max_length
+        )
+        self.form.data['tag_delete_confirm'] += 'a'
+        self.assertGreater(
+            len(self.form.data['tag_delete_confirm']),
+            self.form.fields['tag_delete_confirm'].max_length
+        )
+
+
+class TestDeleteConfirmForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = DeleteConfirmForm({
+            'delete_confirm': 'aaaaa',
+            }
+        )
+        self.assertTrue(self.form.is_valid())
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['delete_confirm'])
+            .__name__, 'CharField')
+
+    def test_delete_confirm_is_required(self):
+        '''Test delete_confirm is required'''
+        self.form.data['delete_confirm'] = None
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('delete_confirm', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['delete_confirm'][0], (
+                'Follow the instructions.'
+                )
+        )
+
+    def test_delete_confirm_max_length(self):
+        '''Test max_length of delete_confirm'''
+        self.form.data['delete_confirm'] = 'a' * 10
+        self.assertLessEqual(
+            len(self.form.data['delete_confirm']),
+            self.form.fields['delete_confirm'].max_length
+        )
+        self.form.data['delete_confirm'] += 'a'
+        self.assertGreater(
+            len(self.form.data['delete_confirm']),
+            self.form.fields['delete_confirm'].max_length
+        )
