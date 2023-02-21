@@ -44,6 +44,8 @@ class UserForm(forms.ModelForm):
         Can the user log in.
     is_banned : Boolean : DISABLED
         Has the account been banned.
+    is_superuser : Boolean : DISABLED
+        Is the user a superuser.
 
     Methods
     -------
