@@ -142,9 +142,17 @@ class SignupForm(UserCreationForm):
     none
     """
     username = forms.CharField(
-        label="Username", max_length=20,
-        required=True, help_text='Required')
-    email = forms.EmailField(max_length=200, help_text='Required')
+        label='Username', max_length=20,
+        required=True,
+        help_text='Required',
+        error_messages={
+            'required': 'Username is required. (Ferret)', })
+    email = forms.EmailField(
+        max_length=200,
+        help_text='Required',
+        required=True,
+        error_messages={
+            'required': 'Email is required. (Ferret)', })
 
     class Meta:
         model = CustomUser
@@ -152,7 +160,7 @@ class SignupForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(SignupForm, self).__init__(*args, **kwargs)
-        self.fields['email'].widget.attrs.pop("autofocus", None)
+        self.fields['email'].widget.attrs.pop('autofocus', None)
 
 
 class ConfirmAccountDeleteForm(forms.ModelForm):
