@@ -6,7 +6,7 @@ from .forms import (
     ImageForm, LoginForm, GameListForm, GameManageForm,
     TagsManageForm, ConfirmTagDeleteForm, DeleteConfirmForm
 )
-from .models import CustomUser, ServerListing
+from .models import CustomUser, ServerListing, Game
 
 
 class TestUserForm(TestCase):
@@ -303,3 +303,100 @@ class TestConfirmServerListingDeleteForm(TestCase):
             self.form.errors['server_listing_delete_confirm'][0],
             ('To confirm deletion please type "<strong>delete</strong>" '
              'in the below box and then hit confirm'))
+
+
+class TestConfirmGameDeleteForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = ConfirmGameDeleteForm({
+            'game_delete_confirm': 'TestName',
+            'id': 1, })
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['game_delete_confirm'])
+            .__name__, 'CharField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using Game model'''
+        self.assertEqual(self.form.Meta.model, Game)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'id', ])
+
+    def test_game_delete_confirm_max_length(self):
+        '''Test max_length of game_delete_confirm'''
+        self.form.data['game_delete_confirm'] = 'a' * 10
+        self.assertLessEqual(
+            len(self.form.data['game_delete_confirm']),
+            self.form.fields['game_delete_confirm'].max_length
+            )
+        self.form.data['game_delete_confirm'] += 'a'
+        self.assertGreater(
+            len(self.form.data['game_delete_confirm']),
+            self.form.fields['game_delete_confirm'].max_length
+            )
+
+    def test_game_delete_confirm_is_required(self):
+        '''Test game_delete_confirm is required'''
+        self.form.data['game_delete_confirm'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('game_delete_confirm', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['game_delete_confirm'][0],
+            ('To confirm deletion please type "<strong>delete</strong>" '
+             'in the below box and then hit confirm'))
+
+
+class TestUserUpdateEmailAddressForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = UserUpdateEmailAddressForm({
+            'email': 'TestName',
+            'email_confirm': 1, })
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['email'])
+            .__name__, 'EmailField')
+        self.assertEqual(type(
+            self.form.fields['email_confirm'])
+            .__name__, 'EmailField')
+
+    def test_email_is_required(self):
+        '''Test email is required'''
+        self.form.data['email'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('email', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['email'][0],
+            'Required')
+
+    def test_email_confirm_is_required(self):
+        '''Test email_confirm is required'''
+        self.form.data['email_confirm'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('email_confirm', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['email_confirm'][0],
+            'Required')
