@@ -6,7 +6,7 @@ from .forms import (
     ImageForm, LoginForm, GameListForm, GameManageForm,
     TagsManageForm, ConfirmTagDeleteForm, DeleteConfirmForm
 )
-from .models import CustomUser, ServerListing, Game, Tag
+from .models import CustomUser, ServerListing, Game, Tag, Images
 
 
 class TestUserForm(TestCase):
@@ -664,5 +664,42 @@ class TestCreateServerListingForm(TestCase):
     def test_tiktok_is_not_required(self):
         '''Test tiktok is not required'''
         self.form.data['tiktok'] = ''
+        print(self.form.errors)
+        self.assertTrue(self.form.is_valid())
+
+
+class TestImageForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = ImageForm({
+            'game_delete_confirm': 'TestName',
+            'id': 1, })
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['image'])
+            .__name__, 'ImageField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using Game model'''
+        self.assertEqual(self.form.Meta.model, Images)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'image', ])
+
+    def test_image_is_not_required(self):
+        '''Test image is not required'''
+        self.form.data['image'] = None
         print(self.form.errors)
         self.assertTrue(self.form.is_valid())
