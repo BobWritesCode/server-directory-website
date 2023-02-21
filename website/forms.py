@@ -138,8 +138,6 @@ class SignupForm(UserCreationForm):
     -------
     __init__:
         Removed the default autofocus.
-
-    none
     """
     username = forms.CharField(
         label='Username', max_length=20,
@@ -339,8 +337,7 @@ class CreateServerListingForm(forms.ModelForm):
 
     Methods
     -------
-    __init__():
-        A form helper to provide the layout of the form.
+    none
     """
 
     game = forms.ModelChoiceField(
@@ -447,7 +444,7 @@ class ImageForm(forms.ModelForm):
 
     Methods
     -------
-    None
+    none
     """
 
     image = forms.ImageField(
@@ -480,7 +477,7 @@ class LoginForm(forms.ModelForm):
 
     Methods
     -------
-    None
+    none
     """
 
     email = forms.EmailField(required=True)
@@ -521,8 +518,7 @@ class GameManageForm(forms.ModelForm):
 
     Methods
     -------
-    __init__():
-        A form helper to provide the layout of the form.
+    none
     """
     id = forms.IntegerField(required=False)
     name = forms.CharField(
@@ -583,8 +579,7 @@ class TagsManageForm(forms.ModelForm):
 
     Methods
     -------
-    __init__():
-        A form helper to provide the layout of the form.
+    none
     """
     id = forms.IntegerField(required=False)
     name = forms.CharField(label="Tag", max_length=50, required=True)
@@ -593,19 +588,6 @@ class TagsManageForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ['id', 'name', 'slug']
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                '',
-                'id',
-                'name',
-                'slug',
-            ),
-            Submit('submit', 'Submit', css_class='button white'),
-        )
 
 
 class ConfirmTagDeleteForm(forms.ModelForm):
@@ -625,7 +607,7 @@ class ConfirmTagDeleteForm(forms.ModelForm):
 
     Methods
     -------
-    None
+    none
     """
     tag_delete_confirm = forms.CharField(
         label=(
@@ -660,7 +642,7 @@ class DeleteConfirmForm(forms.Form):
 
     Methods
     -------
-    None
+    none
     """
     delete_confirm = forms.CharField(
         label=(
