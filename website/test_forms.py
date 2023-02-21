@@ -3,7 +3,7 @@ from .forms import (
     UserForm, ProfileForm, SignupForm, ConfirmAccountDeleteForm,
     ConfirmServerListingDeleteForm, ConfirmGameDeleteForm,
     UserUpdateEmailAddressForm, CreateServerListingForm,
-    ImageForm, LoginForm, GameListForm, GameManageForm,
+    ImageForm, LoginForm, GameManageForm,
     TagsManageForm, ConfirmTagDeleteForm, DeleteConfirmForm
 )
 from .models import CustomUser, ServerListing, Game, Tag, Images
@@ -664,7 +664,6 @@ class TestCreateServerListingForm(TestCase):
     def test_tiktok_is_not_required(self):
         '''Test tiktok is not required'''
         self.form.data['tiktok'] = ''
-        print(self.form.errors)
         self.assertTrue(self.form.is_valid())
 
 
@@ -680,8 +679,9 @@ class TestImageForm(TestCase):
 
     def setUp(self):
         self.form = ImageForm({
-            'game_delete_confirm': 'TestName',
-            'id': 1, })
+            'image': None,
+            }
+        )
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -701,5 +701,155 @@ class TestImageForm(TestCase):
     def test_image_is_not_required(self):
         '''Test image is not required'''
         self.form.data['image'] = None
-        print(self.form.errors)
         self.assertTrue(self.form.is_valid())
+
+
+class TestGameManageForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tag = Tag.objects.create(
+            name='testRoleplay',
+            slug='testRoleplay',
+            )
+        cls.tag2 = Tag.objects.create(
+            name='testAction',
+            slug='testAction',
+            )
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = GameManageForm({
+            'id': 1,
+            'name': 'GameName',
+            'slug': 'slug',
+            'tags': [self.tag, self.tag2],
+            'image': None,
+            'status': 1,
+            }
+        )
+        self.assertTrue(self.form.is_valid())
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['id'])
+            .__name__, 'IntegerField')
+        self.assertEqual(type(
+            self.form.fields['name'])
+            .__name__, 'CharField')
+        self.assertEqual(type(
+            self.form.fields['slug'])
+            .__name__, 'SlugField')
+        self.assertEqual(type(
+            self.form.fields['tags'])
+            .__name__, 'ModelMultipleChoiceField')
+        self.assertEqual(type(
+            self.form.fields['image'])
+            .__name__, 'CloudinaryFileField')
+        self.assertEqual(type(
+            self.form.fields['status'])
+            .__name__, 'TypedChoiceField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using Game model'''
+        self.assertEqual(self.form.Meta.model, Game)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'id', 'name', 'slug', 'tags', 'image', 'status'
+            ]
+        )
+
+    def test_id_is_not_required(self):
+        '''Test id is not required'''
+        self.form.data['id'] = ''
+        self.assertTrue(self.form.is_valid())
+
+    def test_id_is_not_required(self):
+        '''Test id is not required'''
+        self.form.data['id'] = ''
+        self.assertTrue(self.form.is_valid())
+
+    def test_name_is_required(self):
+        '''Test name is required'''
+        self.form.data['name'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('name', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['name'][0], (
+                'Required.'
+                )
+            )
+
+    def test_name_max_length(self):
+        '''Test max_length of name'''
+        self.form.data['name'] = 'a' * 50
+        self.assertLessEqual(
+            len(self.form.data['name']),
+            self.form.fields['name'].max_length
+            )
+        self.form.data['name'] += 'a'
+        self.assertGreater(
+            len(self.form.data['name']),
+            self.form.fields['name'].max_length
+            )
+
+    def test_slug_max_length(self):
+        '''Test max_length of slug'''
+        self.form.data['slug'] = 'a' * 50
+        self.assertLessEqual(
+            len(self.form.data['slug']),
+            self.form.fields['slug'].max_length
+            )
+        self.form.data['slug'] += 'a'
+        self.assertGreater(
+            len(self.form.data['slug']),
+            self.form.fields['slug'].max_length
+            )
+
+    def test_tags_is_required(self):
+        '''Test tags is required'''
+        self.form.data['tags'] = None
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('tags', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['tags'][0], (
+                'Choose at least 1 tag.'
+                )
+            )
+
+    def test_image_is_not_required(self):
+        '''Test image is not required'''
+        self.form.data['image'] = None
+        self.assertTrue(self.form.is_valid())
+
+    def test_status_is_required(self):
+        '''Test status is required'''
+        self.form.data['status'] = None
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('status', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['status'][0], (
+                'Required.'
+                )
+            )
+
+    def test_status_choices_are_correct(self):
+        '''Test choices are correct'''
+        self.assertEqual(
+            self.form.fields['status'].choices[0], (0, 'Draft'))
+        self.assertEqual(
+            self.form.fields['status'].choices[1], (1, 'Published'))
+
+    def test_status_defaults_to_draft(self):
+        '''Test initial value is correct'''
+        form = CreateServerListingForm()
+        self.assertEqual(form.fields['status'].initial, 0)
