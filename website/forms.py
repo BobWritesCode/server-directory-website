@@ -491,32 +491,6 @@ class LoginForm(forms.ModelForm):
         fields = ['email', 'password']
 
 
-class GameListForm(forms.ModelForm):
-    """
-    A form that allows the user to select a Game.
-
-    ...
-
-    Meta
-    ----------
-    model : Game
-
-    Attributes
-    ----------
-    name : CharField
-        User to provide email address.
-
-    Methods
-    -------
-    None
-    """
-    name = forms.CharField()
-
-    class Meta:
-        model = Game
-        fields = ['name']
-
-
 class GameManageForm(forms.ModelForm):
     """
     A form used to update a Game.
