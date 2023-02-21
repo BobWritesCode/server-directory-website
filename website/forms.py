@@ -614,10 +614,8 @@ class ConfirmTagDeleteForm(forms.ModelForm):
             'To confirm deletion please type "delete" in '
             'the below box and then hit confirm:'),
         max_length=10,
-        error_messages={'required': (
-            'To confirm deletion please type "<strong>delete</strong>" '
-            'in the below box and then hit confirm')},
         required=True,
+        error_messages={'required': 'Follow the instructions.'},
     )
 
     class Meta:
@@ -649,8 +647,6 @@ class DeleteConfirmForm(forms.Form):
             'To confirm deletion please type "delete" '
             'in the below box and then hit confirm:'),
         max_length=10,
-        error_messages={'required': (
-            'To confirm deletion please type "<strong>delete</strong>" '
-            'in the below box and then hit confirm')},
+        error_messages={'required': 'Follow the instructions.'},
         required=True,
     )
