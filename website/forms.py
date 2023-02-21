@@ -347,18 +347,25 @@ class CreateServerListingForm(forms.ModelForm):
         label="Choose game:",
         queryset=Game.objects.filter(status=1).order_by('name'),
         required=True,
+        error_messages={'required': 'Choose a game.'},
     )
 
     tags = forms.ModelMultipleChoiceField(
         label="Choose tags:  (max: 10)",
         queryset=Tag.objects.order_by('name'),
         required=True,
+        error_messages={
+            'required': 'Choose at least 1 tag.'
+        },
     )
 
     title = forms.CharField(
         label="Name of server:",
         max_length=50,
         required=True,
+        error_messages={
+            'required': 'Provide a server name.'
+        },
     )
 
     short_description = forms.CharField(
@@ -367,6 +374,11 @@ class CreateServerListingForm(forms.ModelForm):
         max_length=200,
         widget=TinyMCE(attrs={'cols': 80, 'rows': 2}),
         required=True,
+        error_messages={
+            'required': 'Required.',
+            'min_length': 'Must be over 100 and below 200 characters.',
+            'max_length': 'Must be over 100 and below 200 characters.'
+        },
     )
 
     long_description = forms.CharField(
@@ -375,21 +387,32 @@ class CreateServerListingForm(forms.ModelForm):
         max_length=2000,
         widget=TinyMCE(attrs={'cols': 80, 'rows': 15, }),
         required=True,
+        error_messages={
+            'required': 'Required.',
+            'min_length': 'Must be over 200 and below 2000 characters.',
+            'max_length': 'Must be over 200 and below 2000 characters.'
+        },
     )
 
     status = forms.TypedChoiceField(
         label="Status:",
-        choices=((1, "Published"), (0, "Draft")),
+        choices=((0, "Draft"), (1, "Published")),
         coerce=lambda x: bool(int(x)),
         widget=forms.RadioSelect,
-        initial='0',
+        initial=0,
         required=True,
+        error_messages={
+            'required': 'Required.',
+        },
     )
 
     discord = forms.CharField(
         label="Discord server invite:",
         max_length=10,
         required=True,
+        error_messages={
+            'required': 'Required.',
+        },
     )
 
     tiktok = forms.CharField(
@@ -405,27 +428,6 @@ class CreateServerListingForm(forms.ModelForm):
             'long_description', 'status', 'discord', 'logo',
             'tiktok'
         ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Fieldset(
-                '',  # First arg is the legend of the fieldset
-                'game',
-                'title',
-                HTML(
-                    """{% if item.logo.url %}<img class="img-fluid"
-                    src="{{ item.logo.url }}">{% endif %}""", ),
-                'tags',
-                'short_description',
-                'long_description',
-                'discord',
-                'tiktok',
-                'status',
-            ),
-            Submit('submit', 'Submit', css_class='btn btn-primary'),
-        )
 
 
 class ImageForm(forms.ModelForm):
