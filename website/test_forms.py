@@ -853,3 +853,86 @@ class TestGameManageForm(TestCase):
         '''Test initial value is correct'''
         form = CreateServerListingForm()
         self.assertEqual(form.fields['status'].initial, 0)
+
+
+class TestTagsManageForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = TagsManageForm({
+            'id': 1,
+            'name': 'GameName',
+            'slug': 'slug',
+            }
+        )
+        self.assertTrue(self.form.is_valid())
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['id'])
+            .__name__, 'IntegerField')
+        self.assertEqual(type(
+            self.form.fields['name'])
+            .__name__, 'CharField')
+        self.assertEqual(type(
+            self.form.fields['slug'])
+            .__name__, 'SlugField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using correct model'''
+        self.assertEqual(self.form.Meta.model, Tag)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'id', 'name', 'slug'
+            ]
+        )
+
+    def test_name_is_required(self):
+        '''Test name is required'''
+        self.form.data['name'] = ''
+        self.assertFalse(self.form.is_valid())
+        self.assertIn('name', self.form.errors.keys())
+        self.assertEqual(
+            self.form.errors['name'][0], (
+                'Required.'
+                )
+            )
+
+    def test_name_max_length(self):
+        '''Test max_length of name'''
+        self.form.data['name'] = 'a' * 50
+        self.assertLessEqual(
+            len(self.form.data['name']),
+            self.form.fields['name'].max_length
+            )
+        self.form.data['name'] += 'a'
+        self.assertGreater(
+            len(self.form.data['name']),
+            self.form.fields['name'].max_length
+            )
+
+    def test_slug_max_length(self):
+        '''Test max_length of slug'''
+        self.form.data['slug'] = 'a' * 50
+        self.assertLessEqual(
+            len(self.form.data['slug']),
+            self.form.fields['slug'].max_length
+            )
+        self.form.data['slug'] += 'a'
+        self.assertGreater(
+            len(self.form.data['slug']),
+            self.form.fields['slug'].max_length
+            )
