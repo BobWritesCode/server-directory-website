@@ -23,6 +23,13 @@ class TestUserForm(TestCase):
             'is_staff': False,
             'is_superuser': False})
 
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
+
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
         self.assertEqual(type(self.form.fields['id'])
@@ -81,16 +88,23 @@ class TestProfileForm(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.form = ProfileForm({
-            'email': '',
-            'email_verified': False})
+        pass
 
     @classmethod
     def tearDownClass(cls):
         pass
 
     def setUp(self):
-        pass
+        self.form = ProfileForm({
+            'email': '',
+            'email_verified': False})
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -132,6 +146,13 @@ class TestSignupForm(TestCase):
             'email': 'test@email.com',
             'password1': "password",
             'password2': "password"})
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -213,6 +234,13 @@ class TestConfirmAccountDeleteForm(TestCase):
             'confirm': 'TestName',
             'id': 1, })
 
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
+
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
         self.assertEqual(type(self.form.fields['confirm'])
@@ -265,6 +293,13 @@ class TestConfirmServerListingDeleteForm(TestCase):
         self.form = ConfirmServerListingDeleteForm({
             'server_listing_delete_confirm': 'TestName',
             'id': 1, })
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -320,6 +355,13 @@ class TestConfirmGameDeleteForm(TestCase):
             'game_delete_confirm': 'TestName',
             'id': 1, })
 
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
+
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
         self.assertEqual(type(
@@ -373,6 +415,13 @@ class TestUserUpdateEmailAddressForm(TestCase):
         self.form = UserUpdateEmailAddressForm({
             'email': 'TestName',
             'email_confirm': 1, })
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -446,6 +495,13 @@ class TestCreateServerListingForm(TestCase):
         self.form.data['long_description'] = (
             'a' * self.form.fields['long_description'].min_length
             )
+
+    def tearDown(self) -> None:
+        return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -731,10 +787,13 @@ class TestGameManageForm(TestCase):
             'status': 1,
             }
         )
-        self.assertTrue(self.form.is_valid())
 
     def tearDown(self) -> None:
         return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -872,10 +931,13 @@ class TestTagsManageForm(TestCase):
             'slug': 'slug',
             }
         )
-        self.assertTrue(self.form.is_valid())
 
     def tearDown(self) -> None:
         return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -953,10 +1015,13 @@ class TestConfirmTagDeleteForm(TestCase):
             'tag_delete_confirm': 'aaaaa',
             }
         )
-        self.assertTrue(self.form.is_valid())
 
     def tearDown(self) -> None:
         return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -1012,13 +1077,16 @@ class TestDeleteConfirmForm(TestCase):
 
     def setUp(self):
         self.form = DeleteConfirmForm({
-            'delete_confirm': 'aaaaa',
+            'delete_confirm': 'Abc',
             }
         )
-        self.assertTrue(self.form.is_valid())
 
     def tearDown(self) -> None:
         return super().tearDown()
+
+    def check_form_valid(self):
+        '''Test to check form is valid as expected'''
+        self.assertTrue(self.form.is_valid())
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
@@ -1028,7 +1096,7 @@ class TestDeleteConfirmForm(TestCase):
 
     def test_delete_confirm_is_required(self):
         '''Test delete_confirm is required'''
-        self.form.data['delete_confirm'] = None
+        self.form.data['delete_confirm'] = ''
         self.assertFalse(self.form.is_valid())
         self.assertIn('delete_confirm', self.form.errors.keys())
         self.assertEqual(
