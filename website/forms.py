@@ -582,7 +582,13 @@ class TagsManageForm(forms.ModelForm):
     none
     """
     id = forms.IntegerField(required=False)
-    name = forms.CharField(label="Tag", max_length=50, required=True)
+    name = forms.CharField(
+        label="Tag",
+        max_length=50,
+        required=True,
+        error_messages={
+            'required': 'Required.'
+        },)
     slug = forms.SlugField(max_length=50)
 
     class Meta:
