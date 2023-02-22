@@ -238,9 +238,11 @@ def staff_image_review(request: object, item_pk: int = None):
         case 0:
             image.status_txt = "Awaiting approval"
         case 1:
-            image.status_txt = "Image approved"
+            image.status_txt = "Approved"
         case 2:
-            image.status_txt = "Image declined, User banned"
+            image.status_txt = "Rejected"
+        case 3:
+            image.status_txt = "Image rejected, user banned!"
 
     user = get_object_or_404(CustomUser, pk=image.user_id)
     listing = get_object_or_404(ServerListing, pk=image.listing_id)
@@ -414,9 +416,11 @@ def server_edit(request: object, _pk: int):
             case 0:
                 listing_image.status_txt = "Awaiting approval"
             case 1:
-                listing_image.status_txt = "Image approved"
+                listing_image.status_txt = "Approved"
             case 2:
-                listing_image.status_txt = "Image declined, User banned"
+                listing_image.status_txt = "Rejected"
+            case 3:
+                listing_image.status_txt = "Image rejected, user banned!"
     except AttributeError:
         listing_image = None
 
