@@ -232,8 +232,6 @@ def staff_image_review(request: object, item_pk: int = None):
         # If no image is currently waiting be approved, then handle request.
         if image is None:
             return redirect('staff_account')
-            # # Show image first in Q.
-            # return redirect('staff_image_review_with_id', image.pk)
 
     # Set status text based on image.status.
     match image.status:
