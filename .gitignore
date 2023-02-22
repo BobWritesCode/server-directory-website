@@ -8,3 +8,5 @@ package-lock.json
 package.json
 .eslintrc.js
 .pylintrc
+.coverage
+htmlcov/
