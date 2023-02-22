@@ -203,6 +203,7 @@ def staff_image_review(request: object, item_pk: int = None):
 
     Args:
         request (object): GET/POST request from user.
+        item_pk (int): pk of image to load.
 
     Returns:
         render() (func): Loads the html page.
