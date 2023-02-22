@@ -62,6 +62,7 @@ class CustomUser(AbstractUser):
         blank=False,
         unique=True,
         error_messages={
+            'required': "Username is required. (Panda)",
             'unique': 'Username already taken. (Panda)', }
         )
     username_lower = models.CharField(max_length=100)
@@ -76,6 +77,7 @@ class CustomUser(AbstractUser):
         unique=True,
         blank=False,
         error_messages={
+            'required': "Email is required. (Cobra)",
             'unique': 'Email already taken. (Cobra)', }
         )
     email_verified = models.BooleanField(default=False)
@@ -102,7 +104,7 @@ class CustomUser(AbstractUser):
             email: str
         """
         return (f'PK: {self.id} - id: {self.id} - email: {self.email} '
-                '- username: {self.username}')
+                f'- username: {self.username}')
 
     def to_json(self):
         """
