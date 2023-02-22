@@ -106,20 +106,6 @@ class CustomUser(AbstractUser):
         return (f'PK: {self.id} - id: {self.id} - email: {self.email} '
                 f'- username: {self.username}')
 
-    def to_json(self):
-        """
-        Returns class as a JSON string.
-
-        Args:
-            None
-
-        Returns:
-            Class as a JSON: str
-        """
-        return json.dumps(
-            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
-            )
-
     def save(self, *args, **kwargs):
         """
         Save object after checking conformity:
