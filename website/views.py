@@ -213,9 +213,7 @@ def staff_image_review(request: object, item_pk: int = None):
         image_count = Images.objects.filter(query).count()
         # If no image is currently waiting be approved,
         # then handle request.
-        if image_count > 0:
-            return redirect('staff_image_review')
-        else:
+        if image_count == 0:
             return redirect('staff_account')
 
     # If ID has been entered in URL.
