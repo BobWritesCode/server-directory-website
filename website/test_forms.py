@@ -1,3 +1,4 @@
+from django.forms.widgets import PasswordInput
 from django.test import TestCase
 from .forms import (
     UserForm, ProfileForm, SignupForm, ConfirmAccountDeleteForm,
@@ -758,6 +759,47 @@ class TestImageForm(TestCase):
         '''Test image is not required'''
         self.form.data['image'] = None
         self.assertTrue(self.form.is_valid())
+
+
+class TestLoginForm(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.form = LoginForm({
+            'email': 'name@email.com',
+            'password': 'password',
+            }
+        )
+
+    def test_correct_field_types(self):
+        '''Test all field types are correct in form'''
+        self.assertEqual(type(
+            self.form.fields['email'])
+            .__name__, 'EmailField')
+        self.assertEqual(type(
+            self.form.fields['password'])
+            .__name__, 'CharField')
+
+    def test_using_correct_model(self):
+        '''Test to make sure using Game model'''
+        self.assertEqual(self.form.Meta.model, CustomUser)
+
+    def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
+        self.assertEqual(self.form.Meta.fields, [
+            'email', 'password'
+            ])
+
+    def test_password_using_correct_widget(self):
+        '''Test to make sure correct widget being used'''
+        self.assertIsInstance(self.form.fields['password'].widget, PasswordInput)
 
 
 class TestGameManageForm(TestCase):
