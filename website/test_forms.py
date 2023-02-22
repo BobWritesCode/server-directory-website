@@ -1,3 +1,5 @@
+'''Tests for forms.py'''
+
 from django.forms.widgets import PasswordInput
 from django.test import TestCase
 from .forms import (
@@ -11,6 +13,7 @@ from .models import CustomUser, ServerListing, Game, Tag, Images
 
 
 class TestUserForm(TestCase):
+    '''UserForm test cases'''
 
     @classmethod
     def tearDownClass(cls):
@@ -23,9 +26,6 @@ class TestUserForm(TestCase):
             'email': 'test@email.com',
             'is_staff': False,
             'is_superuser': False})
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -79,6 +79,7 @@ class TestUserForm(TestCase):
         self.assertEqual(self.form.Meta.model, CustomUser)
 
     def test_fields_are_explicit_in_form_metaclass(self):
+        '''Test to make sure the correct fields are to be shown'''
         self.assertEqual(self.form.Meta.fields, [
             'id', 'username', 'email', 'email_verified',
             'is_active', 'is_banned', 'is_staff', 'is_superuser'
@@ -86,6 +87,7 @@ class TestUserForm(TestCase):
 
 
 class TestProfileForm(TestCase):
+    '''ProfileForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -99,9 +101,6 @@ class TestProfileForm(TestCase):
         self.form = ProfileForm({
             'email': '',
             'email_verified': False})
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -132,6 +131,7 @@ class TestProfileForm(TestCase):
 
 
 class TestSignupForm(TestCase):
+    '''SignupForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -147,9 +147,6 @@ class TestSignupForm(TestCase):
             'email': 'test@email.com',
             'password1': "password",
             'password2': "password"})
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -221,6 +218,7 @@ class TestSignupForm(TestCase):
 
 
 class TestConfirmAccountDeleteForm(TestCase):
+    '''ConfirmAccountDeleteForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -234,9 +232,6 @@ class TestConfirmAccountDeleteForm(TestCase):
         self.form = ConfirmAccountDeleteForm({
             'confirm': 'TestName',
             'id': 1, })
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -281,6 +276,7 @@ class TestConfirmAccountDeleteForm(TestCase):
 
 
 class TestConfirmServerListingDeleteForm(TestCase):
+    '''ConfirmServerListingDeleteForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -294,9 +290,6 @@ class TestConfirmServerListingDeleteForm(TestCase):
         self.form = ConfirmServerListingDeleteForm({
             'server_listing_delete_confirm': 'TestName',
             'id': 1, })
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -342,6 +335,7 @@ class TestConfirmServerListingDeleteForm(TestCase):
 
 
 class TestConfirmGameDeleteForm(TestCase):
+    '''ConfirmGameDeleteForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -355,9 +349,6 @@ class TestConfirmGameDeleteForm(TestCase):
         self.form = ConfirmGameDeleteForm({
             'game_delete_confirm': 'TestName',
             'id': 1, })
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -403,6 +394,7 @@ class TestConfirmGameDeleteForm(TestCase):
 
 
 class TestUserUpdateEmailAddressForm(TestCase):
+    '''UserUpdateEmailAddressForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -416,9 +408,6 @@ class TestUserUpdateEmailAddressForm(TestCase):
         self.form = UserUpdateEmailAddressForm({
             'email': 'TestName',
             'email_confirm': 1, })
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -453,6 +442,7 @@ class TestUserUpdateEmailAddressForm(TestCase):
 
 
 class TestCreateServerListingForm(TestCase):
+    '''CreateServerListingForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -496,9 +486,6 @@ class TestCreateServerListingForm(TestCase):
         self.form.data['long_description'] = (
             'a' * self.form.fields['long_description'].min_length
             )
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -725,6 +712,7 @@ class TestCreateServerListingForm(TestCase):
 
 
 class TestImageForm(TestCase):
+    '''ImageForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -762,6 +750,7 @@ class TestImageForm(TestCase):
 
 
 class TestLoginForm(TestCase):
+    '''LoginForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -803,6 +792,7 @@ class TestLoginForm(TestCase):
 
 
 class TestGameManageForm(TestCase):
+    '''GameManageForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -829,9 +819,6 @@ class TestGameManageForm(TestCase):
             'status': 1,
             }
         )
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -868,11 +855,6 @@ class TestGameManageForm(TestCase):
             'id', 'name', 'slug', 'tags', 'image', 'status'
             ]
         )
-
-    def test_id_is_not_required(self):
-        '''Test id is not required'''
-        self.form.data['id'] = ''
-        self.assertTrue(self.form.is_valid())
 
     def test_id_is_not_required(self):
         '''Test id is not required'''
@@ -957,6 +939,7 @@ class TestGameManageForm(TestCase):
 
 
 class TestTagsManageForm(TestCase):
+    '''TagsManageForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -973,9 +956,6 @@ class TestTagsManageForm(TestCase):
             'slug': 'slug',
             }
         )
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -1043,6 +1023,7 @@ class TestTagsManageForm(TestCase):
 
 
 class TestConfirmTagDeleteForm(TestCase):
+    '''ConfirmTagDeleteForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -1057,9 +1038,6 @@ class TestConfirmTagDeleteForm(TestCase):
             'tag_delete_confirm': 'aaaaa',
             }
         )
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -1108,6 +1086,7 @@ class TestConfirmTagDeleteForm(TestCase):
 
 
 class TestDeleteConfirmForm(TestCase):
+    '''DeleteConfirmForm test cases'''
 
     @classmethod
     def setUpClass(cls):
@@ -1122,9 +1101,6 @@ class TestDeleteConfirmForm(TestCase):
             'delete_confirm': 'Abc',
             }
         )
-
-    def tearDown(self) -> None:
-        return super().tearDown()
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
