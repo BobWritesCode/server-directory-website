@@ -8,10 +8,6 @@ from tinymce.widgets import TinyMCE
 
 from cloudinary.forms import CloudinaryFileField
 
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Submit, HTML
-from crispy_forms.bootstrap import InlineRadios
-
 from .models import (
     CustomUser, Game, Tag, ServerListing, Images
 )
@@ -586,9 +582,7 @@ class TagsManageForm(forms.ModelForm):
         label="Tag",
         max_length=50,
         required=True,
-        error_messages={
-            'required': 'Required.'
-        },)
+)
     slug = forms.SlugField(max_length=50)
 
     class Meta:
