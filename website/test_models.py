@@ -1,7 +1,7 @@
 '''Tests for website.models '''
 import unittest
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Tag
+from .models import CustomUser, Tag, Game
 
 
 class TestCustomerUser(unittest.TestCase):
@@ -112,4 +112,66 @@ class TestTag(unittest.TestCase):
         self.assertIn('slug', json)
         self.assertIn('test-tag-323423234', json)
 
+class TestGame(unittest.TestCase):
+    '''Tests for Tag model'''
 
+    @classmethod
+    def setUpClass(cls):
+        cls.tag1 = Tag.objects.create(
+            name='TEST tag 323423234',
+            slug='test-tag-323423234',
+        )
+        cls.tag2 = Tag.objects.create(
+            name='test tag 213124523',
+            slug='test-tag-213124523',
+        )
+        cls.tag3 = Tag.objects.create(
+            name='teST tag 432412342',
+            slug='test-tag-432412342',
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.tag1.delete()
+        cls.tag2.delete()
+        cls.tag3.delete()
+
+    def setUp(self):
+        self.game1 = Game.objects.create(
+            name='TEST game 323423234',
+            slug='test-game-323423234',
+        )
+        self.game1.tags.set([self.tag1])
+        self.game2 = Game.objects.create(
+            name='test game 213124523',
+            slug='test-game-213124523',
+        )
+        self.game2.tags.set([self.tag1])
+        self.game3 = Game.objects.create(
+            name='teST game 432412342',
+            slug='test-game-432412342',
+        )
+        self.game3.tags.set([self.tag1])
+
+    def tearDown(self):
+        self.game1.delete()
+        self.game2.delete()
+        self.game3.delete()
+
+    def test_class_string(self):
+        '''Testing __str__ gives expected output'''
+        expected_output = f"{self.game1}"
+        self.assertEqual(str(self.game1), expected_output)
+
+    def test_json_dump_is_as_expected(self):
+        '''Test JSON convert obj to str as expected'''
+        json = self.game1.to_json()
+        self.assertEqual(type(json), str)
+        self.assertIn('id', json)
+        self.assertIn(str(self.game1.id), json)
+        self.assertIn('name', json)
+        self.assertIn(str(self.game1.name), json)
+        self.assertIn('slug', json)
+        self.assertIn(str(self.game1.slug), json)
+        self.assertIn('status', json)
+        self.assertIn(str(self.game1.status), json)
