@@ -52,7 +52,8 @@ class TestUserForm(TestCase):
 
     def test_username_max_length(self):
         '''Test max_length of username'''
-        self.form.data['username'] = 'a' * 20
+        self.form.data['username'] = (
+            'a' * self.form.fields['username'].max_length)
         self.assertLessEqual(
             len(self.form.data['username']),
             self.form.fields['username'].max_length
@@ -179,7 +180,8 @@ class TestSignupForm(TestCase):
 
     def test_username_max_length(self):
         '''Test max_length of username'''
-        self.form.data['username'] = 'a' * 20
+        self.form.data['username'] = (
+            'a' * self.form.fields['username'].max_length)
         self.assertLessEqual(
             len(self.form.data['username']),
             self.form.fields['username'].max_length
@@ -201,7 +203,8 @@ class TestSignupForm(TestCase):
 
     def test_email_max_length(self):
         '''Test max_length of email'''
-        self.form.data['email'] = 'a' * 200
+        self.form.data['email'] = (
+            'a' * self.form.fields['email'].max_length)
         self.assertLessEqual(
             len(self.form.data['email']),
             self.form.fields['email'].max_length
@@ -253,7 +256,8 @@ class TestConfirmAccountDeleteForm(TestCase):
 
     def test_confirm_max_length(self):
         '''Test max_length of confirm'''
-        self.form.data['confirm'] = 'a' * 10
+        self.form.data['confirm'] = (
+            'a' * self.form.fields['confirm'].max_length)
         self.assertLessEqual(
             len(self.form.data['confirm']),
             self.form.fields['confirm'].max_length
@@ -312,7 +316,8 @@ class TestConfirmServerListingDeleteForm(TestCase):
 
     def test_server_listing_delete_confirm_max_length(self):
         '''Test max_length of server_listing_delete_confirm'''
-        self.form.data['server_listing_delete_confirm'] = 'a' * 10
+        self.form.data['server_listing_delete_confirm'] = (
+            'a' * self.form.fields['server_listing_delete_confirm'].max_length)
         self.assertLessEqual(
             len(self.form.data['server_listing_delete_confirm']),
             self.form.fields['server_listing_delete_confirm'].max_length
@@ -371,7 +376,8 @@ class TestConfirmGameDeleteForm(TestCase):
 
     def test_game_delete_confirm_max_length(self):
         '''Test max_length of game_delete_confirm'''
-        self.form.data['game_delete_confirm'] = 'a' * 10
+        self.form.data['game_delete_confirm'] = (
+            'a' * self.form.fields['game_delete_confirm'].max_length)
         self.assertLessEqual(
             len(self.form.data['game_delete_confirm']),
             self.form.fields['game_delete_confirm'].max_length
@@ -553,7 +559,8 @@ class TestCreateServerListingForm(TestCase):
 
     def test_title_max_length(self):
         '''Test max_length of title'''
-        self.form.data['title'] = 'a' * 50
+        self.form.data['title'] = (
+            'a' * self.form.fields['title'].max_length)
         self.assertLessEqual(
             len(self.form.data['title']),
             self.form.fields['title'].max_length
@@ -577,7 +584,8 @@ class TestCreateServerListingForm(TestCase):
 
     def test_short_description_min_length(self):
         '''Test min_length of short_description'''
-        self.form.data['short_description'] = 'a' * 100
+        self.form.data['short_description'] = (
+            'a' * self.form.fields['short_description'].min_length)
         self.assertGreaterEqual(
             len(self.form.data['short_description']),
             self.form.fields['short_description'].min_length
@@ -596,7 +604,8 @@ class TestCreateServerListingForm(TestCase):
 
     def test_short_description_max_length(self):
         '''Test max_length of short_description'''
-        self.form.data['short_description'] = 'a' * 200
+        self.form.data['short_description'] = (
+            'a' * self.form.fields['short_description'].max_length)
         self.assertLessEqual(
             len(self.form.data['short_description']),
             self.form.fields['short_description'].max_length
@@ -625,7 +634,10 @@ class TestCreateServerListingForm(TestCase):
 
     def test_long_description_min_length(self):
         '''Test min_length of long_description'''
-        self.form.data['long_description'] = 'a' * 200
+
+        self.form.data['long_description'] = (
+            'a' * self.form.fields['long_description'].min_length
+            )
         self.assertGreaterEqual(
             len(self.form.data['long_description']),
             self.form.fields['long_description'].min_length
@@ -644,7 +656,8 @@ class TestCreateServerListingForm(TestCase):
 
     def test_long_description_max_length(self):
         '''Test max_length of long_description'''
-        self.form.data['long_description'] = 'a' * 2000
+        self.form.data['long_description'] = (
+            'a' * self.form.fields['long_description'].max_length)
         self.assertLessEqual(
             len(self.form.data['long_description']),
             self.form.fields['long_description'].max_length
@@ -788,7 +801,10 @@ class TestLoginForm(TestCase):
 
     def test_password_using_correct_widget(self):
         '''Test to make sure correct widget being used'''
-        self.assertIsInstance(self.form.fields['password'].widget, PasswordInput)
+        self.assertIsInstance(
+            self.form.fields['password'].widget,
+            PasswordInput
+        )
 
 
 class TestGameManageForm(TestCase):
@@ -874,7 +890,8 @@ class TestGameManageForm(TestCase):
 
     def test_name_max_length(self):
         '''Test max_length of name'''
-        self.form.data['name'] = 'a' * 50
+        self.form.data['name'] = (
+            'a' * self.form.fields['name'].max_length)
         self.assertLessEqual(
             len(self.form.data['name']),
             self.form.fields['name'].max_length
@@ -887,7 +904,8 @@ class TestGameManageForm(TestCase):
 
     def test_slug_max_length(self):
         '''Test max_length of slug'''
-        self.form.data['slug'] = 'a' * 50
+        self.form.data['slug'] = (
+            'a' * self.form.fields['slug'].max_length)
         self.assertLessEqual(
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
@@ -997,7 +1015,8 @@ class TestTagsManageForm(TestCase):
 
     def test_name_max_length(self):
         '''Test max_length of name'''
-        self.form.data['name'] = 'a' * 50
+        self.form.data['name'] = (
+            'a' * self.form.fields['name'].max_length)
         self.assertLessEqual(
             len(self.form.data['name']),
             self.form.fields['name'].max_length
@@ -1010,7 +1029,8 @@ class TestTagsManageForm(TestCase):
 
     def test_slug_max_length(self):
         '''Test max_length of slug'''
-        self.form.data['slug'] = 'a' * 50
+        self.form.data['slug'] = (
+            'a' * self.form.fields['slug'].max_length)
         self.assertLessEqual(
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
@@ -1073,7 +1093,8 @@ class TestConfirmTagDeleteForm(TestCase):
 
     def test_tag_delete_confirm_max_length(self):
         '''Test max_length of tag_delete_confirm'''
-        self.form.data['tag_delete_confirm'] = 'a' * 10
+        self.form.data['tag_delete_confirm'] = (
+            'a' * self.form.fields['tag_delete_confirm'].max_length)
         self.assertLessEqual(
             len(self.form.data['tag_delete_confirm']),
             self.form.fields['tag_delete_confirm'].max_length
@@ -1125,7 +1146,8 @@ class TestDeleteConfirmForm(TestCase):
 
     def test_delete_confirm_max_length(self):
         '''Test max_length of delete_confirm'''
-        self.form.data['delete_confirm'] = 'a' * 10
+        self.form.data['delete_confirm'] = (
+            'a' * self.form.fields['delete_confirm'].max_length)
         self.assertLessEqual(
             len(self.form.data['delete_confirm']),
             self.form.fields['delete_confirm'].max_length
