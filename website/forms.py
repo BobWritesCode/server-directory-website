@@ -584,8 +584,8 @@ class TagsManageForm(forms.ModelForm):
         required=True,
         error_messages={
             'required': 'Required.'
-        }
-    ),
+        },
+    )
     slug = forms.SlugField(max_length=50)
 
     class Meta:
