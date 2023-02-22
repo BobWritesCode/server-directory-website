@@ -318,28 +318,47 @@ class ServerListing(models.Model):
     number_of_tags():
         Returns total amount of tags currently linked to the listing.
 
-    to_json():
-        Converts class into a json string.
-
     save():
         Saves the object to the database.
         If new listing this method will assign a slug by getting the
         next available ID to use.
     """
     game = models.ForeignKey(
-        Game, on_delete=models.CASCADE, related_name="ServerListing")
+        Game, on_delete=models.CASCADE,
+        related_name="listings",
+        related_query_name="listing",
+        )
     owner = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="ServerListing")
-    title = models.CharField(max_length=50)
+        CustomUser, on_delete=models.CASCADE,
+        related_name="listings",
+        related_query_name="listing",
+        )
+    title = models.CharField(
+        max_length=50,
+        blank=False,
+        )
     slug = models.SlugField(max_length=50, unique=True)
     logo = CloudinaryField('image', default='placeholder')
     tags = models.ManyToManyField(Tag, blank=True)
-    short_description = models.TextField(max_length=200)
-    long_description = tinymce_models.HTMLField(max_length=2000)
+    short_description = models.TextField(
+        max_length=200,
+        blank=False,
+        )
+    long_description = tinymce_models.HTMLField(
+        max_length=2000,
+        blank=False,
+        )
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
-    discord = models.CharField(max_length=50)
-    tiktok = models.CharField(default='', max_length=50, blank=True)
+    discord = models.CharField(
+        max_length=50,
+        blank=False,
+        )
+    tiktok = models.CharField(
+        default='',
+        max_length=50,
+        blank=True
+        )
     status = models.IntegerField(choices=STATUS, default=0)
     bump_count = models.IntegerField(default=0)
 
@@ -382,20 +401,6 @@ class ServerListing(models.Model):
             number of tags: int
         """
         return self.tags.count()
-
-    def to_json(self):
-        """
-        Returns class as a JSON string.
-
-        Args:
-            None
-
-        Returns:
-            Class as a JSON: str
-        """
-        return json.dumps(
-            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
-            )
 
     def save(self, *args, **kwargs):
         """
