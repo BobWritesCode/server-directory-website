@@ -1,7 +1,7 @@
 '''Tests for website.models '''
 import unittest
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Tag, Game
+from .models import CustomUser, Tag, Game, ServerListing
 
 
 class TestCustomerUser(unittest.TestCase):
@@ -113,7 +113,7 @@ class TestTag(unittest.TestCase):
         self.assertIn('test-tag-323423234', json)
 
 class TestGame(unittest.TestCase):
-    '''Tests for Tag model'''
+    '''Tests for Game model'''
 
     @classmethod
     def setUpClass(cls):
@@ -175,3 +175,76 @@ class TestGame(unittest.TestCase):
         self.assertIn(str(self.game1.slug), json)
         self.assertIn('status', json)
         self.assertIn(str(self.game1.status), json)
+
+
+class TestServerListing(unittest.TestCase):
+    '''Tests for ServerListing model'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tag1 = Tag.objects.create(
+            name='TEST tag 323423234',
+            slug='test-tag-323423234',
+        )
+        cls.tag2 = Tag.objects.create(
+            name='TEST tag 213343243',
+            slug='test-tag-213343243',
+        )
+        cls.game1 = Game.objects.create(
+            name='TEST game 323423234',
+            slug='test-game-323423234',
+        )
+        cls.game1.tags.set([cls.tag1])
+        cls.user1 = CustomUser.objects.create(
+            username='TEST_user_323423234',
+            email='test_user_323423234@email.com',
+        )
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.game1.delete()
+        cls.tag1.delete()
+
+
+    def setUp(self):
+        self.listing1 = ServerListing.objects.create(
+            game=self.game1,
+            owner=self.user1,
+            title="TEST LISTING 3242363",
+            slug='test-listing-3242363',
+            short_description= 'a' * ServerListing._meta.get_field('short_description').max_length,
+            long_description= 'a' * ServerListing._meta.get_field('long_description').max_length,
+            discord = "discord",
+        )
+        self.listing1.tags.set([self.tag1, self.tag2])
+
+    def tearDown(self):
+        self.listing1.delete()
+
+    def test_class_string(self):
+        '''Testing __str__ gives expected output'''
+        expected_output = f"{self.listing1.title}"
+        self.assertEqual(str(self.listing1), expected_output)
+
+    def test_check_tag_count_on_listing(self):
+        '''Checks get correct number of tags for a listing'''
+        self.assertEqual(self.listing1.number_of_tags(), 2)
+
+
+    def test_save_assigns_correct_slug(self):
+        '''
+        Test to see if next_id is assigned correctly.
+        '''
+        listing2 = ServerListing.objects.create(
+            game=self.game1,
+            owner=self.user1,
+            title="TEST LISTING 7823142",
+            slug='test-listing-7823142',
+            short_description= 'a' * ServerListing._meta.get_field('short_description').max_length,
+            long_description= 'a' * ServerListing._meta.get_field('long_description').max_length,
+            discord = "discord",
+        )
+        listing2.tags.set([self.tag1, self.tag2])
+        self.assertEqual(listing2.slug, f'Listing-{listing2.pk}')
+        listing2.save()
+        self.assertEqual(listing2.slug, f'Listing-{listing2.pk}')
