@@ -30,12 +30,16 @@ class CustomUser(AbstractUser):
         just differing by case.
     first_name : str
         User's first name.
+    last_name : str
+        User's last name.
     email : str : USERNAME_FIELD
         User's primary email address.
     email_verified : bool
         Has use completed email verification.
     is_staff : bool
         Is the user a staff user.
+    is_superuser : bool
+        Is the user a superuser.
     is_active : bool
         Can the user log in.
     is_banned : bool
@@ -47,9 +51,6 @@ class CustomUser(AbstractUser):
     -------
     __str__():
         returns email address as the class str.
-
-    to_json():
-        converts class into a json string.
 
     save():
         Saves object. Also checks to make sure username is not already taken by
