@@ -582,6 +582,9 @@ class TagsManageForm(forms.ModelForm):
         label="Tag",
         max_length=50,
         required=True,
+        error_messages={
+            'required': 'Required.'
+        },
 )
     slug = forms.SlugField(max_length=50)
 
