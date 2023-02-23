@@ -286,7 +286,9 @@ def server_create(request: object):
 
                 new_image = uploader.upload(
                     request.FILES['image'],
-                    folder="server_directory/"
+                    folder="server_directory/",
+                    allowed_formats = ['jpg', 'png', 'jpeg'],
+                    format= 'jpg'
                     )
                 image_form.instance.image = new_image['url']
                 image_form.instance.public_id = new_image['public_id']
@@ -354,7 +356,7 @@ def server_edit(request: object, _pk: int):
         # If user is trying to update the listing
         form = CreateServerListingForm(request.POST)
         image_form = ImageForm(request.FILES)
-        if form.is_valid() and image_form.is_valid():
+        if form.is_valid():
 
             image = Images.objects.filter(listing_id=_pk).first()
 
@@ -366,7 +368,9 @@ def server_edit(request: object, _pk: int):
                 # Upload new imaged
                 new_image = uploader.upload(
                     request.FILES['image'],
-                    folder="server_directory/"
+                    folder="server_directory/",
+                    allowed_formats = ['jpg', 'png', 'jpeg'],
+                    format= 'jpg'
                     )
 
             # If no current listing image
@@ -375,7 +379,9 @@ def server_edit(request: object, _pk: int):
                 # Upload new imaged
                 new_image = uploader.upload(
                     request.FILES['image'],
-                    folder="server_directory/"
+                    folder="server_directory/",
+                    allowed_formats = ['jpg', 'png', 'jpeg'],
+                    format= 'jpg'
                     )
                 image = image_form.instance
                 image.user = request.user
@@ -1292,7 +1298,9 @@ def add_new_game(request: object, form: object):
         # Upload image
         new_image = uploader.upload(
             request.FILES["image"],
-            folder="server_directory/"
+            folder="server_directory/",
+            allowed_formats = ['jpg', 'png', 'jpeg'],
+            format= 'jpg'
             )
         game.image = new_image["url"]
         game.save()
@@ -1335,7 +1343,9 @@ def update_game(request: object, form: object):
             request.FILES["image"],
             public_id=public_id,
             overwrite=True,
-            folder="server_directory/"
+            folder="server_directory/",
+            allowed_formats = ['jpg', 'png', 'jpeg'],
+            format= 'jpg'
         )
         # Save new url to game object
         game.image = new_image["url"]
@@ -1345,7 +1355,9 @@ def update_game(request: object, form: object):
         # Upload new image
         new_image = uploader.upload(
             request.FILES["image"],
-            folder="server_directory/"
+            folder="server_directory/",
+            allowed_formats = ['jpg', 'png', 'jpeg'],
+            format= 'jpg'
             )
         game.image = new_image["url"]
 

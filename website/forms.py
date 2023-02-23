@@ -3,6 +3,7 @@ All forms for website app
 """
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.validators import FileExtensionValidator
 
 from tinymce.widgets import TinyMCE
 
@@ -444,9 +445,11 @@ class ImageForm(forms.ModelForm):
     """
 
     image = forms.ImageField(
+        help_text="Accepted: JPEG, JPG, PNG",
         label="Upload image:",
         widget=forms.FileInput,
         required=False,
+        validators=[FileExtensionValidator(['jpeg', 'jpg', 'png'])]
     )
 
     class Meta:

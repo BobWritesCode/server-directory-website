@@ -236,7 +236,8 @@ class Game(models.Model):
     name = models.CharField(max_length=50, blank=False, unique=True)
     slug = models.SlugField(max_length=50, unique=True)
     tags = models.ManyToManyField(Tag, blank=False)
-    image = CloudinaryField('image', null=True, default=None, blank=True)
+    image = CloudinaryField('image', null=True, default=None, blank=True,
+                            allowed_formats=['png', 'jpg', 'jpeg'])
     status = models.IntegerField(choices=STATUS, default=0)
 
     def __str__(self):
