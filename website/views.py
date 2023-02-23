@@ -341,21 +341,15 @@ def server_edit(request: object, _pk: int):
     if request.method == "POST":
 
         # Let's see if the user is trying to delete the listing.
-        if (
-            ConfirmServerListingDeleteForm(request.POST, instance=request.user)
-            and "server_listing_delete_confirm" in request.POST
-        ):
-            form_2 = ConfirmServerListingDeleteForm(request.POST)
-            if (
-                form_2.is_valid()
-                and form_2.data["server_listing_delete_confirm"] == "delete"
-            ):
+        if "server_listing_delete_confirm" in request.POST:
+            if request.POST["server_listing_delete_confirm"] == "delete":
                 item.delete()
                 return redirect("my-account")
 
         # If user is trying to update the listing
         form = CreateServerListingForm(request.POST)
         image_form = ImageForm(request.FILES)
+
         if form.is_valid():
 
             image = Images.objects.filter(listing_id=_pk).first()
