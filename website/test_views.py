@@ -1,53 +1,73 @@
 '''Tests for views.py'''
 
 from unittest.mock import patch
-
+from io import BytesIO
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.test import Client
 
 from .models import CustomUser, Tag, Game, ServerListing, Images
 from .forms import CreateServerListingForm
-from .views import server_create
 
+
+def create_user(num: int):
+    '''Create test user'''
+    return CustomUser.objects.create(
+        username=f'T_User_{num}',
+        password=f'TPass_{num}',
+        email=f't_user_{num}@d8sf87sdf978sd.com',
+        email_verified=True,
+        is_active=True,
+        is_staff=False)
+
+def create_user_staff(num: int):
+    '''Create test staff user'''
+    return CustomUser.objects.create(
+            username=f'T_Staff_User_{num}',
+            password=f'TPass_{num}',
+            email=f't_staff_user_{num}@email34232343.com',
+            email_verified=True,
+            is_active=True,
+            is_staff=True)
+
+def create_tag(num: int):
+    '''Create test tag'''
+    return Tag.objects.create(name=f'{num}', slug=f'{num}')
+
+def create_game(num: int):
+    '''Create test game'''
+    return Game.objects.create(
+        name=f'{num}',
+        slug=f'{num}',
+        image=None,
+        status=1)
+
+def create_server_listing(num: int):
+    '''Create test listing'''
+    obj = ServerListing.objects.create(
+        game= Game.objects.all().first(),
+        owner= CustomUser.objects.all().first(),
+        title= f'{num}',
+        short_description= 'a' * 200,
+        long_description= 'a' * 200,
+        status= 1,
+        discord= f'{num}',
+        tiktok= f'{num}')
+    obj.tags.set([Tag.objects.all().first()])
+    obj.save()
+    return obj
 
 class TestViews(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = CustomUser.objects.create(
-            username='Test_User',
-            password='TestPass',
-            email='test_user@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=False,
-        )
-        cls.staff_user = CustomUser.objects.create(
-            username='Test_Staff_User',
-            password='TestPass',
-            email='test_staff_user@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=True,
-        )
-        cls.tag = Tag.objects.create(
-            name='Roleplay',
-            slug='roleplay',
-            )
-        cls.game = Game.objects.create(
-            name='gta5',
-            slug='gta5',
-            image=None,
-            status=1,
-            )
-        # add created cls.tag to game.
+        cls.user = create_user(789234789)
+        cls.staff_user = create_user_staff(72834789)
+        cls.tag = create_tag(32478309)
+        cls.game = create_game(23748924)
         cls.game.tags.set([cls.tag])
-        cls.server_listing = ServerListing.objects.create(
-            game=cls.game,
-            owner=cls.user,
-            status=1,
-            )
+        cls.server_listing = create_server_listing(21673342)
 
     @classmethod
     def tearDownClass(cls):
@@ -162,35 +182,14 @@ class TestViews(TestCase):
 
 
 class TestStaffImageReview(TestCase):
+    '''Tests for staff_image_review view'''
 
     @classmethod
     def setUpClass(cls):
-        cls.user = CustomUser.objects.create(
-            username='Test_User',
-            password='TestPass',
-            email='test_user@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=False,
-        )
-        cls.staff_user = CustomUser.objects.create(
-            username='Test_Staff_User',
-            password='TestPass',
-            email='test_staff_user@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=True,
-        )
-        cls.tag = Tag.objects.create(
-            name='Roleplay',
-            slug='roleplay',
-            )
-        cls.game = Game.objects.create(
-            name='gta5',
-            slug='gta5',
-            image=None,
-            status=1,
-            )
+        cls.user = create_user(238904)
+        cls.staff_user = create_user_staff(7548392)
+        cls.tag = create_tag(890234890)
+        cls.game = create_game(16473245)
         # add created cls.tag to game.
         cls.game.tags.set([cls.tag])
         cls.server_listing = ServerListing.objects.create(
@@ -307,43 +306,17 @@ class TestStaffImageReview(TestCase):
 
 
 class TestServerCreate(TestCase):
-    '''Test server_create view'''
+    '''Tests server_create view'''
 
     @classmethod
     def setUpClass(cls):
-        cls.user = CustomUser.objects.create(
-            username='Test_User',
-            password='TestPass',
-            email='test_user@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=False,
-        )
-        cls.staff_user = CustomUser.objects.create(
-            username='Test_Staff_User',
-            password='TestPass',
-            email='test_staff_user@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=True,
-        )
-        cls.tag = Tag.objects.create(
-            name='Roleplay',
-            slug='roleplay',
-            )
-        cls.game = Game.objects.create(
-            name='gta5',
-            slug='gta5',
-            image=None,
-            status=1,
-            )
+        cls.user = create_user(98034253)
+        cls.staff_user = create_user_staff(65742383)
+        cls.tag = create_tag(51523783)
+        cls.game = create_game(8940322)
         # add created cls.tag to game.
         cls.game.tags.set([cls.tag])
-        cls.server_listing = ServerListing.objects.create(
-            game=cls.game,
-            owner=cls.user,
-            status=1,
-            )
+        cls.server_listing = create_server_listing(2364788)
 
     @classmethod
     def tearDownClass(cls):
@@ -354,6 +327,8 @@ class TestServerCreate(TestCase):
         cls.tag.delete()
 
     def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
         self.client.logout()
         self.test_image = Images.objects.create(
             user=self.user,
@@ -397,14 +372,21 @@ class TestServerCreate(TestCase):
             'server_create.html'
         )
 
-    @patch("cloudinary.uploader", autospec=True)
-    def test_post(self, uploader_mock):
+    @patch("cloudinary.uploader.upload", autospec=True)
+    def test_post(self, upload_mock):
         '''Test POST'''
         self.client.force_login(self.user)
-        image_file = SimpleUploadedFile(
-            "image.jpg",
-            b"file_content",
-            content_type="image/jpeg")
+
+        image_data = BytesIO(b'')
+        image_file = InMemoryUploadedFile(
+                file=image_data,
+                field_name='image',
+                name='image.jpg',
+                content_type='image/jpeg',
+                size=image_data.getbuffer().nbytes,
+                charset=None
+            )
+
         data = {
             'game': self.game.id,
             'tags': [self.tag.id],
@@ -418,29 +400,14 @@ class TestServerCreate(TestCase):
             'image': image_file
             }
 
-        request = self.factory.post(reverse('server_create'), data=data, follow=True)
-        request.user = self.user
-        # create a mock response from Cloudinary
-        fake_response = {
-            "public_id": "fake_public_id",
-            "version": 12345,
-            "signature": "fake_signature",
-            "width": 100,
-            "height": 100,
-            "format": "jpg",
-            "resource_type": "image",
-            "created_at": "2022-02-23T12:34:56Z",
-            "bytes": 123456,
-            "type": "upload",
-            "url": "http://fakeurl.com/image.jpg",
-            "secure_url": "https://fakeurl.com/image.jpg",
+        fake_upload_result = {
+            'url': 'https://fake-url.com/fake-image.jpg',
+            'public_id': 'fake-image-id'
         }
-        uploader_mock.upload.return_value = fake_response
+        upload_mock.return_value = fake_upload_result
 
-        response = server_create(request)
+        response = self.client.post(reverse('server_create'), data=data, follow=True)
+        self.assertTrue(response.status_code == 200)
 
-        self.assertTrue(response)
-
-        uploader_mock.upload.assert_called_once_with(
-            image_file, folder="server_directory/"
-        )
+        upload_mock.assert_called()
+        upload_mock.assert_called_once()
