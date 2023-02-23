@@ -46,17 +46,24 @@ def create_game(num: int):
 def create_server_listing(num: int):
     '''Create test listing'''
     obj = ServerListing.objects.create(
-        game= Game.objects.all().first(),
-        owner= CustomUser.objects.all().first(),
+        game= Game.objects.all().last(),
+        owner= CustomUser.objects.all().last(),
         title= f'{num}',
         short_description= 'a' * 200,
         long_description= 'a' * 200,
         status= 1,
         discord= f'{num}',
         tiktok= f'{num}')
-    obj.tags.set([Tag.objects.all().first()])
+    obj.tags.set([Tag.objects.all().last()])
     obj.save()
     return obj
+
+def create_test_image():
+    '''Create test image'''
+    return Images.objects.create(
+        user=CustomUser.objects.all().last(),
+        listing=ServerListing.objects.all().last(),
+        status=1)
 
 class TestViews(TestCase):
 
