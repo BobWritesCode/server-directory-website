@@ -1,33 +1,72 @@
 '''Tests for website.models '''
 import unittest
 from django.core.exceptions import ValidationError
-from .models import CustomUser, Tag, Game, ServerListing
+from .models import CustomUser, Tag, Game, ServerListing, Images
+
+def create_user(num: int):
+    '''Create test user'''
+    return CustomUser.objects.create(
+        username=f'T_User_{num}',
+        password=f'TPass_{num}',
+        email=f't_user_{num}@d8sf87sdf978sd.com',
+        email_verified=True,
+        is_active=True,
+        is_staff=False)
+
+def create_user_staff(num: int):
+    '''Create test staff user'''
+    return CustomUser.objects.create(
+            username=f'T_Staff_User_{num}',
+            password=f'TPass_{num}',
+            email=f't_staff_user_{num}@email34232343.com',
+            email_verified=True,
+            is_active=True,
+            is_staff=True)
+
+def create_tag(num: int):
+    '''Create test tag'''
+    return Tag.objects.create(name=f'{num}', slug=f'{num}')
+
+def create_game(num: int):
+    '''Create test game'''
+    obj = Game.objects.create(
+        name=f'{num}',
+        slug=f'{num}',
+        image=None,
+        status=1)
+        # add created cls.tag to game.
+    obj.tags.set([Tag.objects.all().last()])
+    return obj
+
+def create_server_listing(num: int):
+    '''Create test listing'''
+    obj = ServerListing.objects.create(
+        game= Game.objects.all().last(),
+        owner= CustomUser.objects.all().last(),
+        title= f'{num}',
+        short_description= 'a' * 200,
+        long_description= 'a' * 200,
+        status= 1,
+        discord= f'{num}',
+        tiktok= f'{num}')
+    obj.tags.set([Tag.objects.all().last()])
+    return obj
+
+def create_test_image():
+    '''Create test image'''
+    return Images.objects.create(
+        user=CustomUser.objects.all().last(),
+        listing=ServerListing.objects.all().last(),
+        status=1)
 
 
 class TestCustomerUser(unittest.TestCase):
     '''Tests for CustomUser model'''
 
-    @classmethod
-    def setUpClass(cls):
-        pass
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
-
     def setUp(self):
-        self.user1 = CustomUser.objects.create(
-            username='TEST_user_323423234',
-            email='test_user_323423234@email.com',
-        )
-        self.user2 = CustomUser.objects.create(
-            username='test_USER_213124523',
-            email='test_user_213124523@email.com',
-        )
-        self.user3 = CustomUser.objects.create(
-            username='teST_USer_432412342',
-            email='test_user_432412342@email.com',
-        )
+        self.user1 = create_user(23434234)
+        self.user2 = create_user(45345345)
+        self.user3 = create_user(64536456)
 
     def tearDown(self):
         self.user1.delete()
@@ -38,8 +77,8 @@ class TestCustomerUser(unittest.TestCase):
         '''Testing __str__ gives expected output'''
         expected_output = (
             f'PK: {self.user1.id} - id: {self.user1.id} - '
-            'email: test_user_323423234@email.com - '
-            'username: TEST_user_323423234'
+            f'email: {self.user1.email} - '
+            f'username: {self.user1.username}'
         )
         self.assertEqual(str(self.user1), expected_output)
 
@@ -50,14 +89,14 @@ class TestCustomerUser(unittest.TestCase):
         '''
         # Check username
         # Change to match another setUp object.
-        self.user1.username = 'test_USER_213124523'
+        self.user1.username = self.user2.username
         # Try to save object, if ValidationError pass test.
         with self.assertRaises(ValidationError):
             self.user1.save()
 
         # Check email
         # Change to match another setUp object.
-        self.user1.email = 'test_user_432412342@email.com'
+        self.user1.email = self.user2.email
         # Try to save object, if ValidationError pass test.
         with self.assertRaises(ValidationError):
             self.user1.save()
@@ -82,18 +121,9 @@ class TestTag(unittest.TestCase):
         pass
 
     def setUp(self):
-        self.tag1 = Tag.objects.create(
-            name='TEST tag 323423234',
-            slug='test-tag-323423234',
-        )
-        self.tag2 = Tag.objects.create(
-            name='test tag 213124523',
-            slug='test-tag-213124523',
-        )
-        self.tag3 = Tag.objects.create(
-            name='teST tag 432412342',
-            slug='test-tag-432412342',
-        )
+        self.tag1 = create_tag(2131245234)
+        self.tag2 = create_tag(1256344232)
+        self.tag3 = create_tag(1235344563)
 
     def tearDown(self):
         self.tag1.delete()
@@ -110,9 +140,9 @@ class TestTag(unittest.TestCase):
         json = self.tag1.to_json()
         self.assertEqual(type(json), str)
         self.assertIn('name', json)
-        self.assertIn('TEST tag 323423234', json)
+        self.assertIn(self.tag1.name, json)
         self.assertIn('slug', json)
-        self.assertIn('test-tag-323423234', json)
+        self.assertIn(self.tag1.slug, json)
 
 
 class TestGame(unittest.TestCase):
@@ -120,18 +150,9 @@ class TestGame(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.tag1 = Tag.objects.create(
-            name='TEST tag 323423234',
-            slug='test-tag-323423234',
-        )
-        cls.tag2 = Tag.objects.create(
-            name='test tag 213124523',
-            slug='test-tag-213124523',
-        )
-        cls.tag3 = Tag.objects.create(
-            name='teST tag 432412342',
-            slug='test-tag-432412342',
-        )
+        cls.tag1 = create_tag(97821390)
+        cls.tag2 = create_tag(1231278903)
+        cls.tag3 = create_tag(5483909)
 
     @classmethod
     def tearDownClass(cls):
@@ -140,21 +161,9 @@ class TestGame(unittest.TestCase):
         cls.tag3.delete()
 
     def setUp(self):
-        self.game1 = Game.objects.create(
-            name='TEST game 323423234',
-            slug='test-game-323423234',
-        )
-        self.game1.tags.set([self.tag1])
-        self.game2 = Game.objects.create(
-            name='test game 213124523',
-            slug='test-game-213124523',
-        )
-        self.game2.tags.set([self.tag1])
-        self.game3 = Game.objects.create(
-            name='teST game 432412342',
-            slug='test-game-432412342',
-        )
-        self.game3.tags.set([self.tag1])
+        self.game1 = create_game(23432423)
+        self.game2 = create_game(234234234)
+        self.game3 = create_game(324234234)
 
     def tearDown(self):
         self.game1.delete()
@@ -185,42 +194,22 @@ class TestServerListing(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.tag1 = Tag.objects.create(
-            name='TEST tag 323423234',
-            slug='test-tag-323423234',
-        )
-        cls.tag2 = Tag.objects.create(
-            name='TEST tag 213343243',
-            slug='test-tag-213343243',
-        )
-        cls.game1 = Game.objects.create(
-            name='TEST game 323423234',
-            slug='test-game-323423234',
-        )
-        cls.game1.tags.set([cls.tag1])
-        cls.user1 = CustomUser.objects.create(
-            username='TEST_user_323423234',
-            email='test_user_323423234@email.com',
-        )
+        cls.tag1 = create_tag(7832478)
+        cls.tag2 = create_tag(2347890321489)
+        cls.tag3 = create_tag(32478234)
+        cls.game1 = create_game(3423434)
+        cls.user1 = create_user(323443242)
 
     @classmethod
     def tearDownClass(cls):
         cls.game1.delete()
         cls.tag1.delete()
+        cls.tag2.delete()
+        cls.tag3.delete()
+        cls.user1.delete()
 
     def setUp(self):
-        self.listing1 = ServerListing.objects.create(
-            game=self.game1,
-            owner=self.user1,
-            title="TEST LISTING 3242363",
-            slug='test-listing-3242363',
-            short_description='a' * ServerListing._meta.get_field(
-                'short_description').max_length,
-            long_description='a' * ServerListing._meta.get_field(
-                'long_description').max_length,
-            discord="discord",
-        )
-        self.listing1.tags.set([self.tag1, self.tag2])
+        self.listing1 = create_server_listing(23423423)
 
     def tearDown(self):
         self.listing1.delete()
@@ -232,24 +221,14 @@ class TestServerListing(unittest.TestCase):
 
     def test_check_tag_count_on_listing(self):
         '''Checks get correct number of tags for a listing'''
+        self.listing1.tags.set([self.tag1, self.tag2])
         self.assertEqual(self.listing1.number_of_tags(), 2)
 
     def test_save_assigns_correct_slug(self):
         '''
         Test to see if next_id is assigned correctly.
         '''
-        listing2 = ServerListing.objects.create(
-            game=self.game1,
-            owner=self.user1,
-            title="TEST LISTING 7823142",
-            slug='test-listing-7823142',
-            short_description='a' * ServerListing._meta.get_field(
-                'short_description').max_length,
-            long_description='a' * ServerListing._meta.get_field(
-                'long_description').max_length,
-            discord="discord",
-        )
-        listing2.tags.set([self.tag1, self.tag2])
+        listing2 = create_server_listing(3234234234230)
         self.assertEqual(listing2.slug, f'Listing-{listing2.pk}')
         listing2.save()
         self.assertEqual(listing2.slug, f'Listing-{listing2.pk}')
