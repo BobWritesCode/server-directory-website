@@ -38,7 +38,7 @@ urlpatterns = [
     path(
         'accounts/my_account',
         views.my_account,
-        name='my-account'
+        name='my_account'
     ),
 
     path(

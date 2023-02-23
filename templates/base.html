@@ -36,7 +36,7 @@
                         <strong>Hi {{ user.username }}!</strong>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-light" href="{% url 'my-account' %}">My Account</a>
+                        <a class="nav-link text-light" href="{% url 'my_account' %}">My Account</a>
                     </li>
                     <!-- Here we check to see if the requesting user is a staff member -->
                     {% if user.is_staff %}
@@ -93,7 +93,7 @@
                         <a class="m-1 text-decoration-none text-light" href="{% url 'contact_us' %}"
                             aria-label="Link: Go to Contact Us page.">Contact Us</a>
                         <span class="m-1">|</span>
-                        <a class="m-1 text-decoration-none text-light" href="{% url 'my-account' %}"
+                        <a class="m-1 text-decoration-none text-light" href="{% url 'my_account' %}"
                             aria-label="Link: Go to My Account page.">My Account</a>
                     </div>
                 </div>

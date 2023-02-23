@@ -298,7 +298,7 @@ def server_create(request: object):
                 image_form.instance.approved_by = None
                 image_form.save()
 
-        return redirect('my-account')
+        return redirect('my_account')
 
     return render(
         request,
@@ -344,7 +344,7 @@ def server_edit(request: object, _pk: int):
         if "server_listing_delete_confirm" in request.POST:
             if request.POST["server_listing_delete_confirm"] == "delete":
                 server_delete(request, item_pk=_pk)
-                return redirect("my-account")
+                return redirect("my_account")
 
         # If user is trying to update the listing
         form = CreateServerListingForm(request.POST)
@@ -403,7 +403,7 @@ def server_edit(request: object, _pk: int):
             item.discord = form.data['discord']
             item.tiktok = form.data['tiktok']
             item.save()
-        return redirect("my-account")
+        return redirect("my_account")
 
     # Set status text based on image.status.
     try:
@@ -458,7 +458,7 @@ def server_delete(request: object, item_pk: int):
         # Delete listing image from Cloudinary server
         uploader.destroy(image.public_id)
     item.delete()
-    return redirect('my-account')
+    return redirect('my_account')
 
 
 @login_required
@@ -505,7 +505,7 @@ def my_account(request: object):
                 # Delete server listing from database
                 item.delete()
 
-                return redirect("my-account")
+                return redirect("my_account")
 
         # Let's see if the user is trying to delete there account.
         if (
@@ -1164,7 +1164,7 @@ def login_view(request: object):
 
     # If user already logged in, just direct them to My Account page.
     if request.user:
-        return redirect("my-account")
+        return redirect("my_account")
 
     if request.method == 'POST':
         # Get from request user input.
@@ -1187,7 +1187,7 @@ def login_view(request: object):
             # All being okay, log user in.
             else:
                 login(request, user)
-                return redirect("my-account")
+                return redirect("my_account")
 
     form = LoginForm()
 
