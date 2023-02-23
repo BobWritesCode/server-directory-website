@@ -208,7 +208,7 @@ def staff_image_review(request: object, item_pk: int = None):
     Returns:
         render() (func): Loads the html page.
     """
-    if request.method == request.POST:
+    if request.method == 'POST':
 
         query = Q(status=0)
         image_count = Images.objects.filter(query).count()
@@ -283,6 +283,7 @@ def server_create(request: object):
             form.save()
 
             if request.FILES:
+
                 new_image = uploader.upload(
                     request.FILES['image'],
                     folder="server_directory/"
