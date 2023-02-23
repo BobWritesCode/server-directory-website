@@ -343,7 +343,7 @@ def server_edit(request: object, _pk: int):
         # Let's see if the user is trying to delete the listing.
         if "server_listing_delete_confirm" in request.POST:
             if request.POST["server_listing_delete_confirm"] == "delete":
-                item.delete()
+                server_delete(request, item_pk=_pk)
                 return redirect("my-account")
 
         # If user is trying to update the listing
