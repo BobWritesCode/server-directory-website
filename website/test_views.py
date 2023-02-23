@@ -37,11 +37,14 @@ def create_tag(num: int):
 
 def create_game(num: int):
     '''Create test game'''
-    return Game.objects.create(
+    obj = Game.objects.create(
         name=f'{num}',
         slug=f'{num}',
         image=None,
         status=1)
+    # add created cls.tag to game.
+    obj.tags.set([Tag.objects.all().last()])
+    return obj
 
 def create_server_listing(num: int):
     '''Create test listing'''
@@ -55,7 +58,6 @@ def create_server_listing(num: int):
         discord= f'{num}',
         tiktok= f'{num}')
     obj.tags.set([Tag.objects.all().last()])
-    obj.save()
     return obj
 
 def create_test_image():
@@ -197,8 +199,6 @@ class TestStaffImageReview(TestCase):
         cls.staff_user = create_user_staff(7548392)
         cls.tag = create_tag(890234890)
         cls.game = create_game(16473245)
-        # add created cls.tag to game.
-        cls.game.tags.set([cls.tag])
         cls.server_listing = ServerListing.objects.create(
             game=cls.game,
             owner=cls.user,
@@ -321,8 +321,6 @@ class TestServerCreate(TestCase):
         cls.staff_user = create_user_staff(65742383)
         cls.tag = create_tag(51523783)
         cls.game = create_game(8940322)
-        # add created cls.tag to game.
-        cls.game.tags.set([cls.tag])
         cls.server_listing = create_server_listing(2364788)
 
     @classmethod
@@ -337,11 +335,7 @@ class TestServerCreate(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
         self.client.logout()
-        self.test_image = Images.objects.create(
-            user=self.user,
-            listing=self.server_listing,
-            status=1,
-        )
+        self.test_image = create_test_image()
         self.form = CreateServerListingForm({
             'game': self.game.id,
             'tags': [self.tag.id],
