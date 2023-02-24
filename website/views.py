@@ -17,6 +17,7 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.mail import send_mail
 from django.db import IntegrityError
 from django.db.models import Q
+from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -838,54 +839,54 @@ def send_email_verification(request: object, user: object):
 
 
 @login_required
+@require_POST
 def bump_server(request: object):
     """
     Add 1 bump to server if already not bumped by user
 
     Decorators:
         @login_required: User required to be logged in
+        @require_POST: Allow POST only.
 
     Parameters:
-        request (object): GET/POST request from user.
+        request (object): POST request from user.
 
     Returns:
         HttpResponse(json({}'result': number of bumps (int)}))
     """
-    if request.method == 'POST':
+    body_unicode = request.body.decode('utf-8')
+    body = json.loads(body_unicode)
+    content = int(body['server_id'])
 
-        body_unicode = request.body.decode('utf-8')
-        body = json.loads(body_unicode)
-        content = int(body['server_id'])
+    # Get server listing object
+    listing = get_object_or_404(ServerListing, id=content)
 
-        # Get server listing object
-        listing = get_object_or_404(ServerListing, id=content)
+    # Get user bumps
+    bumps_queryset = get_user_bumps(request)
 
-        # Get user bumps
-        bumps_queryset = get_user_bumps(request)
-
-        # Check user does not already have active bump or listing
-        if content not in bumps_queryset:
-            # Add 1 to bump count for frontend
-            bumps_queryset_len = len(bumps_queryset) + 1
-
-            # Check if this server already bumped by user
-            if content in bumps_queryset:
-                return HttpResponse(
-                    json.dumps({'result': int(bumps_queryset_len)}))
-
-            # Check user has not already bumped max server amount
-            if len(bumps_queryset) > 4:
-                return HttpResponse(
-                    json.dumps({'result': int(bumps_queryset_len)}))
-
-            # Create a row to table and save
-            bump = Bumps.objects.create(user=request.user, listing=listing)
-            bump.save()
-            return HttpResponse(
-                json.dumps({'result': int(bumps_queryset_len)}))
-
+    # Check if this server already bumped by user
+    if content in bumps_queryset:
         return HttpResponse(
-            json.dumps({'result': int(len(bumps_queryset))}))
+            json.dumps({'result': len(bumps_queryset)}))
+
+    # Check user has not already bumped max server amount
+    if len(bumps_queryset) > 4:
+        return HttpResponse(
+            json.dumps({'result': len(bumps_queryset)}))
+
+    # Check user does not already have active bump or listing
+    if content not in bumps_queryset:
+        # Add 1 to bump count for frontend
+        bumps_queryset_len = len(bumps_queryset) + 1
+
+        # Create a row to table and save
+        bump = Bumps.objects.create(user=request.user, listing=listing)
+        bump.save()
+        return HttpResponse(
+            json.dumps({'result': int(bumps_queryset_len)}))
+
+    return HttpResponse(
+        json.dumps({'result': int(len(bumps_queryset))}))
 
 
 @login_required
