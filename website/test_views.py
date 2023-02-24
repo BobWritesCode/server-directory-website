@@ -2,14 +2,17 @@
 
 from unittest.mock import patch
 from io import BytesIO
+from django.contrib.auth.tokens import default_token_generator
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 from django.test import Client
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
-from .forms import CreateServerListingForm, ImageForm
+from .forms import CreateServerListingForm, ImageForm, SignupForm
 
 
 def create_user(num: int):
@@ -53,7 +56,7 @@ def create_server_listing(num: int, user: object, game: object, tags: list):
         game= game,
         owner= user,
         title= f'{num}',
-        short_description= 'a' * 200,
+        short_description= 'a' * 150,
         long_description= 'a' * 200,
         status= 1,
         discord= f'{num}',
@@ -549,16 +552,30 @@ class TestServerEdit(TestCase):
             reverse('server_edit',args=[listing.id]))
         self.assertEqual(response.status_code, 200)
 
-    def test_post_update_listing(self):
+    @patch("cloudinary.uploader.upload", autospec=True)
+    def test_post_update_listing(self, upload_mock):
         '''Test POST and updating a listing'''
         self.client.force_login(self.user)
         data = form_data_server_listing(listing=self.listing, tags=[self.tag,])
+
+        fake_upload_result = {
+            'success': True,
+        }
+        upload_mock.return_value = fake_upload_result
+
         self.assertEqual(CreateServerListingForm(data).is_valid(), True)
         response = self.client.post(
-            reverse('server_edit', args=[self.listing.id]), data)
-        self.assertEqual(response.request['REQUEST_METHOD'], 'POST')
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('my_account'))
+            reverse('server_edit', args=[self.listing.id]), data, follow=True)
+
+        self.assertTrue(response.status_code == 200)
+        upload_mock.assert_called()
+        upload_mock.assert_called_once()
+
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/my_account']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
 
     @patch("cloudinary.uploader.destroy", autospec=True)
     def test_post_delete_listing(self, destroy_mock):
@@ -708,3 +725,103 @@ class TestMyAccount(TestCase):
         expected_paths = ['/accounts/account_deleted/']
         actual_paths = [redirect[0] for redirect in redirect_chain]
         self.assertEqual(actual_paths, expected_paths)
+
+class TestSignUpView(TestCase):
+    '''Tests sign_up_view view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(
+            num=98034253)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.client.logout()
+
+    def test_get(self):
+        '''Test request method GET'''
+        # Guest
+        response = self.client.get(reverse('signup'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'registration/signup.html')
+
+    @patch('django.core.mail.send_mail', autospec=True)
+    def test_post(self, email_mock):
+        '''Test post, sign up new account'''
+        data = {
+            'username': 'tUser_3423422',
+            'email': 'gniaqhhsdmbhtwekpx@bbitf.com',
+            'password1': 'testpassword34234!',
+            'password2': 'testpassword34234!'
+        }
+
+        fake_email_result = {'success': True}
+        email_mock.return_value = fake_email_result
+
+        response = self.client.post(reverse('signup'), data, follow=True)
+
+        email_mock.assert_called()
+        email_mock.assert_called_once()
+
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/signup_verify_email']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
+
+    def test_post_with_form_errors(self):
+        '''Test post, sign up new account'''
+        data = {
+            'username': 'a' * 100,
+            'email': '34232v23787f324f@34f9sdfsd02392.com',
+            'password1': '1!',
+            'password2': '1!'
+        }
+        response = self.client.post(reverse('signup'), data, follow=True)
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = []
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
+
+class TestActivate(TestCase):
+    '''Tests activate'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(
+            num=98034253)
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
+
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username='testuser',
+            email='testuser@example.com',
+            password='testpassword'
+        )
+        self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        self.token = default_token_generator.make_token(self.user)
+
+    def test_activation_successful(self):
+        '''Test activation process works'''
+        response = self.client.get(reverse('activate', args=[self.uid, self.token]))
+        self.assertRedirects(response, reverse('email_address_verified'))
+        # Check that the user's email_verified field is True
+        self.assertTrue(CustomUser.objects.get(pk=self.user.pk).email_verified)
+
+    def test_activation_invalid_link(self):
+        '''Test activation process with invalid link'''
+        response = self.client.get(reverse('activate', args=['invalid_uid', 'invalid_token']))
+        # Check that the response returns a HttpResponse with expected message.
+        self.assertIsInstance(response, HttpResponse)
+        self.assertEqual(response.content, b"Activation link is invalid!")
