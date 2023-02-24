@@ -541,6 +541,7 @@ class TestServerEdit(TestCase):
         '''Test POST and updating a listing that already have an
         image linked to it.'''
         self.client.force_login(self.user)
+
         # Create fake image
         image_data = BytesIO(b'')
         image_file = InMemoryUploadedFile(
@@ -550,6 +551,7 @@ class TestServerEdit(TestCase):
             content_type='image/jpeg',
             size=image_data.getbuffer().nbytes,
             charset=None)
+
         # Fake listing data
         data = {
             'game': self.game.id,
@@ -564,17 +566,21 @@ class TestServerEdit(TestCase):
             'discord': 'discord',
             'tiktok': 'tiktok',
             'image': image_file}
+
         # Create fake results from mock upload
         fake_upload_result = {
             'success': True,
             'url': 'fakeurlcom',
             'public_id': 'FakePublicID'}
         upload_mock.return_value = fake_upload_result
+
         # Assert correct details are being used for form
         self.assertTrue(CreateServerListingForm(data).is_valid())
+
         # POST
         response = self.client.post(
-            reverse('server_edit', args=[self.listing2.id]), data, follow=True)
+            reverse('server_edit', args=[self.listing.id]), data, follow=True)
+
         # Asserts
         self.assertTrue(response.status_code == 200)
         upload_mock.assert_called()
@@ -626,7 +632,7 @@ class TestServerEdit(TestCase):
         self.assertTrue(CreateServerListingForm(data).is_valid())
         # POST
         response = self.client.post(
-            reverse('server_edit', args=[self.listing.id]), data, follow=True)
+            reverse('server_edit', args=[self.listing2.id]), data, follow=True)
         # Asserts
         self.assertTrue(response.status_code == 200)
         upload_mock.assert_called()
@@ -791,7 +797,7 @@ class TestSignUpView(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        cls.user.delete()
 
     def setUp(self):
         self.client = Client()
@@ -815,15 +821,16 @@ class TestSignUpView(TestCase):
             'password1': 'testpassword34234!',
             'password2': 'testpassword34234!'
         }
-
+        # Assert fpr Form
+        self.assertTrue(SignupForm(data).is_valid())
+        # Mock results
         fake_email_result = {'success': True}
         email_mock.return_value = fake_email_result
-
+        # POST
         response = self.client.post(reverse('signup'), data, follow=True)
-
+        # Asserts
         email_mock.assert_called()
         email_mock.assert_called_once()
-
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/signup_verify_email']
@@ -1269,21 +1276,20 @@ class TestUnbanUser(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestLoginView(TestCase):
-    '''Test for login_view view'''
+# class TestLoginView(TestCase):
+#     '''Test for login_view view'''
 
-    @classmethod
-    def setUpClass(cls):
-        cls.user = create_user(num=55734532)
+#     @classmethod
+#     def setUpClass(cls):
+#         cls.user = create_user(num=32423524)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.user.delete()
+#     @classmethod
+#     def tearDownClass(cls):
+#         cls.user.delete()
 
-    # def test_get(self):
-    #     '''Test GET'''
-    #     self.client.logout()
-    #     response = self.client.get(reverse('login'), follow=True)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response,
-    #                             'registration/login.html')
+#     def test_get(self):
+#         '''Test GET'''
+#         response = self.client.get(reverse('login'), follow=True)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response,
+#                                 'registration/login.html')
