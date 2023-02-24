@@ -21,6 +21,7 @@ from django.views.decorators.http import require_POST
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
@@ -1053,10 +1054,9 @@ def ban_user(request: object, _id: int):
     # Get target user.
     user = get_object_or_404(CustomUser, pk=_id)
 
-    # Delete all current user sessions (in case logged in on multiple devices)
-    for session in Session.objects.all():
-        if session.get_decoded().get('_auth_user_id') == user.pk:
-            session.delete()
+    # Delete all current user active sessions.
+    Session.objects.filter(expire_date__gte=timezone.now(),
+                           session_key__contains=user.pk).delete()
 
     # Flag user as banned.
     user.is_banned = True
