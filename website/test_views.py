@@ -438,6 +438,12 @@ class TestServerCreate(TestCase):
         upload_mock.assert_called()
         upload_mock.assert_called_once()
 
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/my_account']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
+
 class TestServerEdit(TestCase):
     '''Tests server_edit view'''
 
@@ -554,16 +560,31 @@ class TestServerEdit(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('my_account'))
 
-    def test_post_delete_listing(self):
-        '''Test POST delete listing'''
+    @patch("cloudinary.uploader.destroy", autospec=True)
+    def test_post_delete_listing(self, destroy_mock):
+        '''Test POST delete listing, also tests server_delete()'''
         self.client.force_login(self.user)
         data = {
             'server_listing_delete_confirm': 'delete'
         }
+
+        fake_destroy_result = {
+            'success': True,
+        }
+        destroy_mock.return_value = fake_destroy_result
+
         response = self.client.post(
-            reverse('server_edit', args=[self.listing.id]), data)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('my_account'))
+            reverse('server_edit', args=[self.listing.id]), data, follow=True)
+
+        self.assertTrue(response.status_code == 200)
+        destroy_mock.assert_called()
+        destroy_mock.assert_called_once()
+
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/my_account']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
 
 class TestMyAccount(TestCase):
     '''Tests my_account view'''
@@ -582,6 +603,8 @@ class TestMyAccount(TestCase):
             num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
         cls.image = create_image(
             num=123412312, user=cls.user, listing=cls.listing, status=0)
+        cls.bump = create_bump(
+            user=cls.user, listing=cls.listing)
 
     @classmethod
     def tearDownClass(cls):
