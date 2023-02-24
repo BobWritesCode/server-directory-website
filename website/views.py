@@ -874,19 +874,14 @@ def bump_server(request: object):
         return HttpResponse(
             json.dumps({'result': len(bumps_queryset)}))
 
-    # Check user does not already have active bump or listing
-    if content not in bumps_queryset:
-        # Add 1 to bump count for frontend
-        bumps_queryset_len = len(bumps_queryset) + 1
+    # Add 1 to bump count for frontend
+    bumps_queryset_len = len(bumps_queryset) + 1
 
-        # Create a row to table and save
-        bump = Bumps.objects.create(user=request.user, listing=listing)
-        bump.save()
-        return HttpResponse(
-            json.dumps({'result': int(bumps_queryset_len)}))
-
+    # Create a row to table and save
+    bump = Bumps.objects.create(user=request.user, listing=listing)
+    bump.save()
     return HttpResponse(
-        json.dumps({'result': int(len(bumps_queryset))}))
+        json.dumps({'result': int(bumps_queryset_len)}))
 
 
 @login_required
