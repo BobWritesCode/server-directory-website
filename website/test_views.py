@@ -54,7 +54,7 @@ def create_game(num: int):
     return obj
 
 
-def create_server_listing(num: int, user: object, game: object, tags: list):
+def create_listing(num: int, user: object, game: object, tags: list):
     '''Create test listing'''
     obj = ServerListing.objects.create(
         game=game,
@@ -109,7 +109,7 @@ class TestViews(TestCase):
         cls.tag = create_tag(783423423)
         cls.game = create_game(893494)
         cls.game.tags.set([cls.tag])
-        cls.server_listing = create_server_listing(
+        cls.server_listing = create_listing(
             num=738453824, user=cls.user, game=cls.game, tags=[cls.tag])
 
     @classmethod
@@ -347,7 +347,7 @@ class TestServerCreate(TestCase):
         cls.staff_user = create_user_staff(43252435)
         cls.tag = create_tag(23435435)
         cls.game = create_game(234235654)
-        cls.listing = create_server_listing(
+        cls.listing = create_listing(
             num=654643345, user=cls.user, game=cls.game, tags=[cls.tag])
 
     @classmethod
@@ -460,7 +460,7 @@ class TestServerEdit(TestCase):
             num=7654565)
         cls.game = create_game(
             num=2345445)
-        cls.listing = create_server_listing(
+        cls.listing = create_listing(
             num=7653456, user=cls.user, game=cls.game, tags=[cls.tag])
         cls.image = create_image(
             num=323423455, user=cls.user, listing=cls.listing, status=0)
@@ -499,7 +499,7 @@ class TestServerEdit(TestCase):
 
     def test_get_image_status_0(self):
         '''Test GET with image status 0'''
-        listing = create_server_listing(
+        listing = create_listing(
             num=67566756, user=self.user, game=self.game, tags=[self.tag])
         create_image(
             num=768678, user=self.user, listing=listing, status=0)
@@ -510,7 +510,7 @@ class TestServerEdit(TestCase):
 
     def test_get_image_status_1(self):
         '''Test GET with image status 1'''
-        listing = create_server_listing(
+        listing = create_listing(
             num=234234556, user=self.user, game=self.game, tags=[self.tag])
         create_image(
             num=123213123, user=self.user, listing=listing, status=1)
@@ -521,7 +521,7 @@ class TestServerEdit(TestCase):
 
     def test_get_image_status_2(self):
         '''Test GET with image status 3'''
-        listing = create_server_listing(
+        listing = create_listing(
             num=23423423, user=self.user, game=self.game, tags=[self.tag])
         create_image(
             num=2341234123, user=self.user, listing=listing, status=2)
@@ -532,7 +532,7 @@ class TestServerEdit(TestCase):
 
     def test_get_image_status_3(self):
         '''Test GET with image status 3'''
-        listing = create_server_listing(
+        listing = create_listing(
             num=2342355642, user=self.user, game=self.game, tags=[self.tag])
         create_image(
             num=2343425, user=self.user, listing=listing, status=3)
@@ -543,7 +543,7 @@ class TestServerEdit(TestCase):
 
     def test_get_image_none(self):
         '''Test GET with image as None'''
-        listing = create_server_listing(
+        listing = create_listing(
             num=45343454, user=self.user, game=self.game, tags=[self.tag])
         self.client.force_login(self.user)
         response = self.client.get(
@@ -615,7 +615,7 @@ class TestMyAccount(TestCase):
             num=5152332453453783)
         cls.game = create_game(
             num=345425534)
-        cls.listing = create_server_listing(
+        cls.listing = create_listing(
             num=3452376, user=cls.user, game=cls.game, tags=[cls.tag])
         cls.image = create_image(
             num=74652323, user=cls.user, listing=cls.listing, status=0)
@@ -673,7 +673,7 @@ class TestMyAccount(TestCase):
         response = self.client.get(reverse('my_account'))
         self.assertContains(response, 'Banned')
 
-        create_server_listing(
+        create_listing(
             num=34233, user=self.user, game=self.game, tags=[self.tag])
         response = self.client.get(reverse('my_account'))
         self.assertEqual(response.status_code, 200)
@@ -791,8 +791,7 @@ class TestActivate(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = create_user(
-            num=74452345)
+        cls.user = create_user(num=74452345)
 
     @classmethod
     def tearDownClass(cls):
@@ -826,3 +825,76 @@ class TestActivate(TestCase):
 
 class TestServerListings(TestCase):
     '''Tests server_listings view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(num=12342543)
+        cls.tag1 = create_tag(num=342342367)
+        cls.tag2 = create_tag(num=342346324)
+        cls.game = create_game(num=890902322)
+        cls.listing = create_listing(
+            num=7837842, user=cls.user, game=cls.game,
+            tags=[cls.tag1, cls.tag2])
+        cls.bump = create_bump(user=cls.user, listing=cls.listing)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.bump.delete()
+        cls.listing.delete()
+        cls.game.delete()
+        cls.tag1.delete()
+        cls.tag2.delete()
+        cls.user.delete()
+
+    def setUp(self):
+        pass
+
+    def test_get_as_guest(self):
+        '''Test request method GET'''
+        # Guest
+        response = self.client.get(reverse(
+            'server-list', args=[self.game.slug]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'server-list.html'
+        )
+
+    def test_get_add_to_tag_string(self):
+        '''Test adding to tag string'''
+        # Guest
+        response = self.client.get(reverse(
+            'server-list-wth-tags',
+            args=[self.game.slug, f'A%25{self.tag1.slug}']))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'server-list.html'
+        )
+
+    def test_get_remove_from_tag_string_and_not_left_empty(self):
+        '''Test removing from tag string but not left empty'''
+        # Guest
+        response = self.client.get(reverse(
+            'server-list-wth-tags',
+            args=[self.game.slug,
+                  f'R%25{self.tag2.slug}%25{self.tag1.slug}'
+                  f'%25{self.tag2.slug}']))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'server-list.html'
+        )
+
+    def test_get_remove_from_tag_string_so_left_empty(self):
+        '''Test removing from tag string and left empty'''
+        # Guest
+        response = self.client.get(reverse(
+            'server-list-wth-tags',
+            args=[self.game.slug,
+                  f'R%25{self.tag1.slug}%25{self.tag1.slug}']))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'server-list.html'
+        )
