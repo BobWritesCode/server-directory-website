@@ -949,14 +949,3 @@ class TestListingDetail(TestCase):
             'listing_detail.html'
         )
 
-
-class TestCheckMatch(TestCase):
-    '''Test check_match method'''
-
-    def test_matching_values(self):
-        '''Test two matching values to make sure True is returned'''
-        self.assertTrue(check_match('pineapples', 'pineapples'))
-
-    def test_non_matching_values(self):
-        '''Test two non-matching values to make sure True is returned'''
-        self.assertFalse(check_match('oranges', 'pineapples'))

@@ -837,44 +837,6 @@ def send_email_verification(request: object, user: object):
     )
 
 
-def check_match(value1: str, value2: str):
-    """
-    Returns True / False depending if args match.
-
-    Args:
-        value1 (str): First arg.
-        value2 (str): Second arg to compare to first.
-
-    Returns:
-        bool (bool): True / False.
-    """
-    if value1 == value2:
-        return True
-    return False
-
-
-def email_check(request: object):
-    """
-    Check if email address is already in use.
-
-    Args:
-        request (object): GET/POST request from user.
-
-    Returns:
-        HttpResponse ((json.dumps({'result': result}))
-    """
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
-    content = body['email']
-
-    if CustomUser.objects.filter(email=content).exists():
-        result = True
-    else:
-        result = False
-
-    return HttpResponse(json.dumps({'result': result}))
-
-
 @login_required
 def bump_server(request: object):
     """
