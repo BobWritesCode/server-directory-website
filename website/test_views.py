@@ -5,10 +5,11 @@ from io import BytesIO
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.shortcuts import get_object_or_404
 from django.test import Client
 
 from .models import CustomUser, Tag, Game, ServerListing, Images
-from .forms import CreateServerListingForm
+from .forms import CreateServerListingForm, ImageForm
 
 
 def create_user(num: int):
@@ -46,26 +47,41 @@ def create_game(num: int):
     obj.tags.set([Tag.objects.all().last()])
     return obj
 
-def create_server_listing(num: int):
+def create_server_listing(num: int, user: object, game: object, tags: list):
     '''Create test listing'''
     obj = ServerListing.objects.create(
-        game= Game.objects.all().last(),
-        owner= CustomUser.objects.all().last(),
+        game= game,
+        owner= user,
         title= f'{num}',
         short_description= 'a' * 200,
         long_description= 'a' * 200,
         status= 1,
         discord= f'{num}',
         tiktok= f'{num}')
-    obj.tags.set([Tag.objects.all().last()])
+    obj.tags.set(tags)
     return obj
 
-def create_test_image():
+def form_data_server_listing(listing: object, tags: list):
+    '''Data to have valid form for CreateServerListingForm'''
+    return {
+        'game': listing.game,
+        'owner':  listing.owner,
+        'title':  listing.title,
+        'tags': tags,
+        'short_description': listing.short_description,
+        'long_description': listing.long_description,
+        'status': listing.status,
+        'discord': listing.discord,
+        'tiktok': listing.tiktok,
+    }
+
+def create_test_image(num: int, user: object, listing: object, status: int = 1):
     '''Create test image'''
     return Images.objects.create(
-        user=CustomUser.objects.all().last(),
-        listing=ServerListing.objects.all().last(),
-        status=1)
+        user=user,
+        listing=listing,
+        status=status,
+        public_id=num)
 
 class TestViews(TestCase):
 
@@ -76,7 +92,8 @@ class TestViews(TestCase):
         cls.tag = create_tag(32478309)
         cls.game = create_game(23748924)
         cls.game.tags.set([cls.tag])
-        cls.server_listing = create_server_listing(21673342)
+        cls.server_listing = create_server_listing(
+            num=21673342, user=cls.user, game=cls.game, tags=[cls.tag])
 
     @classmethod
     def tearDownClass(cls):
@@ -321,11 +338,12 @@ class TestServerCreate(TestCase):
         cls.staff_user = create_user_staff(65742383)
         cls.tag = create_tag(51523783)
         cls.game = create_game(8940322)
-        cls.server_listing = create_server_listing(2364788)
+        cls.listing = create_server_listing(
+            num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
 
     @classmethod
     def tearDownClass(cls):
-        cls.server_listing.delete()
+        cls.listing.delete()
         cls.user.delete()
         cls.staff_user.delete()
         cls.game.delete()
@@ -335,7 +353,8 @@ class TestServerCreate(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
         self.client.logout()
-        self.test_image = create_test_image()
+        self.test_image = create_test_image(
+            num=3242342334, user=self.user, listing=self.listing)
         self.form = CreateServerListingForm({
             'game': self.game.id,
             'tags': [self.tag.id],
@@ -412,3 +431,209 @@ class TestServerCreate(TestCase):
 
         upload_mock.assert_called()
         upload_mock.assert_called_once()
+
+class TestServerEdit(TestCase):
+    '''Tests server_edit view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(
+            num=98034253)
+        cls.staff_user = create_user_staff(
+            num=65742383)
+        cls.tag = create_tag(
+            num=51523783)
+        cls.game = create_game(
+            num=8940322)
+        cls.listing = create_server_listing(
+            num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
+        cls.image = create_test_image(
+            num=123412312, user=cls.user, listing=cls.listing, status=0)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.image.delete()
+        cls.listing.delete()
+        cls.user.delete()
+        cls.staff_user.delete()
+        cls.game.delete()
+        cls.tag.delete()
+
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.client.logout()
+
+    def test_get(self):
+        '''Test request method GET'''
+        # Guest
+        user2 = create_user(23432523)
+        response = self.client.get(reverse('server_edit', args=[self.listing.id]) )
+        self.assertEqual(response.status_code, 302)
+        # Registered non-authorised user
+        self.client.force_login(user2)
+        response = self.client.get(reverse('server_edit', args=[self.listing.id]))
+        self.assertEqual(response.status_code, 302)
+        self.client.logout()
+        # Registered
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('server_edit', args=[self.listing.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'server_edit.html'
+        )
+
+    def test_get_image_status_0(self):
+        '''Test GET with image status 0'''
+        listing = create_server_listing(
+            num=6345423, user=self.user, game=self.game, tags=[self.tag])
+        create_test_image(
+            num=234234234, user=self.user, listing=listing, status=0)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse('server_edit',args=[listing.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_image_status_1(self):
+        '''Test GET with image status 1'''
+        listing = create_server_listing(
+            num=234234556, user=self.user, game=self.game, tags=[self.tag])
+        create_test_image(
+            num=123213123, user=self.user, listing=listing, status=1)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse('server_edit',args=[listing.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_image_status_2(self):
+        '''Test GET with image status 3'''
+        listing = create_server_listing(
+            num=23423423, user=self.user, game=self.game, tags=[self.tag])
+        create_test_image(
+            num=2341234123, user=self.user, listing=listing, status=2)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse('server_edit',args=[listing.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_image_status_3(self):
+        '''Test GET with image status 3'''
+        listing = create_server_listing(
+            num=324236634, user=self.user, game=self.game, tags=[self.tag])
+        create_test_image(
+            num=2312312313, user=self.user, listing=listing, status=3)
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse('server_edit',args=[listing.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_image_none(self):
+        '''Test GET with image as None'''
+        listing = create_server_listing(
+            num=45343454, user=self.user, game=self.game, tags=[self.tag])
+        self.client.force_login(self.user)
+        response = self.client.get(
+            reverse('server_edit',args=[listing.id]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_update_listing(self):
+        '''Test POST and updating a listing'''
+        self.client.force_login(self.user)
+        data = form_data_server_listing(listing=self.listing, tags=[self.tag,])
+        self.assertEqual(CreateServerListingForm(data).is_valid(), True)
+        response = self.client.post(
+            reverse('server_edit', args=[self.listing.id]), data)
+        self.assertEqual(response.request['REQUEST_METHOD'], 'POST')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('my_account'))
+
+    def test_post_delete_listing(self):
+        '''Test POST delete listing'''
+        self.client.force_login(self.user)
+        data = {
+            'server_listing_delete_confirm': 'delete'
+        }
+        response = self.client.post(
+            reverse('server_edit', args=[self.listing.id]), data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('my_account'))
+
+class TestMyAccount(TestCase):
+    '''Tests my_account view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(
+            num=98034253)
+        cls.staff_user = create_user_staff(
+            num=65742383)
+        cls.tag = create_tag(
+            num=51523783)
+        cls.game = create_game(
+            num=8940322)
+        cls.listing = create_server_listing(
+            num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
+        cls.image = create_test_image(
+            num=123412312, user=cls.user, listing=cls.listing, status=0)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.image.delete()
+        cls.listing.delete()
+        cls.user.delete()
+        cls.staff_user.delete()
+        cls.game.delete()
+        cls.tag.delete()
+
+    def setUp(self):
+        self.client = Client()
+        self.factory = RequestFactory()
+        self.client.logout()
+
+    def test_get(self):
+        '''Test request method GET'''
+        # Guest
+        response = self.client.get(reverse('my_account') )
+        self.assertEqual(response.status_code, 302)
+        # Registered non-authorised user
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('my_account'))
+        self.assertEqual(response.status_code, 200)
+        self.client.logout()
+        # Registered
+        self.client.force_login(self.user)
+        response = self.client.get(reverse('my_account'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'registration/my_account.html'
+        )
+
+    def test_staff_image_review_status_text(self):
+        '''Check image status text'''
+        self.client.force_login(self.user)
+        self.image.status = 0
+        self.image.save()
+        response = self.client.get(reverse('my_account'))
+        self.assertContains(response, 'Awaiting review')
+
+        self.image.status = 1
+        self.image.save()
+        response = self.client.get(reverse('my_account'))
+        self.assertContains(response, 'Approved')
+
+        self.image.status = 2
+        self.image.save()
+        response = self.client.get(reverse('my_account'))
+        self.assertContains(response, 'Rejected')
+
+        self.image.status = 3
+        self.image.save()
+        response = self.client.get(reverse('my_account'))
+        self.assertContains(response, 'Banned')
+
+        create_server_listing(
+            num=34233, user=self.user, game=self.game, tags=[self.tag])
+        response = self.client.get(reverse('my_account'))
+        self.assertEqual(response.status_code, 200)
