@@ -114,11 +114,7 @@ class TestViews(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.server_listing.delete()
-        cls.user.delete()
-        cls.staff_user.delete()
-        cls.game.delete()
-        cls.tag.delete()
+        pass
 
     def test_index(self):
         '''Test to check getting correct page'''
@@ -241,11 +237,7 @@ class TestStaffImageReview(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.server_listing.delete()
-        cls.user.delete()
-        cls.staff_user.delete()
-        cls.game.delete()
-        cls.tag.delete()
+        pass
 
     def setUp(self):
         self.test_image = Images.objects.create(
@@ -360,11 +352,7 @@ class TestServerCreate(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.listing.delete()
-        cls.user.delete()
-        cls.staff_user.delete()
-        cls.game.delete()
-        cls.tag.delete()
+        pass
 
     def setUp(self):
         self.client = Client()
@@ -393,7 +381,7 @@ class TestServerCreate(TestCase):
         self.factory = RequestFactory()
 
     def tearDown(self):
-        self.test_image.delete()
+        pass
 
     def test_get(self):
         '''Test GET'''
@@ -479,12 +467,7 @@ class TestServerEdit(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.image.delete()
-        cls.listing.delete()
-        cls.user.delete()
-        cls.staff_user.delete()
-        cls.game.delete()
-        cls.tag.delete()
+        pass
 
     def setUp(self):
         self.client = Client()
@@ -641,12 +624,7 @@ class TestMyAccount(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.image.delete()
-        cls.listing.delete()
-        cls.user.delete()
-        cls.staff_user.delete()
-        cls.game.delete()
-        cls.tag.delete()
+        pass
 
     def setUp(self):
         self.client = Client()
@@ -752,7 +730,7 @@ class TestSignUpView(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.user.delete()
+        pass
 
     def setUp(self):
         self.client = Client()
@@ -844,3 +822,7 @@ class TestActivate(TestCase):
         # Check that the response returns a HttpResponse with expected message.
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.content, b"Activation link is invalid!")
+
+
+class TestServerListings(TestCase):
+    '''Tests server_listings view'''
