@@ -6,9 +6,9 @@
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 text-light">
     <div class="col-xxl-5 col-xl-6 col-lg-7 col-md-8 col-sm-11 col-11 d-flex flex-column align-items-left">
         <!-- Page header -->
-        <h2 class="text-light text-break text-center m-5">{{ server.title|safe }}</h2>
+        <h2 class="text-light text-break text-center m-5">{{ listing.title|safe }}</h2>
         <hr class="border border-light border-3 opacity-75 w-100 mt-0">
-            <p class="text-light text-center">{{ server.game }}</p>
+            <p class="text-light text-center">{{ listing.game }}</p>
             <!-- Image -->
             <div class="col-12 p-1 position-relative overflow-hidden d-flex flex-wrap mb-3 justify-content-center">
                 {% if images.0.image %}
@@ -24,7 +24,7 @@
             </div>
             <!-- Listing tags -->
             <div class="d-flex flex-wrap justify-content-center">
-                {% for tag in server.tags.all %}
+                {% for tag in listing.tags.all %}
                 <span class="badge rounded-pill bg-info text-dark ms-2 me-2 mb-1"><i class="bi bi-tag"></i>{{ tag }}</span>
                 {% endfor %}
             </div>
@@ -32,30 +32,30 @@
             <div class="d-flex mb-3">
                 <span class="d-flex bg-semi rounded-2 pe-2">
                     {% if user.is_authenticated %}
-                    {% if server.id in bumps_queryset %}
-                    <button type="button" class="btn btn-light" data-item="{{ server.pk }}"
+                    {% if listing.id in bumps_queryset %}
+                    <button type="button" class="btn btn-light" data-item="{{ listing.pk }}"
                         data-name='Bump Button' data-bs-toggle="tooltip" title="Bumped!"><i class="fa-solid fa-hand-fist"></i></button>
                     {% elif bumps_queryset|length > 4 %}
-                    <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
+                    <button type="button" class="btn btn-danger opacity-50" data-item="{{ listing.pk }}"
                         data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
                     {% else %}
-                    <button type="button" class="btn btn-dark" data-item="{{ server.pk }}"
-                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
+                    <button type="button" class="btn btn-dark" data-item="{{ listing.pk }}"
+                        data-name='Bump Button' data-bs-toggle="tooltip" title="Bump listing."><i class="fa-solid fa-hand-fist"></i></button>
                     {% endif %}
                     {% else %}
                     <button type="button" class="btn btn-dark border-orange text-orange" data-bs-toggle="tooltip" title="Login to bump."><i class="fa-solid fa-hand-fist"></i></button>
                     {% endif %}
-                    <p class="mb-0 align-self-center ms-1">{{server.bump_count}}</p>
+                    <p class="mb-0 align-self-center ms-1">{{listing.bump_count}}</p>
                 </span>
             </div>
 
             <div class="d-flex border rounded">
                 <!-- Discord button -->
-                <a class="btn btn-dark text-light w-100" href="https://discord.com/invite/{{ server.discord }}"
+                <a class="btn btn-dark text-light w-100" href="https://discord.com/invite/{{ listing.discord }}"
                 target="_blank" data-bs-toggle="tooltip" title="Join the discord."><i class="fab fa-discord"></i> Discord</a>
-                {% if server.tiktok%}
+                {% if listing.tiktok%}
                 <!-- TikTok button -->
-                <a class="btn btn-dark text-light w-100" href="https://www.tiktok.com/{{ server.tiktok }}"
+                <a class="btn btn-dark text-light w-100" href="https://www.tiktok.com/{{ listing.tiktok }}"
                 data-bs-toggle="tooltip" title="Check out the TikTok." disabled><i class="bi bi-tiktok"></i> TikTok</a>
                 {% endif %}
             </div>
@@ -64,17 +64,17 @@
                 <div class="align-self-center w-100 mb-0">
                     <p class="text-center mb-0">Staff view:</p>
                 </div>
-                <a class="btn btn-dark text-light w-100" href="/staff_user_management_user/{{server_owner.id}}"
+                <a class="btn btn-dark text-light w-100" href="/staff_user_management_user/{{listing_owner.id}}"
                 data-bs-toggle="tooltip" title="Owner's profile."><i class="bi bi-eye"></i> Owner</a>
-                <a class="btn btn-dark text-light w-100" href="/server_edit/{{server.id}}"
+                <a class="btn btn-dark text-light w-100" href="/server_edit/{{listing.id}}"
                 data-bs-toggle="tooltip" title="Edit listing."><i class="bi bi-pencil-square"></i> Listing</a>
 
             </div>
             {% endif %}
             <!-- Short description -->
-            <div class="text-light text-break">{{ server.short_description|safe }}</div>
+            <div class="text-light text-break">{{ listing.short_description|safe }}</div>
             <!-- Long description -->
-            <div class="text-light text-break">{{ server.long_description|safe }}</div>
+            <div class="text-light text-break">{{ listing.long_description|safe }}</div>
     </div>
 </div>
 {%endblock%}
