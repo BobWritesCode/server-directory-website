@@ -898,3 +898,52 @@ class TestServerListings(TestCase):
             response,
             'server-list.html'
         )
+
+
+class TestListingDetail(TestCase):
+    '''Test listing_detail viewS'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(num=12342543)
+        cls.staffuser = create_user_staff(num=53423434)
+        cls.tag1 = create_tag(num=342342367)
+        cls.tag2 = create_tag(num=342346324)
+        cls.game = create_game(num=890902322)
+        cls.listing = create_listing(
+            num=7837842, user=cls.user, game=cls.game,
+            tags=[cls.tag1, cls.tag2])
+        cls.bump = create_bump(user=cls.user, listing=cls.listing)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.bump.delete()
+        cls.listing.delete()
+        cls.game.delete()
+        cls.tag1.delete()
+        cls.tag2.delete()
+        cls.user.delete()
+        cls.staffuser.delete()
+
+    def test_get_as_guest(self):
+        '''Test request method GET as guest'''
+        # Guest
+        response = self.client.get(reverse(
+            'listing_detail', args=[self.listing.slug]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'listing_detail.html'
+        )
+
+    def test_get_as_listing_staff(self):
+        '''Test request method GET as staff user'''
+        self.client.force_login(user=self.staffuser)
+        response = self.client.get(reverse(
+            'listing_detail', args=[self.listing.slug]))
+        self.assertEqual(response.context['listing_owner'], self.user)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response,
+            'listing_detail.html'
+        )
