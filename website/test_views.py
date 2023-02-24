@@ -5,12 +5,11 @@ from unittest.mock import patch
 from io import BytesIO
 from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
-from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.test import Client
+from django.test import TestCase, Client
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
@@ -71,21 +70,6 @@ def create_listing(num: int, user: object, game: object, tags: list):
         tiktok=f'{num}')
     obj.tags.set(tags)
     return obj
-
-
-def form_data_server_listing(listing: object, tags: list):
-    '''Data to have valid form for CreateServerListingForm'''
-    return {
-        'game': listing.game,
-        'owner':  listing.owner,
-        'title':  listing.title,
-        'tags': tags,
-        'short_description': listing.short_description,
-        'long_description': listing.long_description,
-        'status': listing.status,
-        'discord': listing.discord,
-        'tiktok': listing.tiktok,
-    }
 
 
 def create_image(num: int, user: object, listing: object, status: int = 1):
@@ -360,7 +344,6 @@ class TestServerCreate(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.factory = RequestFactory()
         self.client.logout()
         self.test_image = create_image(
             num=3242342334, user=self.user, listing=self.listing)
@@ -382,7 +365,6 @@ class TestServerCreate(TestCase):
         self.form.data['long_description'] = (
             'a' * self.form.fields['long_description'].min_length
             )
-        self.factory = RequestFactory()
 
     def tearDown(self):
         pass
@@ -405,7 +387,7 @@ class TestServerCreate(TestCase):
     def test_post(self, upload_mock):
         '''Test POST'''
         self.client.force_login(self.user)
-
+        # Create fake image
         image_data = BytesIO(b'')
         image_file = InMemoryUploadedFile(
                 file=image_data,
@@ -415,7 +397,6 @@ class TestServerCreate(TestCase):
                 size=image_data.getbuffer().nbytes,
                 charset=None
             )
-
         data = {
             'game': self.game.id,
             'tags': [self.tag.id],
@@ -430,20 +411,16 @@ class TestServerCreate(TestCase):
             'tiktok': 'tiktok',
             'image': image_file
             }
-
         fake_upload_result = {
             'url': 'https://fake-url.com/fake-image.jpg',
-            'public_id': 'fake-image-id'
-        }
+            'public_id': 'fake-image-id'}
         upload_mock.return_value = fake_upload_result
-
         response = self.client.post(reverse(
             'server_create'), data=data, follow=True)
+        # Asserts
         self.assertTrue(response.status_code == 200)
-
         upload_mock.assert_called()
         upload_mock.assert_called_once()
-
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/my_account']
@@ -466,17 +443,19 @@ class TestServerEdit(TestCase):
             num=2345445)
         cls.listing = create_listing(
             num=7653456, user=cls.user, game=cls.game, tags=[cls.tag])
+        cls.listing2 = create_listing(
+            num=23423643, user=cls.user, game=cls.game, tags=[cls.tag])
         cls.image = create_image(
             num=323423455, user=cls.user, listing=cls.listing, status=0)
 
     @classmethod
     def tearDownClass(cls):
-        pass
-
-    def setUp(self):
-        self.client = Client()
-        self.factory = RequestFactory()
-        self.client.logout()
+        cls.image.delete()
+        cls.listing.delete()
+        cls.game.delete()
+        cls.tag.delete()
+        cls.staff_user.delete()
+        cls.user.delete()
 
     def test_get(self):
         '''Test request method GET'''
@@ -555,24 +534,103 @@ class TestServerEdit(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @patch("cloudinary.uploader.upload", autospec=True)
-    def test_post_update_listing(self, upload_mock):
-        '''Test POST and updating a listing'''
+    @patch("cloudinary.uploader.destroy", autospec=True)
+    def test_post_update_listing_with_image_already(self,
+                                                    destroy_mock,
+                                                    upload_mock):
+        '''Test POST and updating a listing that already have an
+        image linked to it.'''
         self.client.force_login(self.user)
-        data = form_data_server_listing(listing=self.listing, tags=[self.tag,])
-
+        # Create fake image
+        image_data = BytesIO(b'')
+        image_file = InMemoryUploadedFile(
+            file=image_data,
+            field_name='image',
+            name='image.jpg',
+            content_type='image/jpeg',
+            size=image_data.getbuffer().nbytes,
+            charset=None)
+        # Fake listing data
+        data = {
+            'game': self.game.id,
+            'tags': [self.tag.id],
+            'owner': self.user.id,
+            'title': "Title",
+            'short_description':
+                'a' * 150,
+            'long_description':
+                'a' * 200,
+            'status': 1,
+            'discord': 'discord',
+            'tiktok': 'tiktok',
+            'image': image_file}
+        # Create fake results from mock upload
         fake_upload_result = {
             'success': True,
-        }
+            'url': 'fakeurlcom',
+            'public_id': 'FakePublicID'}
         upload_mock.return_value = fake_upload_result
-
-        self.assertEqual(CreateServerListingForm(data).is_valid(), True)
+        # Assert correct details are being used for form
+        self.assertTrue(CreateServerListingForm(data).is_valid())
+        # POST
         response = self.client.post(
-            reverse('server_edit', args=[self.listing.id]), data, follow=True)
-
+            reverse('server_edit', args=[self.listing2.id]), data, follow=True)
+        # Asserts
         self.assertTrue(response.status_code == 200)
         upload_mock.assert_called()
         upload_mock.assert_called_once()
+        destroy_mock.assert_called()
+        destroy_mock.assert_called_once()
 
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/my_account']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
+
+    @patch("cloudinary.uploader.upload", autospec=True)
+    def test_post_update_listing_with_no_image(self, upload_mock):
+        '''Test POST and updating a listing that currently does not
+        have an image linked to it.'''
+        self.client.force_login(self.user)
+        # Create fake image
+        image_data = BytesIO(b'')
+        image_file = InMemoryUploadedFile(
+            file=image_data,
+            field_name='image',
+            name='image.jpg',
+            content_type='image/jpeg',
+            size=image_data.getbuffer().nbytes,
+            charset=None)
+        # Fake listing data
+        data = {
+            'game': self.game.id,
+            'tags': [self.tag.id],
+            'owner': self.user.id,
+            'title': "Title",
+            'short_description':
+                'a' * 150,
+            'long_description':
+                'a' * 200,
+            'status': 1,
+            'discord': 'discord',
+            'tiktok': 'tiktok',
+            'image': image_file}
+        # Create fake results from mock upload
+        fake_upload_result = {
+            'success': True,
+            'url': 'http://www.fakeurl.com',
+            'public_id': 'FakePublicID'}
+        upload_mock.return_value = fake_upload_result
+        # Assert correct details are being used for form
+        self.assertTrue(CreateServerListingForm(data).is_valid())
+        # POST
+        response = self.client.post(
+            reverse('server_edit', args=[self.listing.id]), data, follow=True)
+        # Asserts
+        self.assertTrue(response.status_code == 200)
+        upload_mock.assert_called()
+        upload_mock.assert_called_once()
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/my_account']
@@ -632,7 +690,6 @@ class TestMyAccount(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.factory = RequestFactory()
         self.client.logout()
 
     def test_get(self):
@@ -738,7 +795,6 @@ class TestSignUpView(TestCase):
 
     def setUp(self):
         self.client = Client()
-        self.factory = RequestFactory()
         self.client.logout()
 
     def test_get(self):
@@ -1211,3 +1267,23 @@ class TestUnbanUser(TestCase):
         # Assert user is unbanned.
         self.assertFalse(self.user.is_banned)
         self.assertEqual(response.status_code, 200)
+
+
+class TestLoginView(TestCase):
+    '''Test for login_view view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(num=55734532)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+
+    # def test_get(self):
+    #     '''Test GET'''
+    #     self.client.logout()
+    #     response = self.client.get(reverse('login'), follow=True)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response,
+    #                             'registration/login.html')
