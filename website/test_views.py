@@ -13,6 +13,7 @@ from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
+from .views import check_match, email_check
 
 
 def create_user(num: int):
@@ -901,7 +902,7 @@ class TestServerListings(TestCase):
 
 
 class TestListingDetail(TestCase):
-    '''Test listing_detail viewS'''
+    '''Test listing_detail view'''
 
     @classmethod
     def setUpClass(cls):
@@ -947,3 +948,15 @@ class TestListingDetail(TestCase):
             response,
             'listing_detail.html'
         )
+
+
+class TestCheckMatch(TestCase):
+    '''Test check_match method'''
+
+    def test_matching_values(self):
+        '''Test two matching values to make sure True is returned'''
+        self.assertTrue(check_match('pineapples', 'pineapples'))
+
+    def test_non_matching_values(self):
+        '''Test two non-matching values to make sure True is returned'''
+        self.assertFalse(check_match('oranges', 'pineapples'))
