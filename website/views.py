@@ -482,18 +482,11 @@ def my_account(request: object):
     if request.method == 'POST':
 
         # Let's see if the user is trying to delete a listing.
-        if (
-            ConfirmServerListingDeleteForm(request.POST, instance=request.user)
-            and "server_listing_delete_confirm" in request.POST
-        ):
-
+        if 'server_listing_delete_confirm' in request.POST:
             form_4 = ConfirmServerListingDeleteForm(request.POST)
 
-            if (
-                form_4.is_valid()
-                and form_4.data["server_listing_delete_confirm"] == "delete"
-            ):
-                item_pk = form_4.data["itemID"]
+            if request.POST['server_listing_delete_confirm'] == 'delete':
+                item_pk = form_4.data['itemID']
 
                 # Get current image for listing
                 item = get_object_or_404(ServerListing, pk=item_pk)
@@ -508,13 +501,10 @@ def my_account(request: object):
                 return redirect("my_account")
 
         # Let's see if the user is trying to delete there account.
-        if (
-            ConfirmAccountDeleteForm(request.POST, instance=request.user)
-            and 'account-delete-confirm' in request.POST
-        ):
+        if 'account-delete-confirm' in request.POST:
             form_2 = ConfirmAccountDeleteForm(request.POST)
             # Check if user has typed the correct phrase and hit submit
-            if form_2.is_valid() and form_2.data['confirm'] == 'remove':
+            if request.POST['confirm'] == 'remove':
                 CustomUser.objects.get(pk=request.user.pk).delete()
                 return redirect(to='account_deleted')
 
@@ -793,31 +783,30 @@ def listing_detail(request: object, slug: str):
         render(): Loads html page.
     """
     # Get correct listing, check if approved.
-    server_listing = ServerListing.objects.filter(status=1)
-    server = get_object_or_404(server_listing, slug=slug)
+    listing = get_object_or_404(ServerListing, status=1, slug=slug)
 
     if request.user.is_staff:
-        server_owner = get_object_or_404(CustomUser, id=server.owner_id)
+        listing_owner = listing.owner
     else:
-        server_owner = None
+        listing_owner = None
 
     # Get user bumps.
     bumps_queryset = get_user_bumps(request)
 
     # Get listing approved images.
-    query = Q(status=1) & Q(listing_id=server.pk)
+    query = Q(status=1) & Q(listing_id=listing.id)
     images = Images.objects.filter(query).distinct()
 
-    server.bump_count = server.bump_counter()
+    listing.bump_count = listing.bump_counter()
 
     return render(
         request,
         "listing_detail.html",
         {
             "images": images,
-            "server": server,
+            "listing": listing,
             "bumps_queryset": bumps_queryset,
-            "server_owner": server_owner,
+            "listing_owner": listing_owner,
         },
     )
 
