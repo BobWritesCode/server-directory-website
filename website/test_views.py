@@ -25,6 +25,7 @@ def create_user(num: int):
         is_active=True,
         is_staff=False)
 
+
 def create_user_staff(num: int):
     '''Create test staff user'''
     return CustomUser.objects.create(
@@ -35,9 +36,11 @@ def create_user_staff(num: int):
             is_active=True,
             is_staff=True)
 
+
 def create_tag(num: int):
     '''Create test tag'''
     return Tag.objects.create(name=f'{num}', slug=f'{num}')
+
 
 def create_game(num: int):
     '''Create test game'''
@@ -50,19 +53,21 @@ def create_game(num: int):
     obj.tags.set([Tag.objects.all().last()])
     return obj
 
+
 def create_server_listing(num: int, user: object, game: object, tags: list):
     '''Create test listing'''
     obj = ServerListing.objects.create(
-        game= game,
-        owner= user,
-        title= f'{num}',
-        short_description= 'a' * 150,
-        long_description= 'a' * 200,
-        status= 1,
-        discord= f'{num}',
-        tiktok= f'{num}')
+        game=game,
+        owner=user,
+        title=f'{num}',
+        short_description='a' * 150,
+        long_description='a' * 200,
+        status=1,
+        discord=f'{num}',
+        tiktok=f'{num}')
     obj.tags.set(tags)
     return obj
+
 
 def form_data_server_listing(listing: object, tags: list):
     '''Data to have valid form for CreateServerListingForm'''
@@ -78,6 +83,7 @@ def form_data_server_listing(listing: object, tags: list):
         'tiktok': listing.tiktok,
     }
 
+
 def create_image(num: int, user: object, listing: object, status: int = 1):
     '''Create test image'''
     return Images.objects.create(
@@ -86,11 +92,13 @@ def create_image(num: int, user: object, listing: object, status: int = 1):
         status=status,
         public_id=num)
 
+
 def create_bump(user: object, listing: object):
     '''Create test bump'''
     return Bumps.objects.create(
-        user = user,
-        listing = listing,)
+        user=user,
+        listing=listing,)
+
 
 class TestViews(TestCase):
 
@@ -421,8 +429,10 @@ class TestServerCreate(TestCase):
             'tags': [self.tag.id],
             'owner': self.user.id,
             'title': "Title",
-            'short_description': 'a' * self.form.fields['short_description'].min_length,
-            'long_description': 'a' * self.form.fields['long_description'].min_length,
+            'short_description':
+                'a' * self.form.fields['short_description'].min_length,
+            'long_description':
+                'a' * self.form.fields['long_description'].min_length,
             'status': 1,
             'discord': 'discord',
             'tiktok': 'tiktok',
@@ -435,7 +445,8 @@ class TestServerCreate(TestCase):
         }
         upload_mock.return_value = fake_upload_result
 
-        response = self.client.post(reverse('server_create'), data=data, follow=True)
+        response = self.client.post(reverse(
+            'server_create'), data=data, follow=True)
         self.assertTrue(response.status_code == 200)
 
         upload_mock.assert_called()
@@ -446,6 +457,7 @@ class TestServerCreate(TestCase):
         expected_paths = ['/accounts/my_account']
         actual_paths = [redirect[0] for redirect in redirect_chain]
         self.assertEqual(actual_paths, expected_paths)
+
 
 class TestServerEdit(TestCase):
     '''Tests server_edit view'''
@@ -483,16 +495,19 @@ class TestServerEdit(TestCase):
         '''Test request method GET'''
         # Guest
         user2 = create_user(23432523)
-        response = self.client.get(reverse('server_edit', args=[self.listing.id]) )
+        response = self.client.get(reverse(
+            'server_edit', args=[self.listing.id]))
         self.assertEqual(response.status_code, 302)
         # Registered non-authorised user
         self.client.force_login(user2)
-        response = self.client.get(reverse('server_edit', args=[self.listing.id]))
+        response = self.client.get(reverse(
+            'server_edit', args=[self.listing.id]))
         self.assertEqual(response.status_code, 302)
         self.client.logout()
         # Registered
         self.client.force_login(self.user)
-        response = self.client.get(reverse('server_edit', args=[self.listing.id]))
+        response = self.client.get(reverse(
+            'server_edit', args=[self.listing.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
@@ -507,7 +522,7 @@ class TestServerEdit(TestCase):
             num=234234234, user=self.user, listing=listing, status=0)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse('server_edit',args=[listing.id]))
+            reverse('server_edit', args=[listing.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_get_image_status_1(self):
@@ -518,7 +533,7 @@ class TestServerEdit(TestCase):
             num=123213123, user=self.user, listing=listing, status=1)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse('server_edit',args=[listing.id]))
+            reverse('server_edit', args=[listing.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_get_image_status_2(self):
@@ -529,7 +544,7 @@ class TestServerEdit(TestCase):
             num=2341234123, user=self.user, listing=listing, status=2)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse('server_edit',args=[listing.id]))
+            reverse('server_edit', args=[listing.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_get_image_status_3(self):
@@ -540,7 +555,7 @@ class TestServerEdit(TestCase):
             num=2312312313, user=self.user, listing=listing, status=3)
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse('server_edit',args=[listing.id]))
+            reverse('server_edit', args=[listing.id]))
         self.assertEqual(response.status_code, 200)
 
     def test_get_image_none(self):
@@ -549,7 +564,7 @@ class TestServerEdit(TestCase):
             num=45343454, user=self.user, game=self.game, tags=[self.tag])
         self.client.force_login(self.user)
         response = self.client.get(
-            reverse('server_edit',args=[listing.id]))
+            reverse('server_edit', args=[listing.id]))
         self.assertEqual(response.status_code, 200)
 
     @patch("cloudinary.uploader.upload", autospec=True)
@@ -603,6 +618,7 @@ class TestServerEdit(TestCase):
         actual_paths = [redirect[0] for redirect in redirect_chain]
         self.assertEqual(actual_paths, expected_paths)
 
+
 class TestMyAccount(TestCase):
     '''Tests my_account view'''
 
@@ -640,7 +656,7 @@ class TestMyAccount(TestCase):
     def test_get(self):
         '''Test request method GET'''
         # Guest
-        response = self.client.get(reverse('my_account') )
+        response = self.client.get(reverse('my_account'))
         self.assertEqual(response.status_code, 302)
         # Registered non-authorised user
         self.client.force_login(self.user)
@@ -726,13 +742,13 @@ class TestMyAccount(TestCase):
         actual_paths = [redirect[0] for redirect in redirect_chain]
         self.assertEqual(actual_paths, expected_paths)
 
+
 class TestSignUpView(TestCase):
     '''Tests sign_up_view view'''
 
     @classmethod
     def setUpClass(cls):
-        cls.user = create_user(
-            num=98034253)
+        cls.user = create_user(num=98034253)
 
     @classmethod
     def tearDownClass(cls):
@@ -791,6 +807,7 @@ class TestSignUpView(TestCase):
         actual_paths = [redirect[0] for redirect in redirect_chain]
         self.assertEqual(actual_paths, expected_paths)
 
+
 class TestActivate(TestCase):
     '''Tests activate'''
 
@@ -814,14 +831,16 @@ class TestActivate(TestCase):
 
     def test_activation_successful(self):
         '''Test activation process works'''
-        response = self.client.get(reverse('activate', args=[self.uid, self.token]))
+        response = self.client.get(reverse(
+            'activate', args=[self.uid, self.token]))
         self.assertRedirects(response, reverse('email_address_verified'))
         # Check that the user's email_verified field is True
         self.assertTrue(CustomUser.objects.get(pk=self.user.pk).email_verified)
 
     def test_activation_invalid_link(self):
         '''Test activation process with invalid link'''
-        response = self.client.get(reverse('activate', args=['invalid_uid', 'invalid_token']))
+        response = self.client.get(reverse(
+            'activate', args=['invalid_uid', 'invalid_token']))
         # Check that the response returns a HttpResponse with expected message.
         self.assertIsInstance(response, HttpResponse)
         self.assertEqual(response.content, b"Activation link is invalid!")
