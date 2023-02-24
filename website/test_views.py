@@ -104,13 +104,13 @@ class TestViews(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = create_user(789234789)
-        cls.staff_user = create_user_staff(72834789)
-        cls.tag = create_tag(32478309)
-        cls.game = create_game(23748924)
+        cls.user = create_user(678234)
+        cls.staff_user = create_user_staff(478328904)
+        cls.tag = create_tag(783423423)
+        cls.game = create_game(893494)
         cls.game.tags.set([cls.tag])
         cls.server_listing = create_server_listing(
-            num=21673342, user=cls.user, game=cls.game, tags=[cls.tag])
+            num=738453824, user=cls.user, game=cls.game, tags=[cls.tag])
 
     @classmethod
     def tearDownClass(cls):
@@ -229,10 +229,10 @@ class TestStaffImageReview(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = create_user(238904)
-        cls.staff_user = create_user_staff(7548392)
-        cls.tag = create_tag(890234890)
-        cls.game = create_game(16473245)
+        cls.user = create_user(345436)
+        cls.staff_user = create_user_staff(2131214)
+        cls.tag = create_tag(897686545)
+        cls.game = create_game(62348973)
         cls.server_listing = ServerListing.objects.create(
             game=cls.game,
             owner=cls.user,
@@ -351,12 +351,12 @@ class TestServerCreate(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = create_user(98034253)
-        cls.staff_user = create_user_staff(65742383)
-        cls.tag = create_tag(51523783)
-        cls.game = create_game(8940322)
+        cls.user = create_user(763543345)
+        cls.staff_user = create_user_staff(43252435)
+        cls.tag = create_tag(23435435)
+        cls.game = create_game(234235654)
         cls.listing = create_server_listing(
-            num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
+            num=654643345, user=cls.user, game=cls.game, tags=[cls.tag])
 
     @classmethod
     def tearDownClass(cls):
@@ -465,17 +465,17 @@ class TestServerEdit(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = create_user(
-            num=98034253)
+            num=34534634)
         cls.staff_user = create_user_staff(
-            num=65742383)
+            num=324543)
         cls.tag = create_tag(
-            num=51523783)
+            num=7654565)
         cls.game = create_game(
-            num=8940322)
+            num=2345445)
         cls.listing = create_server_listing(
-            num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
+            num=7653456, user=cls.user, game=cls.game, tags=[cls.tag])
         cls.image = create_image(
-            num=123412312, user=cls.user, listing=cls.listing, status=0)
+            num=323423455, user=cls.user, listing=cls.listing, status=0)
 
     @classmethod
     def tearDownClass(cls):
@@ -517,9 +517,9 @@ class TestServerEdit(TestCase):
     def test_get_image_status_0(self):
         '''Test GET with image status 0'''
         listing = create_server_listing(
-            num=6345423, user=self.user, game=self.game, tags=[self.tag])
+            num=67566756, user=self.user, game=self.game, tags=[self.tag])
         create_image(
-            num=234234234, user=self.user, listing=listing, status=0)
+            num=768678, user=self.user, listing=listing, status=0)
         self.client.force_login(self.user)
         response = self.client.get(
             reverse('server_edit', args=[listing.id]))
@@ -550,9 +550,9 @@ class TestServerEdit(TestCase):
     def test_get_image_status_3(self):
         '''Test GET with image status 3'''
         listing = create_server_listing(
-            num=324236634, user=self.user, game=self.game, tags=[self.tag])
+            num=2342355642, user=self.user, game=self.game, tags=[self.tag])
         create_image(
-            num=2312312313, user=self.user, listing=listing, status=3)
+            num=2343425, user=self.user, listing=listing, status=3)
         self.client.force_login(self.user)
         response = self.client.get(
             reverse('server_edit', args=[listing.id]))
@@ -625,17 +625,17 @@ class TestMyAccount(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = create_user(
-            num=98034253)
+            num=34565462435)
         cls.staff_user = create_user_staff(
-            num=65742383)
+            num=2344363456)
         cls.tag = create_tag(
-            num=51523783)
+            num=5152332453453783)
         cls.game = create_game(
-            num=8940322)
+            num=345425534)
         cls.listing = create_server_listing(
-            num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
+            num=3452376, user=cls.user, game=cls.game, tags=[cls.tag])
         cls.image = create_image(
-            num=123412312, user=cls.user, listing=cls.listing, status=0)
+            num=74652323, user=cls.user, listing=cls.listing, status=0)
         cls.bump = create_bump(
             user=cls.user, listing=cls.listing)
 
@@ -748,7 +748,7 @@ class TestSignUpView(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.user = create_user(num=98034253)
+        cls.user = create_user(num=34534546)
 
     @classmethod
     def tearDownClass(cls):
@@ -814,7 +814,7 @@ class TestActivate(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.user = create_user(
-            num=98034253)
+            num=74452345)
 
     @classmethod
     def tearDownClass(cls):
