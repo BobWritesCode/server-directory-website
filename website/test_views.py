@@ -1,5 +1,6 @@
 '''Tests for views.py'''
 
+import json
 from unittest.mock import patch
 from io import BytesIO
 from django.contrib.auth.tokens import default_token_generator
@@ -13,7 +14,6 @@ from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
-from .views import check_match, email_check
 
 
 def create_user(num: int):
@@ -949,3 +949,76 @@ class TestListingDetail(TestCase):
             'listing_detail.html'
         )
 
+
+class TestBumpServer(TestCase):
+    '''Test bump_server view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(num=435345)
+        cls.staffuser = create_user_staff(num=345345345)
+        cls.tag1 = create_tag(num=78456345)
+        cls.tag2 = create_tag(num=4354567568)
+        cls.game = create_game(num=4357456465)
+        cls.listing = create_listing(
+            num=3454567, user=cls.user, game=cls.game,
+            tags=[cls.tag1, cls.tag2])
+        cls.url = reverse('bump_server')
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.listing.delete()
+        cls.game.delete()
+        cls.tag1.delete()
+        cls.tag2.delete()
+        cls.user.delete()
+        cls.staffuser.delete()
+
+    def setUp(self):
+        pass
+
+    def test_get_as_guest(self):
+        '''Test request method GET as guest'''
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_as_staff_user(self):
+        '''Test request method GET as guest'''
+        self.client.force_login(user=self.staffuser)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_successful_bump(self):
+        '''Test can bump server successfully'''
+        self.client.force_login(user=self.staffuser)
+        data = {'server_id': self.listing.id}
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, json.dumps({'result': 1}))
+
+    def test_bump_same_listing_twice(self):
+        '''Test to confirm user cannot bump same listing twice'''
+        self.client.force_login(user=self.staffuser)
+        data = {'server_id': self.listing.id}
+        for i in range(2):
+            response = self.client.post(
+                self.url, data=data, content_type="application/json",
+                follow=True)
+            self.assertContains(response, json.dumps({'result': 1}))
+
+    def test_bump_user_already_at_max_active_bumps(self):
+        '''Test to confirm user cannot bump same listing twice'''
+        listing_list = []
+        for i in range(7):
+            listing_list.append(create_listing(
+                num=3423343+i, user=self.user, game=self.game,
+                tags=[self.tag1, self.tag2]))
+        self.client.force_login(user=self.staffuser)
+        for item in listing_list:
+            data = {'server_id': item.id}
+            response = self.client.post(
+                self.url, data=data, content_type="application/json",
+                follow=True)
+        self.assertContains(response, json.dumps({'result': 5}))
