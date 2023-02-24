@@ -16,6 +16,7 @@ from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
+from .views import unban_user
 
 
 def create_user(num: int):
@@ -1179,3 +1180,34 @@ class TestCallServer(TestCase):
             follow=True)
         self.assertContains(response, json.dumps(
             {'success': "tags", 'reason': all_tags_for_game}))
+
+
+class TestUnbanUser(TestCase):
+    '''Test for unban_user view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(num=435345)
+        cls.staffuser = create_user_staff(num=345345345)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
+        cls.staffuser.delete()
+
+    def test_unban_user(self):
+        '''Test unban user method'''
+        # Ban user
+        self.user.is_banned = True
+        self.user.save()
+        # Asser user is banned
+        self.assertTrue(self.user.is_banned)
+        # Login as staff
+        self.client.force_login(user=self.staffuser)
+        # Goto URL with arg, this should unban user.
+        response = self.client.get(reverse('unban_user', args=[self.user.id]))
+        # Refresh user
+        self.user.refresh_from_db()
+        # Assert user is unbanned.
+        self.assertFalse(self.user.is_banned)
+        self.assertEqual(response.status_code, 200)

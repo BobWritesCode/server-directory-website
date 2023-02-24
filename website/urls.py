@@ -220,4 +220,10 @@ urlpatterns = [
         name='404'
     ),
 
+    path(
+        'unban-user/<int:_id>/',
+        views.unban_user,
+        name='unban_user'
+    ),
+
 ]

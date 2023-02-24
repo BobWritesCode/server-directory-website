@@ -1095,6 +1095,8 @@ def unban_user(request: object, _id: int):
     query = Q(user_id=_id)
     Images.objects.filter(query).update(status=0, expiry=None)
 
+    return HttpResponse(f'User unbanned: {_id}')
+
 
 def login_view(request: object):
     """
