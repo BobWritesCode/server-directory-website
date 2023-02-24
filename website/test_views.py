@@ -666,3 +666,45 @@ class TestMyAccount(TestCase):
             num=34233, user=self.user, game=self.game, tags=[self.tag])
         response = self.client.get(reverse('my_account'))
         self.assertEqual(response.status_code, 200)
+
+    @patch("cloudinary.uploader.destroy", autospec=True)
+    def test_post_delete_listing(self, destroy_mock):
+        '''Test POST delete listing, also tests server_delete()'''
+        self.client.force_login(self.user)
+        data = {
+            'server_listing_delete_confirm': 'delete',
+            'itemID': self.listing.id}
+
+        fake_destroy_result = {
+            'success': True,
+        }
+        destroy_mock.return_value = fake_destroy_result
+
+        response = self.client.post(
+            reverse('my_account'), data, follow=True)
+
+        self.assertTrue(response.status_code == 200)
+        destroy_mock.assert_called()
+        destroy_mock.assert_called_once()
+
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/my_account']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
+
+    def test_post_delete_account(self):
+        '''Test POST account delete'''
+        self.client.force_login(self.user)
+        data = {
+            'account-delete-confirm': 'delete',
+            'confirm': 'remove'}
+
+        response = self.client.post(
+            reverse('my_account'), data, follow=True)
+
+        # Check that the redirect chain has the correct paths
+        redirect_chain = response.redirect_chain
+        expected_paths = ['/accounts/account_deleted/']
+        actual_paths = [redirect[0] for redirect in redirect_chain]
+        self.assertEqual(actual_paths, expected_paths)
