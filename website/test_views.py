@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import get_object_or_404
 from django.test import Client
 
-from .models import CustomUser, Tag, Game, ServerListing, Images
+from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm
 
 
@@ -82,6 +82,12 @@ def create_image(num: int, user: object, listing: object, status: int = 1):
         listing=listing,
         status=status,
         public_id=num)
+
+def create_bump(user: object, listing: object):
+    '''Create test bump'''
+    return Bumps.objects.create(
+        user = user,
+        listing = listing,)
 
 class TestViews(TestCase):
 
