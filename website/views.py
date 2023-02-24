@@ -1673,7 +1673,7 @@ def update_email(request: object, _list: list):
 
     Args:
         request (object): GET/POST request from user.
-        _list (list): List with email address 1 and 2.
+        _list (list): List with email address 1 and 2, must match.
 
     Returns:
         {result (bool), reason (string)}
