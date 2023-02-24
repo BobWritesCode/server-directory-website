@@ -4,10 +4,12 @@ import json
 from unittest.mock import patch
 from io import BytesIO
 from django.contrib.auth.tokens import default_token_generator
+from django.core import serializers
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.test import Client
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -1022,3 +1024,158 @@ class TestBumpServer(TestCase):
                 self.url, data=data, content_type="application/json",
                 follow=True)
         self.assertContains(response, json.dumps({'result': 5}))
+
+
+class TestCallServer(TestCase):
+    '''Test call_server view'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.url = reverse('call_server')
+        cls.user = create_user(num=435345)
+        cls.staffuser = create_user_staff(num=345345345)
+        cls.tag1 = create_tag(num=78456345)
+        cls.tag2 = create_tag(num=4354567568)
+        cls.game = create_game(num=4357456465)
+        cls.listing = create_listing(
+            num=3454567, user=cls.user, game=cls.game,
+            tags=[cls.tag1, cls.tag2])
+        cls.image = create_image(
+            num=2343452, user=cls.user, listing=cls.listing, status=0)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.listing.delete()
+        cls.game.delete()
+        cls.tag1.delete()
+        cls.tag2.delete()
+        cls.user.delete()
+        cls.staffuser.delete()
+
+    def setUp(self):
+        pass
+
+    def test_get_as_guest(self):
+        '''Test request method GET as guest'''
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_as_staff_user(self):
+        '''Test request method GET as guest'''
+        self.client.force_login(user=self.staffuser)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 405)
+
+    def test_image_approval_approve(self):
+        '''Test case for image_approval_approve'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['image_approval_approve', self.image.id]}
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'text': "Approved"}))
+
+    def test_image_approval_reject(self):
+        '''Test case for image_approval_reject'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['image_approval_reject', self.image.id]}
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'text': "Rejected"}))
+
+    def test_image_approval_ban(self):
+        '''Test case for image_approval_ban'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['image_approval_ban', self.image.id]}
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'text': "Rejected and user banned"}))
+
+    def test_get_game_details(self):
+        '''Test case for get_game_details'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['get_game_details', self.game.id]}
+        tags = Tag.objects.filter(game=self.game.id).order_by('name')
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'game': self.game.to_json(),
+             'game_tags': serializers.serialize('json', tags)}))
+
+    def test_get_tag_details(self):
+        '''Test case for get_tag_details'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['get_tag_details', self.tag1.id]}
+        tag = get_object_or_404(Tag, pk=self.tag1.id)
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'tag': tag.to_json()}))
+
+    def test_search_users_username(self):
+        '''Test case for search_users-username'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['search_users_username', 'a']}
+        users = CustomUser.objects.filter(username__contains='a')[:100]
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True,  'users': serializers.serialize('json', users)}))
+
+    def test_search_users_email(self):
+        '''Test case for search_users_email'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['search_users_email', 'a']}
+        users = CustomUser.objects.filter(email__contains='a')[:100]
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'users': serializers.serialize('json', users)}))
+
+    def test_search_users_id(self):
+        '''Test case for search_users_id'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['search_users_id', 1]}
+        users = CustomUser.objects.filter(id__contains=int(1))[:100]
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'users': serializers.serialize('json', users)}))
+
+    @patch("website.views.send_email_verification", autospec=True)
+    def test_update_email_when_both_values_match(self, mock):
+        '''Test case for update_email'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': [
+            'update_email', {'email1': 'testemail@bnswer34213.hdj34',
+                             'email2': 'testemail@bnswer34213.hdj34'}]}
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': True, 'reason': ''}))
+
+    def test_get_game_tags(self):
+        '''Test case for get_game_tags'''
+        self.client.force_login(user=self.staffuser)
+        data = {'args': ['get_game_tags', self.game.id]}
+        game = get_object_or_404(Game, id=self.game.id)
+        tags = game.tags.all().order_by('name')
+        all_tags_for_game = []
+        for tag in tags:
+            all_tags_for_game.append([tag.pk, tag.name])
+        response = self.client.post(
+            self.url, data=data, content_type="application/json",
+            follow=True)
+        self.assertContains(response, json.dumps(
+            {'success': "tags", 'reason': all_tags_for_game}))
