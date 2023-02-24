@@ -119,7 +119,7 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     validateForm();
     if ($('.error-message').length === 0) {
-      action('search_users-username', $('#search-name').val());
+      action('search_users_username', $('#search-name').val());
     }
   });
 
@@ -127,7 +127,7 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     validateForm();
     if ($('.error-message').length === 0) {
-      action('search_users-email', $('#search-name').val());
+      action('search_users_email', $('#search-name').val());
     }
   });
 
@@ -135,7 +135,7 @@ window.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     validateForm();
     if ($('.error-message').length === 0) {
-      action('search_users-id', $('#search-name').val());
+      action('search_users_id', $('#search-name').val());
     }
   });
 });
