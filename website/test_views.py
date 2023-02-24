@@ -75,7 +75,7 @@ def form_data_server_listing(listing: object, tags: list):
         'tiktok': listing.tiktok,
     }
 
-def create_test_image(num: int, user: object, listing: object, status: int = 1):
+def create_image(num: int, user: object, listing: object, status: int = 1):
     '''Create test image'''
     return Images.objects.create(
         user=user,
@@ -353,7 +353,7 @@ class TestServerCreate(TestCase):
         self.client = Client()
         self.factory = RequestFactory()
         self.client.logout()
-        self.test_image = create_test_image(
+        self.test_image = create_image(
             num=3242342334, user=self.user, listing=self.listing)
         self.form = CreateServerListingForm({
             'game': self.game.id,
@@ -447,7 +447,7 @@ class TestServerEdit(TestCase):
             num=8940322)
         cls.listing = create_server_listing(
             num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
-        cls.image = create_test_image(
+        cls.image = create_image(
             num=123412312, user=cls.user, listing=cls.listing, status=0)
 
     @classmethod
@@ -488,7 +488,7 @@ class TestServerEdit(TestCase):
         '''Test GET with image status 0'''
         listing = create_server_listing(
             num=6345423, user=self.user, game=self.game, tags=[self.tag])
-        create_test_image(
+        create_image(
             num=234234234, user=self.user, listing=listing, status=0)
         self.client.force_login(self.user)
         response = self.client.get(
@@ -499,7 +499,7 @@ class TestServerEdit(TestCase):
         '''Test GET with image status 1'''
         listing = create_server_listing(
             num=234234556, user=self.user, game=self.game, tags=[self.tag])
-        create_test_image(
+        create_image(
             num=123213123, user=self.user, listing=listing, status=1)
         self.client.force_login(self.user)
         response = self.client.get(
@@ -510,7 +510,7 @@ class TestServerEdit(TestCase):
         '''Test GET with image status 3'''
         listing = create_server_listing(
             num=23423423, user=self.user, game=self.game, tags=[self.tag])
-        create_test_image(
+        create_image(
             num=2341234123, user=self.user, listing=listing, status=2)
         self.client.force_login(self.user)
         response = self.client.get(
@@ -521,7 +521,7 @@ class TestServerEdit(TestCase):
         '''Test GET with image status 3'''
         listing = create_server_listing(
             num=324236634, user=self.user, game=self.game, tags=[self.tag])
-        create_test_image(
+        create_image(
             num=2312312313, user=self.user, listing=listing, status=3)
         self.client.force_login(self.user)
         response = self.client.get(
@@ -574,7 +574,7 @@ class TestMyAccount(TestCase):
             num=8940322)
         cls.listing = create_server_listing(
             num=2364788, user=cls.user, game=cls.game, tags=[cls.tag])
-        cls.image = create_test_image(
+        cls.image = create_image(
             num=123412312, user=cls.user, listing=cls.listing, status=0)
 
     @classmethod
