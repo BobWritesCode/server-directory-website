@@ -1336,7 +1336,26 @@ class TestLoginView(TestCase):
             mock_auth.assert_called_once()
             mock_auth.destroy()
             self.assertEqual(response.url, '/accounts/my_account')
-        self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.status_code, 302)
+
+    def test_post_fail_login_banned_user(self):
+        '''Test POST with correct credentials'''
+        user = create_user(num='867563')
+        user.is_banned = True
+        user.save()
+        user.refresh_from_db()
+        data = {'email': user.email,
+                'password': user.password}
+        with patch('django.contrib.auth.authenticate') as mock_auth:
+            mock_auth.return_value = user
+            response = self.client.post(reverse('login'),
+                                        data=data,
+                                        Follow=True)
+            mock_auth.assert_called_once()
+            mock_auth.destroy()
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context['error_message'],
+                             "This account is banned.")
 
     def test_post_unsuccessful_login(self):
         '''Test POST with incorrect credentials'''
@@ -1346,6 +1365,9 @@ class TestLoginView(TestCase):
         }
         response = self.client.post(reverse('login'), data=data, follow=True)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['error_message'],
+                         "Either user does not exist or password does not "
+                         "match account.")
         self.assertTemplateUsed(response, 'registration/login.html')
 
 
