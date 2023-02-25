@@ -5,7 +5,6 @@ from datetime import timedelta, date
 import json
 import operator
 import re
-import pdb
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model, authenticate, login
@@ -19,7 +18,7 @@ from django.core import mail
 from django.db import IntegrityError
 from django.db.models import Q
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -634,7 +633,6 @@ def activate(request: object, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
         user = get_object_or_404(CustomUser, pk=uid)
-        # user = UserModel._default_manager.get(pk=uid)
     except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
@@ -1123,7 +1121,7 @@ def login_view(request: object):
         email = request.POST['email']
         password = request.POST['password']
         # Check credentials are found and a match.
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(email=email, password=password)
         if user is None:
             # ERROR: User not found, or password mismatch.
             error_message = (
@@ -1141,13 +1139,11 @@ def login_view(request: object):
                 login(request, user)
                 return redirect("my_account")
 
-    form = LoginForm()
-
     return render(
         request,
         "registration/login.html",
         {
-            "form": form,
+            "form": LoginForm(),
             "error_message": error_message,
         },
     )
@@ -1193,11 +1189,7 @@ def game_management(request: object):
 
         # Or if inputting a new game
         else:
-            form = GameManageForm(request.POST)
-            if form.is_valid():
-                form_data = form.data.copy()
-                # form_data['id'] = Game.objects.order_by("-id").first().id + 1
-                add_new_game(request, GameManageForm(form_data))
+            add_new_game(request.POST, request.FILES)
 
     # Render page
     return render(
@@ -1230,26 +1222,31 @@ def delete_game(form: object):
         game.delete()
 
 
-def add_new_game(request: object, form: object):
+def add_new_game(data: object, files: object = None):
     """
     Adds new game to the database.
 
     Args:
         request (object): GET/POST request from user.
-        form (object): Provides data for new game.
+        data (object): Provides data for new game.
     """
-    # Save form to database as a new game
-    game = form.save()
-    if request.FILES:
-        # Upload image
-        new_image = uploader.upload(
-            request.FILES["image"],
-            folder="server_directory/",
-            allowed_formats=['jpg', 'png', 'jpeg'],
-            format='jpg'
-            )
-        game.image = new_image["url"]
-        game.save()
+    form = GameManageForm(data)
+    if form.is_valid():
+        # Save form to database as a new game
+        game = form.save()
+        if files:
+            # Upload image
+            new_image = uploader.upload(
+                files["image"],
+                folder="server_directory/",
+                allowed_formats=['jpg', 'png', 'jpeg'],
+                format='jpg'
+                )
+            game.image = new_image["url"]
+            game.save()
+            return HttpResponse('New game added with image.')
+        return HttpResponse('New game added with no image.')
+    return HttpResponse('Failed to add new game.')
 
 
 def update_game(request: object, form: object):

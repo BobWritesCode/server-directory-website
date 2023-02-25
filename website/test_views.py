@@ -1369,8 +1369,30 @@ class TestDeleteGame(TestCase):
 class TestNewGame(TestCase):
     '''Test for add_new_game function'''
 
+    def test_add_new_game_failed(self):
+        '''Test to add new game with no image successfully'''
+        tag1 = create_tag(3928489)
+        data = {
+            'name': '',
+            'slug': '',
+            'tags': [tag1],
+            'image': None,
+            'status': 1,
+            }
+        form = MagicMock()
+        form.data = {'url': 'FakeUrl'}
+        with patch('cloudinary.uploader.upload') as mock_upload:
+            mock_upload.return_value = {
+                'url': 'fakeURL',
+            }
+            response = add_new_game(data=data)
+            mock_upload.assert_not_called()
+            mock_upload.mock_destroy()
+            self.assertEqual(response.content,
+                             b"Failed to add new game.")
+
     def test_add_new_game_successfully_with_no_image(self):
-        '''Test to add new game with successfully'''
+        '''Test to add new game with no image successfully'''
         tag1 = create_tag(3928489)
         data = {
             'name': 'Fake Game Name',
@@ -1385,12 +1407,14 @@ class TestNewGame(TestCase):
             mock_upload.return_value = {
                 'url': 'fakeURL',
             }
-            add_new_game(data=data)
+            response = add_new_game(data=data)
             mock_upload.assert_not_called()
             mock_upload.mock_destroy()
+            self.assertEqual(response.content,
+                             b"New game added with no image.")
 
     def test_add_new_game_successfully_with_image(self):
-        '''Test to add new game successfully'''
+        '''Test to add new game with image successfully'''
         tag1 = create_tag(3928489)
         # Create fake image
         image_data = BytesIO(b'')
@@ -1417,6 +1441,7 @@ class TestNewGame(TestCase):
             mock_upload.return_value = {
                 'url': 'fakeURL',
             }
-            add_new_game(data=data, files=files)
+            response = add_new_game(data=data, files=files)
             mock_upload.assert_called()
             mock_upload.mock_destroy()
+            self.assertEqual(response.content, b"New game added with image.")
