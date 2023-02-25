@@ -4,6 +4,7 @@ import json
 from unittest import mock
 from unittest.mock import patch
 from io import BytesIO
+from django.contrib import auth
 from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -20,12 +21,12 @@ from .forms import CreateServerListingForm, ImageForm, SignupForm
 from .views import unban_user, send_email_verification
 
 
-def create_user(num: int):
+def create_user(num: str):
     '''Create test user'''
     return CustomUser.objects.create(
         username=f'T_User_{num}',
         password=f'TPass_{num}',
-        email=f't_user_{num}@d8sf87sdf978sd.com',
+        email=f'{num}@d8sf87sdf9sd.com',
         email_verified=True,
         is_active=True,
         is_staff=False)
@@ -1289,20 +1290,26 @@ class TestUnbanUser(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-# class TestLoginView(TestCase):
-#     '''Test for login_view view'''
+class TestLoginView(TestCase):
+    '''Test for login_view view'''
 
-#     @classmethod
-#     def setUpClass(cls):
-#         cls.user = create_user(num=32423524)
+    @classmethod
+    def setUpClass(cls):
+        cls.user = create_user(num=564598)
 
-#     @classmethod
-#     def tearDownClass(cls):
-#         cls.user.delete()
+    @classmethod
+    def tearDownClass(cls):
+        cls.user.delete()
 
-#     def test_get(self):
-#         '''Test GET'''
-#         response = self.client.get(reverse('login'), follow=True)
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTemplateUsed(response,
-#                                 'registration/login.html')
+    def test_get_as_guest(self):
+        '''Test GET as guest'''
+        response = self.client.get(reverse('login'), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+    def test_get_as_user(self):
+        '''Test GET'''
+        self.client.force_login(user=self.user)
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('my_account'))
