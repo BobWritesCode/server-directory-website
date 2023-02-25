@@ -2,7 +2,7 @@
 
 import json
 from unittest import mock
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from io import BytesIO
 from django.contrib import auth
 from django.contrib.auth.tokens import default_token_generator
@@ -18,7 +18,7 @@ from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
-from .views import unban_user, send_email_verification
+from .views import unban_user, send_email_verification, delete_game
 
 
 def create_user(num: str):
@@ -48,12 +48,12 @@ def create_tag(num: int):
     return Tag.objects.create(name=f'{num}', slug=f'{num}')
 
 
-def create_game(num: int):
+def create_game(num: int, image: any = None):
     '''Create test game'''
     obj = Game.objects.create(
         name=f'{num}',
         slug=f'{num}',
-        image=None,
+        image=image,
         status=1)
     # add created cls.tag to game.
     obj.tags.set([Tag.objects.all().last()])
@@ -1313,3 +1313,25 @@ class TestLoginView(TestCase):
         response = self.client.get(reverse('login'))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('my_account'))
+
+class TestGameManagement(TestCase):
+    '''Test for game_management view'''
+
+
+class TestDeleteGame(TestCase):
+    '''Test for delete_game function'''
+
+    def test_delete_game_successfully(self):
+        '''Test to delete game successfully'''
+        game = create_game(454545, image="image")
+        print(game.image)
+        form = MagicMock()
+        form.data = {
+            'game_delete_confirm': 'delete',
+            'itemID': game.id}
+
+        with patch('cloudinary.uploader.destroy') as mock_destroy:
+            response = delete_game(form)
+            mock_destroy.mock_destroy()
+
+            print(response)
