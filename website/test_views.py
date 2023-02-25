@@ -22,8 +22,6 @@ from .forms import CreateServerListingForm, ImageForm, SignupForm
 from .views import (unban_user, send_email_verification, delete_game,
                     add_new_game, update_game)
 
-UserModel = get_user_model()
-
 
 def create_user(num: str):
     '''Create test user'''
@@ -1327,21 +1325,18 @@ class TestLoginView(TestCase):
 
     def test_post_successful_login(self):
         '''Test POST with correct credentials'''
-        user = create_user(num=1211135)
-        data = {
-            'email': user.email,
-            'password': user.password,
-        }
-        user.save()
-        user = get_object_or_404(CustomUser, pk=user.id)
-        auth_user = authenticate(email=str(user.email),
-                                 password=str(user.password))
-        self.assertIsNotNone(auth_user)
-        response = self.client.post(reverse('login'),
-                                    data=data,
-                                    Follow=True)
+        user = create_user(num='1211135')
+        data = {'email': user.email,
+                'password': user.password}
+        with patch('django.contrib.auth.authenticate') as mock_auth:
+            mock_auth.return_value = user
+            response = self.client.post(reverse('login'),
+                                        data=data,
+                                        Follow=True)
+            mock_auth.assert_called_once()
+            mock_auth.destroy()
+            self.assertEqual(response.url, '/accounts/my_account')
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('my_account'))
 
     def test_post_unsuccessful_login(self):
         '''Test POST with incorrect credentials'''
