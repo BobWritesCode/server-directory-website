@@ -226,4 +226,9 @@ urlpatterns = [
         name='unban_user'
     ),
 
+    path(
+        'send_email_verification',
+        views.send_email_verification,
+        name='send_email_verification'
+    )
 ]
