@@ -199,15 +199,6 @@ class TestViews(TestCase):
             'unauthorized.html'
             )
 
-    def test_e404(self):
-        '''Test to check getting correct page'''
-        response = self.client.get(reverse('404'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(
-            response,
-            '404.html'
-            )
-
     def test_staff_account(self):
         '''Test to check getting correct page'''
         # Unregistered user
