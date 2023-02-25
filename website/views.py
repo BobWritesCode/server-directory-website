@@ -152,19 +152,6 @@ def unauthorized(request: object):
     return render(request, "unauthorized.html")
 
 
-def e404(request: object):
-    """
-    Load 404 view.
-
-    Args:
-        request (object): GET/POST request from user.
-
-    Returns:
-        render() (func): Loads the html page.
-    """
-    return render(request, "404.html")
-
-
 @login_required
 @staff_member_required
 def staff_account(request: object):
