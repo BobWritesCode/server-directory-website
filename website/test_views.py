@@ -1,6 +1,7 @@
 '''Tests for views.py'''
 
 import json
+from PIL import Image
 from unittest import mock
 from unittest.mock import patch, MagicMock
 from io import BytesIO
@@ -19,7 +20,7 @@ from django.utils.http import urlsafe_base64_encode
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
 from .views import (unban_user, send_email_verification, delete_game,
-                    add_new_game)
+                    add_new_game, update_game)
 
 UserModel = get_user_model()
 
@@ -51,8 +52,8 @@ def create_tag(num: int):
     return Tag.objects.create(name=f'{num}', slug=f'{num}')
 
 
-def create_game(num: int, image: any = None):
-    '''Create test game'''
+def create_game(num: int, image: object = None):
+    '''Create test game, adds latest tag automatically'''
     obj = Game.objects.create(
         name=f'{num}',
         slug=f'{num}',
@@ -92,6 +93,22 @@ def create_bump(user: object, listing: object):
     return Bumps.objects.create(
         user=user,
         listing=listing,)
+
+
+def create_image_obj():
+    '''Create fake image object'''
+    # Create fake image
+    image = Image.new(mode='RGB', size=(200, 200))
+    image_io = BytesIO()
+    image.save(image_io, 'JPEG')
+    return InMemoryUploadedFile(
+        file=image_io,
+        field_name='image',
+        name='image.jpg',
+        content_type='image/jpeg',
+        size=len(image_io.getvalue()),
+        charset=None,
+        content_type_extra={'public_id': "Fake/Public/Id"})
 
 
 class TestViews(TestCase):
@@ -1325,9 +1342,10 @@ class TestLoginView(TestCase):
             'password': user.password,
         }
         user.save()
+        user = get_object_or_404(CustomUser, pk=user.id)
         auth_user = authenticate(email=str(user.email),
                                  password=str(user.password))
-        self.assertTrue(auth_user)
+        self.assertIsNotNone(auth_user)
         response = self.client.post(reverse('login'),
                                     data=data,
                                     Follow=True)
@@ -1444,8 +1462,6 @@ class TestNewGame(TestCase):
             'image': None,
             'status': 1,
             }
-        form = MagicMock()
-        form.data = {'url': 'FakeUrl'}
         with patch('cloudinary.uploader.upload') as mock_upload:
             mock_upload.return_value = {
                 'url': 'fakeURL',
@@ -1478,8 +1494,6 @@ class TestNewGame(TestCase):
         files = {
             'image': image_file,
         }
-        form = MagicMock()
-        form.data = {'url': 'FakeUrl'}
         with patch('cloudinary.uploader.upload') as mock_upload:
             mock_upload.return_value = {
                 'url': 'fakeURL',
@@ -1488,3 +1502,101 @@ class TestNewGame(TestCase):
             mock_upload.assert_called()
             mock_upload.mock_destroy()
             self.assertEqual(response.content, b"New game added with image.")
+
+
+class TestUpdateGame(TestCase):
+    '''Test for update_game function'''
+
+    def test_update_game_fail_bad_data_no_image(self):
+        '''Test to update game with no image.
+        FAIL due to missing data'''
+        tag1 = create_tag(4532343)
+        game = create_game(34223234)
+        data = {'name': '',  # Name missing.
+                'slug': 'fake-game-name',
+                'tags': [tag1],
+                'status': 1,
+                'id': game.id}
+        response = update_game(data=data)
+        self.assertEqual(response.content, b"Failed - Game not updated.")
+
+    def test_update_game_fail_no_game_instance_found_no_image(self):
+        '''Test to update game with no image.
+        FAIL due to no game id given'''
+        tag1 = create_tag(4532343)
+        data = {'name': 'Fame Game Name',
+                'slug': 'fake-game-name',
+                'tags': [tag1],
+                'status': 1,
+                'id': None}  # No game id given.
+        response = update_game(data=data)
+        self.assertEqual(response.content, b"404")
+
+    def test_update_game_success_no_image(self):
+        '''Test updating game when not updating image'''
+        tag1 = create_tag(78392479)
+        game = create_game(3343563)
+        data = {
+            'name': 'Fame Game Name',
+            'slug': 'fake-game-name',
+            'tags': [tag1],
+            'status': 1,
+            'id': game.id}
+        with patch('cloudinary.uploader.upload') as mock_upload:
+            mock_upload.return_value = {
+                'url': 'fakeURL',
+            }
+            response = update_game(data=data, files=None)
+            mock_upload.assert_not_called()
+            mock_upload.mock_destroy()
+            self.assertEqual(response.content, b"Success - Game updated.")
+
+    def test_update_game_success_replace_image(self):
+        '''Test updating game when updating image'''
+        tag1 = create_tag(78392479)
+        image_file = create_image_obj()
+        game = create_game(3343563, image_file)
+        game.image.public_id = "Fake/Public/Id"
+        game.save()
+        data = {
+            'name': 'Fame Game Name',
+            'slug': 'fake-game-name',
+            'tags': [tag1],
+            'status': 1,
+            'id': game.id}
+        files = {'image': image_file}
+        with patch('cloudinary.uploader.destroy') as mock_destroy:
+            with patch('cloudinary.uploader.upload') as mock_upload:
+                mock_upload.return_value = {
+                    'url': 'fakeURL',
+                }
+                response = update_game(data=data, files=files)
+                mock_destroy.assert_called()
+                mock_upload.assert_called()
+                mock_upload.mock_destroy()
+                self.assertEqual(response.content, b"Success - Game updated.")
+
+    @patch("cloudinary.uploader.upload", autospec=True)
+    @patch("cloudinary.uploader.destroy", autospec=True)
+    def test_update_game_success_add_image(self, mock_destroy, mock_upload):
+        '''Test updating game when adding image
+        when no image already attached.'''
+        tag1 = create_tag(342328934)
+        image_file = create_image_obj()
+        game = create_game(5623234, None)
+        game.save()
+        data = {
+            'name': 'Fame Game Name',
+            'slug': 'fake-game-name',
+            'tags': [tag1],
+            'status': 1,
+            'id': game.id}
+        files = {'image': image_file}
+
+        mock_upload.return_value = {
+            'url': 'fakeURL',
+        }
+        response = update_game(data=data, files=files)
+        mock_destroy.assert_not_called()
+        mock_upload.assert_called()
+        self.assertEqual(response.content, b"Success - Game updated.")
