@@ -18,7 +18,7 @@ from django.core import mail
 from django.db import IntegrityError
 from django.db.models import Q
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404,  HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -1179,13 +1179,7 @@ def game_management(request: object):
 
         # Checking if updating a current game
         elif request.POST["id"]:
-            form = GameManageForm(
-                request.POST, instance=get_object_or_404(
-                    Game, pk=request.POST["id"]
-                    )
-            )
-            if form.is_valid():
-                update_game(request, form)
+            update_game(data=request.POST, files=request.FILES)
 
         # Or if inputting a new game
         else:
@@ -1258,63 +1252,80 @@ def add_new_game(data: object, files: object = None):
     return HttpResponse('Failed to add new game.')
 
 
-def update_game(request: object, form: object):
+def update_game(data: object, files: object = None):
     """
     Updates game in the database.
 
     Args:
-        request (object): GET/POST request from user.
         form (object): Provides data to update game.
+        files (object): Image file(s)
+
+    Returns:
+        HttpResponse (class): Feedback result of codeblock.
 
     """
-    # Get correct game from database
-    game = get_object_or_404(Game, pk=form.data["id"])
-    # Update values
-    game.name = form.data["name"]
-    game.status = form.data["status"]
-    game.slug = form.data["slug"]
+    try:
+        game = get_object_or_404(Game, pk=data["id"])
+        form = GameManageForm(
+            data,
+            instance=game)
+    except Http404:
+        response = HttpResponseNotFound('test')
+        response.status_code = 404
+        return HttpResponseRedirect('404',
+                                    content='404')
 
-    # Get tags selected from the form
-    query = Q(id__in=form.cleaned_data["tags"])
-    tags = Tag.objects.filter(query).all().order_by('name')
+    if form.is_valid():
+        # Get correct game from database
+        game = get_object_or_404(Game, pk=form.data["id"])
+        # Update values
+        game.name = form.data["name"]
+        game.status = form.data["status"]
+        game.slug = form.data["slug"]
 
-    # Update tags with tags selected from form
-    game.tags.set(tags)
+        # Get tags selected from the form
+        query = Q(id__in=form.cleaned_data["tags"])
+        tags = Tag.objects.filter(query).all().order_by('name')
 
-    # If game image already exists, delete from server and replace with
-    # new image.
-    if game.image is not None and request.FILES:
-        # Delete old image from Cloudinary server
-        uploader.destroy(game.image.public_id)
+        # Update tags with tags selected from form
+        game.tags.set(tags)
 
-        # Get public ID
-        txt = game.image.public_id
-        public_id = txt.rsplit("/", 1)[1]
-        # Upload new image
-        new_image = uploader.upload(
-            request.FILES["image"],
-            public_id=public_id,
-            overwrite=True,
-            folder="server_directory/",
-            allowed_formats=['jpg', 'png', 'jpeg'],
-            format='jpg'
-        )
-        # Save new url to game object
-        game.image = new_image["url"]
+        # If game image already exists, delete from server and replace with
+        # new image.
+        if game.image is not None and files:
+            # Delete old image from Cloudinary server
+            uploader.destroy(game.image.public_id)
 
-    # If game image does not exists, just upload.
-    if game.image is None and request.FILES:
-        # Upload new image
-        new_image = uploader.upload(
-            request.FILES["image"],
-            folder="server_directory/",
-            allowed_formats=['jpg', 'png', 'jpeg'],
-            format='jpg'
+            # Get public ID
+            txt = game.image.public_id
+            public_id = txt.rsplit("/", 1)[1]
+            # Upload new image
+            new_image = uploader.upload(
+                files["image"],
+                public_id=public_id,
+                overwrite=True,
+                folder="server_directory/",
+                allowed_formats=['jpg', 'png', 'jpeg'],
+                format='jpg'
             )
-        game.image = new_image["url"]
+            # Save new url to game object
+            game.image = new_image["url"]
 
-    # Save game object
-    game.save()
+        # If game image does not exists, just upload.
+        if game.image is None and files:
+            # Upload new image
+            new_image = uploader.upload(
+                files["image"],
+                folder="server_directory/",
+                allowed_formats=['jpg', 'png', 'jpeg'],
+                format='jpg'
+                )
+            game.image = new_image["url"]
+
+        # Save game object
+        game.save()
+        return HttpResponse('Success - Game updated.')
+    return HttpResponse('Failed - Game not updated.')
 
 
 @staff_member_required
