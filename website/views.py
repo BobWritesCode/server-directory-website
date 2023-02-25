@@ -1220,6 +1220,8 @@ def delete_game(form: object):
             uploader.destroy(game.image.public_id)
         # Delete game from database
         game.delete()
+        return HttpResponse('Success - Game deleted.')
+    return HttpResponse('Failed - No game deleted.')
 
 
 def add_new_game(data: object, files: object = None):
