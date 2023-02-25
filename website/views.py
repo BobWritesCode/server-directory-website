@@ -5,6 +5,7 @@ from datetime import timedelta, date
 import json
 import operator
 import re
+import pdb
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model, authenticate, login
@@ -14,11 +15,11 @@ from django.contrib.sessions.models import Session
 from django.contrib.sites.shortcuts import get_current_site
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.core.mail import send_mail
+from django.core import mail
 from django.db import IntegrityError
 from django.db.models import Q
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -600,6 +601,7 @@ def sign_up_view(request):
             # https://shafikshaon.medium.com/
             # user-registration-with-email-verification-in-django-8aeff5ce498d
             # Save new user to database.
+
             try:
                 user = form.save()
                 send_email_verification(request, user)
@@ -813,30 +815,32 @@ def listing_detail(request: object, slug: str):
     )
 
 
+@require_POST
 def send_email_verification(request: object, user: object):
     '''
     Send email address verification to user.
+
+    Decorators:
+        @require_POST: Allow POST only.
 
     Parameters:
         request (object): GET/POST request from user.
         user (object): Target user model object
     '''
     current_site = get_current_site(request)
-    mail_subject = 'Verify your email address.'
     message = render_to_string('email_templates/verify_email_address.html', {
         'user': user,
         'domain': current_site.domain,
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': default_token_generator.make_token(user),
-    })
-
+        'token': default_token_generator.make_token(user)})
     # Send email to user.
-    send_mail(
-        subject=mail_subject,
+    mail.send_mail(
+        subject='Verify your email address.',
         message=message,
         from_email='contact@warwickhart.com',
-        recipient_list=[user.email]
-    )
+        recipient_list=[user.email])
+
+    return HttpResponse('send_email_verification success.')
 
 
 @login_required
@@ -1111,7 +1115,7 @@ def login_view(request: object):
     error_message = None
 
     # If user already logged in, just direct them to My Account page.
-    if request.user:
+    if request.user.is_authenticated:
         return redirect("my_account")
 
     if request.method == 'POST':
