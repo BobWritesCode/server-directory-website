@@ -215,12 +215,6 @@ urlpatterns = [
     ),
 
     path(
-        '404',
-        views.e404,
-        name='404'
-    ),
-
-    path(
         'unban-user/<int:_id>/',
         views.unban_user,
         name='unban_user'
