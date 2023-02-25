@@ -1210,6 +1210,9 @@ def delete_game(form: object):
 
     Args:
         form (object): Provides data to delete game.
+
+    Returns:
+        HttpResponse (class): Feedback result of codeblock.
     """
     if form.data["game_delete_confirm"] == "delete" and form.data["itemID"]:
         item_id = form.data["itemID"]
@@ -1229,8 +1232,12 @@ def add_new_game(data: object, files: object = None):
     Adds new game to the database.
 
     Args:
-        request (object): GET/POST request from user.
         data (object): Provides data for new game.
+        files (object): Image file(s)
+
+    Returns:
+        HttpResponse (class): Feedback result of codeblock.
+
     """
     form = GameManageForm(data)
     if form.is_valid():
