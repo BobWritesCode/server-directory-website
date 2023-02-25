@@ -4,7 +4,7 @@ import json
 from unittest import mock
 from unittest.mock import patch, MagicMock
 from io import BytesIO
-from django.contrib import auth
+from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -18,7 +18,10 @@ from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
-from .views import unban_user, send_email_verification, delete_game
+from .views import (unban_user, send_email_verification, delete_game,
+                    add_new_game)
+
+UserModel = get_user_model()
 
 
 def create_user(num: str):
@@ -1314,6 +1317,34 @@ class TestLoginView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('my_account'))
 
+    def test_post_successful_login(self):
+        '''Test POST with correct credentials'''
+        user = create_user(num=1211135)
+        data = {
+            'email': user.email,
+            'password': user.password,
+        }
+        user.save()
+        auth_user = authenticate(email=str(user.email),
+                                 password=str(user.password))
+        self.assertTrue(auth_user)
+        response = self.client.post(reverse('login'),
+                                    data=data,
+                                    Follow=True)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('my_account'))
+
+    def test_post_unsuccessful_login(self):
+        '''Test POST with incorrect credentials'''
+        data = {
+            'email': self.user.email,
+            'password': '',
+        }
+        response = self.client.post(reverse('login'), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registration/login.html')
+
+
 class TestGameManagement(TestCase):
     '''Test for game_management view'''
 
@@ -1321,17 +1352,71 @@ class TestGameManagement(TestCase):
 class TestDeleteGame(TestCase):
     '''Test for delete_game function'''
 
-    def test_delete_game_successfully(self):
+    def test_delete_game_with_image_successfully(self):
         '''Test to delete game successfully'''
         game = create_game(454545, image="image")
-        print(game.image)
         form = MagicMock()
         form.data = {
             'game_delete_confirm': 'delete',
             'itemID': game.id}
 
         with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(form)
+            delete_game(form)
+            mock_destroy.assert_called()
             mock_destroy.mock_destroy()
 
-            print(response)
+
+class TestNewGame(TestCase):
+    '''Test for add_new_game function'''
+
+    def test_add_new_game_successfully_with_no_image(self):
+        '''Test to add new game with successfully'''
+        tag1 = create_tag(3928489)
+        data = {
+            'name': 'Fake Game Name',
+            'slug': 'fake-game-name',
+            'tags': [tag1],
+            'image': None,
+            'status': 1,
+            }
+        form = MagicMock()
+        form.data = {'url': 'FakeUrl'}
+        with patch('cloudinary.uploader.upload') as mock_upload:
+            mock_upload.return_value = {
+                'url': 'fakeURL',
+            }
+            add_new_game(data=data)
+            mock_upload.assert_not_called()
+            mock_upload.mock_destroy()
+
+    def test_add_new_game_successfully_with_image(self):
+        '''Test to add new game successfully'''
+        tag1 = create_tag(3928489)
+        # Create fake image
+        image_data = BytesIO(b'')
+        image_file = InMemoryUploadedFile(
+                file=image_data,
+                field_name='image',
+                name='image.jpg',
+                content_type='image/jpeg',
+                size=image_data.getbuffer().nbytes,
+                charset=None
+            )
+        data = {
+            'name': 'Fake Game Name',
+            'slug': 'fake-game-name',
+            'tags': [tag1],
+            'status': 1,
+            }
+        files = {
+            'image': image_file,
+        }
+        form = MagicMock()
+        form.data = {'url': 'FakeUrl'}
+        with patch('cloudinary.uploader.upload') as mock_upload:
+            mock_upload.return_value = {
+                'url': 'fakeURL',
+            }
+            add_new_game(data=data, files=files)
+            mock_upload.assert_called()
+            mock_upload.mock_destroy()
