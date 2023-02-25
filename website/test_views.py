@@ -1,21 +1,23 @@
 '''Tests for views.py'''
 
 import json
+from unittest import mock
 from unittest.mock import patch
 from io import BytesIO
 from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import CreateServerListingForm, ImageForm, SignupForm
-from .views import unban_user
+from .views import unban_user, send_email_verification
 
 
 def create_user(num: int):
@@ -799,10 +801,6 @@ class TestSignUpView(TestCase):
     def tearDownClass(cls):
         cls.user.delete()
 
-    def setUp(self):
-        self.client = Client()
-        self.client.logout()
-
     def test_get(self):
         '''Test request method GET'''
         # Guest
@@ -812,8 +810,8 @@ class TestSignUpView(TestCase):
             response,
             'registration/signup.html')
 
-    @patch('django.core.mail.send_mail', autospec=True)
-    def test_post(self, email_mock):
+    @patch("website.views.send_email_verification", autospec=True)
+    def test_post(self, send_mail_mock):
         '''Test post, sign up new account'''
         data = {
             'username': 'tUser_3423422',
@@ -823,14 +821,11 @@ class TestSignUpView(TestCase):
         }
         # Assert fpr Form
         self.assertTrue(SignupForm(data).is_valid())
-        # Mock results
-        fake_email_result = {'success': True}
-        email_mock.return_value = fake_email_result
         # POST
         response = self.client.post(reverse('signup'), data, follow=True)
         # Asserts
-        email_mock.assert_called()
-        email_mock.assert_called_once()
+        send_mail_mock.assert_called()
+        send_mail_mock.assert_called_once()
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/signup_verify_email']
@@ -1014,6 +1009,24 @@ class TestListingDetail(TestCase):
             response,
             'listing_detail.html'
         )
+
+
+class TestSendEmailVerification(TestCase):
+    '''Test send_email_verification view'''
+
+    @patch("django.core.mail.send_mail", autospec=True)
+    def test_send_mail(self, send_mail_mock):
+        '''Test send_mail function'''
+        user = create_user(num=3432432424)
+        request = RequestFactory().post(
+            reverse('send_email_verification'), {'user': user})
+
+        with patch("django.core.mail.send_mail", send_mail_mock):
+            response = send_email_verification(request=request, user=user)
+        # Asserts
+        send_mail_mock.assert_called()
+        send_mail_mock.assert_called_once()
+        self.assertEqual(response.status_code, 200)
 
 
 class TestBumpServer(TestCase):
