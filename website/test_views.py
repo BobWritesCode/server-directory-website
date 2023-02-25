@@ -1363,22 +1363,16 @@ class TestLoginView(TestCase):
         self.assertTemplateUsed(response, 'registration/login.html')
 
 
-class TestGameManagement(TestCase):
-    '''Test for game_management view'''
-
-
 class TestDeleteGame(TestCase):
     '''Test for delete_game function'''
 
     def test_delete_game_with_image_successfully(self):
         '''Test to delete game successfully'''
         game = create_game(454545, image="image")
-        form = MagicMock()
-        form.data = {
-            'game_delete_confirm': 'delete',
-            'itemID': game.id}
+        data = {'game_delete_confirm': 'delete',
+                'itemID': game.id}
         with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(form)
+            response = delete_game(data)
             mock_destroy.assert_called()
             mock_destroy.mock_destroy()
             self.assertEqual(response.content,
@@ -1387,12 +1381,10 @@ class TestDeleteGame(TestCase):
     def test_delete_game_with_no_image_successfully(self):
         '''Test to delete game successfully'''
         game = create_game(2342534, image=None)
-        form = MagicMock()
-        form.data = {
-            'game_delete_confirm': 'delete',
-            'itemID': game.id}
+        data = {'game_delete_confirm': 'delete',
+                'itemID': game.id}
         with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(form)
+            response = delete_game(data)
             mock_destroy.assert_not_called()
             mock_destroy.mock_destroy()
             self.assertEqual(response.content,
@@ -1401,12 +1393,10 @@ class TestDeleteGame(TestCase):
     def test_delete_game_with_no_image_failed_phrase(self):
         '''Test to delete game failed due to incorrect phrase'''
         game = create_game(2342534, image=None)
-        form = MagicMock()
-        form.data = {
-            'game_delete_confirm': '',
-            'itemID': game.id}
+        data = {'game_delete_confirm': '',  # Intentionally blank
+                'itemID': game.id}
         with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(form)
+            response = delete_game(data)
             mock_destroy.assert_not_called()
             mock_destroy.mock_destroy()
             self.assertEqual(response.content,
@@ -1415,12 +1405,10 @@ class TestDeleteGame(TestCase):
     def test_delete_game_with_no_image_failed_no_id(self):
         '''Test to delete game failed due to no id'''
         game = create_game(2342534, image=None)
-        form = MagicMock()
-        form.data = {
-            'game_delete_confirm': 'delete',
-            'itemID': ""}
+        data = {'game_delete_confirm': 'delete',
+                'itemID': ''}  # Intentionally blank
         with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(form)
+            response = delete_game(data)
             mock_destroy.assert_not_called()
             mock_destroy.mock_destroy()
             self.assertEqual(response.content,
