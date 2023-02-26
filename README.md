@@ -58,6 +58,7 @@ Cloudinary, Select2 and tinyMCE.
       - [Navbar](#navbar)
       - [Homepage](#homepage)
       - [Server Listings](#server-listings)
+        - [Tag Strings](#tag-strings)
       - [View Listing](#view-listing)
       - [Bumps](#bumps)
       - [User Authentication](#user-authentication)
@@ -497,6 +498,14 @@ The server listing page allows the user to start looking through the different l
 
 ![Server listings](./README_Images/site_server_listings.png)
 </details>
+
+##### Tag Strings
+
+One challenge I had was that I wanted to create a feature that allowed users to really customise their search by adding and removing tags. I spent a little time on the internet searching through to find the best way to go about this. I even looked at some other sites that I knew that had a filter by tag function. But what I found was that not many people were able to do it, and you could only apply 1 tag at a time.
+
+So, I came up with the below code to create something I call a 'tag string'. Simply what it does is create a URL that that has a long string in it that tells the server which tags to load for the user. Then the tag buttons `href`s will either be prefixed with an 'A' or an 'R' to indicate if this tag is to be added or removed when the user clicks on the button.
+
+In the end it produces exactly what I needed to do, and this code was completely written purely by myself, as I really couldn't find any solutions or help anywhere.
 
 ```py
 # views.py
