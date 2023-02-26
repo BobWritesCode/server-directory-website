@@ -5,7 +5,7 @@
 
 {% block content %}
 <div class="p-1 m-3 d-block d-md-none">
-    <h2 class="text-light">Server Listings</h2>
+    <h2 class="text-light">Listings</h2>
     <hr class="border border-light border-3 opacity-75 w-100">
 </div>
 <div class="container-fluid no-gutters justify-content-end d-flex flex-column-reverse flex-md-row ps-0 pe-0 text-light h-100">
@@ -13,18 +13,18 @@
     <!-- Main content -->
     <div class="col-12 col-md-8 pb-2">
         <div class="p-1 m-3 d-none d-md-block">
-            <h2 class="text-light">Server Listings</h2>
+            <h2 class="text-light">Listings</h2>
             <hr class="border border-light border-3 opacity-75 w-100">
         </div>
-        {% for item in server_listings %}
+        {% for listing in listings %}
         <div class="col-12 p-2 pb-0">
-            <a href="{% url 'listing_detail' item.slug %}" class="btn btn-dark text-decoration-none p-0 w-100">
+            <a href="{% url 'listing_detail' listing.slug %}" class="btn btn-dark text-decoration-none p-0 w-100">
                 <div class="d-flex p-1 bg-1 rounded-3">
                     <!-- Listing image-->
                     <div class="col-3 p-1 position-relative overflow-hidden d-flex flex-wrap justify-content-center"
                         style="max-width: 100%; max-height: 25vh;">
-                        {% if item.image_url %}
-                        <img class="img-cover" style="height: 25vh;" src="{{ item.image_url }}"
+                        {% if listing.image_url %}
+                        <img class="img-cover" style="height: 25vh;" src="{{ listing.image_url }}"
                             alt="Image uploaded by for listing owner.">
                         {% else %}
                         <div class="d-flex flex-column justify-content-center text-bg-secondary opacity-75"
@@ -36,27 +36,27 @@
                     </div>
                     <div class="col-9 p-1 position-relative">
                         <!-- Listing title -->
-                        <h5 class="text-light text-break">{{ item.title|escape }}</h5>
+                        <h5 class="text-light text-break">{{ listing.title|escape }}</h5>
                         <!-- Listing tags -->
                         <p>
-                            {% for tag in item.tags.all %}
+                            {% for tag in listing.tags.all %}
                             <span class="badge rounded-pill bg-info text-dark"><i class="bi bi-tag"></i>{{ tag }}</span>
                             {% endfor %}
                         </p>
                         <!-- Listing short decryption -->
-                        <div class="text-light text-break mb-0">{{ item.short_description|safe }}</div>
+                        <div class="text-light text-break mb-0">{{ listing.short_description|safe }}</div>
                         <!-- Listing bump counter and bump button -->
                         <div class="d-flex position-absolute bottom-0 end-0 ps-2 bg-semi rounded-2">
-                            <p class="mb-0 align-self-center me-1">{{item.bump_count}}</p>
+                            <p class="mb-0 align-self-center me-1">{{listing.bump_count}}</p>
                             {% if user.is_authenticated %}
-                            {% if item.id in bumps_queryset %}
-                            <button type="button" class="btn btn-light" data-item="{{ item.pk }}"
+                            {% if listing.id in bumps_queryset %}
+                            <button type="button" class="btn btn-light" data-item="{{ listing.pk }}"
                                 data-name='Bump Button' data-bs-toggle="tooltip" title="Bumped!"><i class="fa-solid fa-hand-fist"></i></button>
                             {% elif bumps_queryset|length > 4 %}
                             <button type="button" class="btn btn-danger opacity-50" data-item="{{ server.pk }}"
                                 data-name='Bump Button' data-bs-toggle="tooltip" title="Out of bumps!"><i class="fa-solid fa-hand-fist"></i></button>
                             {% else %}
-                            <button type="button" class="btn btn-dark border-light" data-item="{{ item.pk }}"
+                            <button type="button" class="btn btn-dark border-light" data-item="{{ listing.pk }}"
                                 data-name='Bump Button' data-bs-toggle="tooltip" title="Bump server."><i class="fa-solid fa-hand-fist"></i></button>
                             {% endif %}
                             {% else %}
@@ -81,7 +81,7 @@
             <p>None</p>
             {% endif %}
             {% for selected_tag in selected_tags %}
-            <a class="btn btn-info m-1" href="{% url 'server-list-wth-tags' slug 'R%'|add:selected_tag|add:tag_string %}"
+            <a class="btn btn-info m-1" href="{% url 'listings-with-tags' slug 'R%'|add:selected_tag|add:tag_string %}"
                 role="button">{{ selected_tag }} <i class="bi bi-x"></i></a>
             {% endfor %}
         </div>
@@ -89,7 +89,7 @@
         <div>
             <h5>Tags to choose from:</h5>
             {% for tag in tags %}
-            <a class="btn btn-info m-1" href="{% url 'server-list-wth-tags' slug 'A%'|add:tag.name|add:tag_string %}"
+            <a class="btn btn-info m-1" href="{% url 'listings-with-tags' slug 'A%'|add:tag.name|add:tag_string %}"
                 role="button">{{ tag.name }}</a>
             {% endfor %}
         </div>

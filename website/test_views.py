@@ -895,8 +895,8 @@ class TestActivate(TestCase):
         self.assertEqual(response.content, b"Activation link is invalid!")
 
 
-class TestServerListings(TestCase):
-    '''Tests server_listings view'''
+class TestListingsView(TestCase):
+    '''Tests listings_view view'''
 
     @classmethod
     def setUpClass(cls):
@@ -925,50 +925,50 @@ class TestServerListings(TestCase):
         '''Test request method GET'''
         # Guest
         response = self.client.get(reverse(
-            'server-list', args=[self.game.slug]))
+            'listings', args=[self.game.slug]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'server-list.html'
+            'listings.html'
         )
 
     def test_get_add_to_tag_string(self):
         '''Test adding to tag string'''
         # Guest
         response = self.client.get(reverse(
-            'server-list-wth-tags',
+            'listings-wth-tags',
             args=[self.game.slug, f'A%25{self.tag1.slug}']))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'server-list.html'
+            'listings.html'
         )
 
     def test_get_remove_from_tag_string_and_not_left_empty(self):
         '''Test removing from tag string but not left empty'''
         # Guest
         response = self.client.get(reverse(
-            'server-list-wth-tags',
+            'listings-wth-tags',
             args=[self.game.slug,
                   f'R%25{self.tag2.slug}%25{self.tag1.slug}'
                   f'%25{self.tag2.slug}']))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'server-list.html'
+            'listings.html'
         )
 
     def test_get_remove_from_tag_string_so_left_empty(self):
         '''Test removing from tag string and left empty'''
         # Guest
         response = self.client.get(reverse(
-            'server-list-wth-tags',
+            'listings-wth-tags',
             args=[self.game.slug,
                   f'R%25{self.tag1.slug}%25{self.tag1.slug}']))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'server-list.html'
+            'listings.html'
         )
 
 

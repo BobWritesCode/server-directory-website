@@ -18,15 +18,15 @@ urlpatterns = [
     ),
 
     path(
-        'server-list/<str:slug>',
-        views.server_listings,
-        name='server-list'
+        'listings/<str:slug>',
+        views.listings_view,
+        name='listings'
     ),
 
     path(
-        'server-list/<str:slug>/<str:tag_string>',
-        views.server_listings,
-        name='server-list-wth-tags'
+        'listings/<str:slug>/<str:tag_string>',
+        views.listings_view,
+        name='listings-with-tags'
     ),
 
     path(

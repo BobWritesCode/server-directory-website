@@ -57,7 +57,7 @@ Cloudinary, Select2 and tinyMCE.
     - [Existing Features](#existing-features)
       - [Navbar](#navbar)
       - [Homepage](#homepage)
-      - [Server Listings](#server-listings)
+      - [Listings](#listings)
         - [Tag Strings](#tag-strings)
       - [View Listing](#view-listing)
       - [Bumps](#bumps)
@@ -490,13 +490,13 @@ The user can hover their mouse over the different game cards. This help the user
 
 [Back to top🔝](#table-of-contents)
 
-#### Server Listings
+#### Listings
 
-The server listing page allows the user to start looking through the different listings. The user can filter their search down using the tags filter on the right. They can select up to as many tags as they like and also easily remove tags. This provides a much more bespoke list that is filled only with that user's interests.
+The Listing page allows the user to start looking through the different listings. The user can filter their search down using the tags filter on the right. They can select up to as many tags as they like and also easily remove tags. This provides a much more bespoke list that is filled only with that user's interests.
 
-<details><summary>Server listings screenshot</summary> <!-- markdownlint-disable-line -->
+<details><summary>Listings screenshot</summary> <!-- markdownlint-disable-line -->
 
-![Server listings](./README_Images/site_server_listings.png)
+![Listings](./README_Images/site_Listings.png)
 </details>
 
 ##### Tag Strings
@@ -577,7 +577,7 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
 
 <details><summary>Screenshot</summary> <!-- markdownlint-disable-line -->
 
-![Server listings](./README_Images/site_listing.png)
+![Listing](./README_Images/site_listing.png)
 </details>
 
 The full listing page provides the user a much more detailed insight about the server listing. It allows the server owner to provide a long description so they can describe as much detail as they want about the server to attract new players.
@@ -590,7 +590,7 @@ On this page their is a section just under the tags where a user can interact wi
 
 If the user is a staff member then the staff view panel will also be shown, where a staff user can quickly go to the owner's profile or edit the listing.
 
-![Server listings panel](./README_Images/feat_listing_panel.gif)
+![Listing panel](./README_Images/feat_listing_panel.gif)
 
 [Back to top🔝](#table-of-contents)
 

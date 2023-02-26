@@ -15,7 +15,7 @@
             </div>
             <div class="container-fluid position-relative d-flex flex-wrap justify-content-center mb-3">
                 {% for game in games %}
-                <a href="{% url 'server-list' game.slug %}" class="btn btn-dark bg-semi p-1 m-1">
+                <a href="{% url 'listings' game.slug %}" class="btn btn-dark bg-semi p-1 m-1">
                     <div class="bg-1 rounded-3 h-100" style="width: 18rem;">
                         <div class="p-1">
                             <img src="{{game.image.url}}" alt="Game cover for {{game.name}}" class="w-100">

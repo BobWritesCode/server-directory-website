@@ -630,9 +630,9 @@ def activate(request: object, uidb64, token):
     return HttpResponse('Activation link is invalid!')
 
 
-def server_listings(request: object, slug: str, tag_string: str = ""):
+def listings_view(request: object, slug: str, tag_string: str = ""):
     """
-    Loads server listing view.
+    Loads listings view.
 
     Args:
         request (object): GET/POST request from user.
@@ -728,9 +728,9 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
 
     return render(
         request,
-        "server-list.html",
+        "listings.html",
         {
-            "server_listings": listings,
+            "listings": listings,
             "bumps_queryset": user_bumps_queryset,
             "selected_tags": selected_tags,
             "tags": tags,
