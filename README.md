@@ -32,6 +32,18 @@ Cloudinary, Select2 and tinyMCE.
     - [Server-Owner](#server-owner)
     - [Site-Admin](#site-admin)
   - [Development](#development)
+    - [Agile Design](#agile-design)
+      - [GitHub Issues](#github-issues)
+        - [Issue numbers](#issue-numbers)
+        - [User Story](#user-story)
+        - [Bug Report](#bug-report)
+        - [Feature Request](#feature-request)
+        - [Improvement Request](#improvement-request)
+        - [Assign an assignee or assignees](#choose-assignees)
+        - [Apply labels](#choose-labels)
+        - [Choose the project](#choose-project)
+        - [Choose the milestone](#choose-milestone)
+      - [Kanban Board](#kanban-board)
     - [Wireframes](#wireframes)
       - [Homepage Design](#homepage-design)
       - [Listings Design](#listings-design)
@@ -195,6 +207,134 @@ Some example user stories which will affect the design and project functionality
 ---
 
 ## Development
+
+### Agile Design
+
+- [GitHub Issues](#github-issues)
+  - [User Story](#user-story)
+  - [Bug Report](#bug-report)
+  - [Feature Request](#feature-request)
+  - [Improvement Request](#improvement-request)
+  - [Assign an assignee or assignees](#choose-assignees)
+  - [Apply labels](#choose-labels)
+  - [Choose the project](#choose-project)
+  - [Choose the milestone](#choose-milestone)
+- [Kanban Board](#kanban-board)
+
+When taking on any project especially large and complicated projects with different moving parts, where it's easy to jump from one part of the project to another, leaving the previous part incomplete and leaving room for error. It's best to come up with a strategy. This is where agile design comes in, it can help you identify all the different parts of the project that need to be completed, in which order may be best, and if you are in a team delegate tasks to people so everyone knows what their responsibilities are.
+
+As part of the project, I heavily used GitHub Issues and GitHub Kanban board.
+
+[🔝](#table-of-contents)
+
+#### GitHub Issues
+
+- [Issue numbers](#issue-numbers)
+
+I created 4 different templates for issues being raised:
+
+- [User Story](#user-story)
+- [Bug Report](#bug-report)
+- [Feature Request](#feature-request)
+- [Improvement Request](#improvement-request)
+
+Each issue category played a part in helping easily identify the category the issue was going to be related to, and each has a different template for myself, and other users to provide useful information that will help resolve the issue.
+
+When an issue is either being created or after. There are a few different options you can modify to help delegate the task and its priority. You can:
+
+- [Assign an assignee or assignees](#choose-assignees)
+- [Apply labels](#choose-labels)
+- [Choose the project](#choose-project)
+- [Choose the milestone](#choose-milestone)
+
+[Back to top🔝](#table-of-contents)
+
+##### Issue numbers
+
+Every issue raised will have an issue number i.e., #1, #2, #3 and so on. If you put the issue number in the commit message, then that commit will automatically by GitHub be linked to that issue.
+
+If you use certain keywords as well it will also automatically manage the issue such as 'bug: fixes #58'. This will automatically close that issue for you.
+
+##### User Story
+
+[Link to User Story template.](https://github.com/BobWritesCode/server-directory-website/blob/master/.github/ISSUE_TEMPLATE/user-story.md)
+
+[Link to User Story Issues.](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+%5BUser+Story%5D+)
+
+The User Story was the first template I created, and this was basically to help start to build the idea of the project and what potential features were going to be needed.
+
+Any User Story was also allocated the tag 'enhancement' automatically to help identify this was going to be a new feature.
+
+##### Bug Report
+
+[Link to Bug Report template.](https://github.com/BobWritesCode/server-directory-website/blob/master/.github/ISSUE_TEMPLATE/bug_report.md)
+
+[Link to Bug Report Issues.](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+label%3Abug)
+
+As this is a larger and more complicated project, inevitably bugs came up. Bugs are very easy to get distracted by as they generally were discovered while I was working on an unrelated feature. When a bug came up, I would create a bug report so I could attend to it later.
+
+Any Bug Report was also allocated the tag 'bug' to help identify this was going to be a new feature. I could also opt to allocate it the tag 'priority' to show it was something that needed to be fixed immediately as it could be either project breaking or may affect many users.
+
+##### Feature Request
+
+[Link to Feature Request template.](https://github.com/BobWritesCode/server-directory-website/blob/master/.github/ISSUE_TEMPLATE/improvement-request.md)
+
+[Link to Feature Request Issues.](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+%5BNew+Feat%5D+)
+
+While building the project new ideas on new features would come to mind. Some that would potentially be perfect for the first version of the project and some that potentially could be implemented later. Whenever a new feature came to mind, I would complete the Feature Request form.
+
+Any Feature Request was also allocated the tag 'enhancement' automatically to help identify this was going to be a new feature.
+
+##### Improvement Request
+
+[Link toImprovement Request template.](https://github.com/BobWritesCode/server-directory-website/blob/master/.github/ISSUE_TEMPLATE/improvement-request.md)
+
+[Link to Improvement Request Issues.](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+label%3AImprovement)
+
+Either while using the project as a user or developing the project. I would realise improvements to feature that had already been built. To separate new features to improvements I created the Improvement Request form. Improvements could mainly be left to later in the project as it was important to make sure that all the main features were implemented first.
+
+Any Improvement Request was also allocated the tag 'enhancement' automatically to help identify this was going to be a new feature.
+
+##### Choose Assignees
+
+[Link to my assigned issues.](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+label%3Aenhancement+assignee%3ABobWritesCode)
+
+It may come as no surprise; I am the only person assigned issues on this project. Potentially in the future if the project grows and the team grows past me, then I would be able to assign other team members to tasks.
+
+##### Choose Labels
+
+[Link to label choices for this project.](https://github.com/BobWritesCode/server-directory-website/labels)
+
+When creating an issue from an issue report, a label is automatically allocated but the user or a person looking after the project can choose to assign their own labels. For example, if something needs to be tagged as 'priority'.
+
+##### Choose Project
+
+It's probably obvious but all issues were assigned to this project. But one small feature that may go unnoticed you are able to choose which column on the Kanban board that issue goes to. For people who prefer to use the Kanban board to see what issues where.
+
+##### Choose Milestone
+
+[Link to milestone for this project.](https://github.com/BobWritesCode/server-directory-website/milestones)
+
+A milestone is essentially a marker in the projects journey i.e., Alpha, Beta, Release v1, v2 and so on... For potentially a large project that is based over a year or on-going you maybe decided to allocate features to different quarters of the year. The milestone option allows you to do that. This essentially prioritises which issues need to be dealt with by when.
+
+In my project I created 3 milestones:
+
+- Launch version 1.00
+  - These are issues that 100% must be done ready for version 1.00.
+- Non-essential for v.100
+  - These are issues that would be nice to have done but are mandatory.
+- Post 1.00 to do list
+  - These are issues that are mainly going to be features that can wait until version 1.00 has been completed and be implements into a future version.
+
+#### Kanban Board
+
+[Link to project kanban board.](https://github.com/users/BobWritesCode/projects/3)
+
+A Kanban board is an agile project management tool that helps visualize tasks. It helps with the day-to-day works flow as you can easily see which tasks need to be completed. With GitHub projects you can have several views of the Kanban board. As you might want to have one for the team, and maybe views for each team member. Or different labels such as bugs or improvements.
+
+[Back to top🔝](#table-of-contents)
+
+---
 
 ### Wireframes
 
