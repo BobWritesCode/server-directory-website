@@ -147,8 +147,8 @@ function action(...args) {
  */
 function userEmailUpdate() {
   const formData = {};
-  formData.email1 = $('#email_update_form').find('#id_email').val();
-  formData.email2 = $('#email_update_form').find('#id_email_confirm').val();
+  formData.email1 = $('#email_update_form').find('#email_update').val();
+  formData.email2 = $('#email_update_form').find('#email_update_confirm').val();
   action('update_email', formData);
 }
 
