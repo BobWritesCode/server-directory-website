@@ -18,7 +18,7 @@
         </div>
         {% for listing in listings %}
         <div class="col-12 p-2 pb-0">
-            <a href="{% url 'listing_detail' listing.slug %}" class="btn btn-dark text-decoration-none p-0 w-100">
+            <a href="{% url 'listing' listing.slug %}" class="btn btn-dark text-decoration-none p-0 w-100">
                 <div class="d-flex p-1 bg-1 rounded-3">
                     <!-- Listing image-->
                     <div class="col-3 p-1 position-relative overflow-hidden d-flex flex-wrap justify-content-center"

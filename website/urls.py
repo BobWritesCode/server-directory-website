@@ -31,8 +31,8 @@ urlpatterns = [
 
     path(
         'server/<slug>',
-        views.listing_detail,
-        name='listing_detail'
+        views.listing_view,
+        name='listing'
     ),
 
     path(

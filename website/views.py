@@ -760,7 +760,7 @@ def get_user_bumps(request: object):
     return _list
 
 
-def listing_detail(request: object, slug: str):
+def listing_view(request: object, slug: str):
     """
     Loads listing detail view.
 
@@ -790,7 +790,7 @@ def listing_detail(request: object, slug: str):
 
     return render(
         request,
-        "listing_detail.html",
+        "listing.html",
         {
             "images": images,
             "listing": listing,

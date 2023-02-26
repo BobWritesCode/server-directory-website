@@ -49,7 +49,7 @@
             <tr>
                 <td>{{forloop.counter}}</td>
                 <td>{{bump.listing}}</td>
-                <td><a href="{% url 'listing_detail' bump.url %}" class="text-decoration-none text-light"><div class='w-100'><i class="bi bi-arrow-right-square"></i></div></a></td>
+                <td><a href="{% url 'listing' bump.url %}" class="text-decoration-none text-light"><div class='w-100'><i class="bi bi-arrow-right-square"></i></div></a></td>
                 <td>{{bump.expiry}}</td>
             </tr>
             {% endfor %}
@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="col-9 ps-1 position-relative">
-                    <a href="{% url 'listing_detail' listing.slug %}">
+                    <a href="{% url 'listing' listing.slug %}">
                         <h5 class="text-light text-break">{{ listing.title|safe }}</h5>
                     </a>
                     <p class="text-light">
@@ -103,7 +103,7 @@
                             <i class="fa-solid fa-hand-fist"></i> {{ listing.bump_count }}
                         </div>
                         <!-- Button: View listing -->
-                        <a href="{% url 'listing_detail' listing.slug %}" class="btn btn-dark" data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
+                        <a href="{% url 'listing' listing.slug %}" class="btn btn-dark" data-bs-toggle="tooltip" title="View listing"><i class="bi bi-eye"></i></a>
                         <!-- Button: Edit listing -->
                         <a href="/server_edit/{{listing.pk}}" class="btn btn-dark" data-bs-toggle="tooltip" title="Edit listing"><i class="bi bi-pencil-square"></i></a>
                         <!-- Button: Delete listing -->

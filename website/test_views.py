@@ -972,7 +972,7 @@ class TestListingsView(TestCase):
         )
 
 
-class TestListingDetail(TestCase):
+class TestListingView(TestCase):
     '''Test listing_detail view'''
 
     @classmethod
@@ -1001,23 +1001,23 @@ class TestListingDetail(TestCase):
         '''Test request method GET as guest'''
         # Guest
         response = self.client.get(reverse(
-            'listing_detail', args=[self.listing.slug]))
+            'listing', args=[self.listing.slug]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'listing_detail.html'
+            'listing.html'
         )
 
     def test_get_as_listing_staff(self):
         '''Test request method GET as staff user'''
         self.client.force_login(user=self.staffuser)
         response = self.client.get(reverse(
-            'listing_detail', args=[self.listing.slug]))
+            'listing', args=[self.listing.slug]))
         self.assertEqual(response.context['listing_owner'], self.user)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'listing_detail.html'
+            'listing.html'
         )
 
 
