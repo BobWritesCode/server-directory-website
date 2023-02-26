@@ -491,10 +491,10 @@ def my_account(request: object):
                 return redirect("my_account")
 
         # Let's see if the user is trying to delete there account.
-        if 'account-delete-confirm' in request.POST:
+        if 'account_delete_confirm' in request.POST:
             form_2 = ConfirmAccountDeleteForm(request.POST)
             # Check if user has typed the correct phrase and hit submit
-            if request.POST['confirm'] == 'remove':
+            if request.POST['account_delete_confirm'] == 'remove':
                 CustomUser.objects.get(pk=request.user.pk).delete()
                 return redirect(to='account_deleted')
 

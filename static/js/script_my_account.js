@@ -4,6 +4,7 @@
 // Global HTML Elements
 const emailForm = $('#email_update_form');
 const btnDeleteAccount = $("button[data-target='#delete-account-modal']");
+const btnDeleteAccountConfirm = $("button[name='account-delete-confirm']");
 const btnEmailUpdateConfirm = $('#email_update_form').find(
   'button[name="email_address_update_confirm"]',
 );
@@ -56,6 +57,28 @@ function ServerListingDeleteConfirm(id) {
       .val(id);
     $('#server-listing-delete-form').append(input);
     $('#server-listing-delete-form').submit();
+  }
+}
+
+/**
+ * Check user input matches expected input before account deletion.
+ */
+function AccountDeleteConfirm() {
+  // Clear any current error messages from screen.
+  $('.error-message').remove();
+  // Check user has input correct string.
+  if (
+    $('#account-delete-form').find('input[name="account_delete_confirm"]').val() !== 'remove'
+  ) {
+    $('#account-delete-form')
+      .find('input[name="account_delete_confirm"]')
+      .after(
+        '<div class="error-message alert alert-warning mt-1" role="alert">Follow instructions above</div>',
+      );
+  }
+  // If no error messages then send request to server.
+  if ($('.error-message').length === 0) {
+    $('#account-delete-form').submit();
   }
 }
 
@@ -163,7 +186,13 @@ window.addEventListener('DOMContentLoaded', () => {
     },
   );
   btnDeleteAccount.on('click', () => {
+    $('.error-message').remove();
     clearRemoveInput();
+  });
+  btnDeleteAccountConfirm.on('click', (e) => {
+    e.preventDefault();
+    $('.error-message').remove();
+    AccountDeleteConfirm();
   });
   btnEmailUpdateConfirm.on('click', (e) => {
     e.preventDefault();

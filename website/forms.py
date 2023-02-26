@@ -177,7 +177,7 @@ class ConfirmAccountDeleteForm(forms.ModelForm):
     -------
     none
     """
-    confirm = forms.CharField(
+    account_delete_confirm = forms.CharField(
         label=(
             'To confirm deletion please type "remove" in the'
             'below box and then hit confirm:'),
@@ -186,6 +186,7 @@ class ConfirmAccountDeleteForm(forms.ModelForm):
             'To confirm deletion please type "<strong>remove</strong>" '
             'in the below box and then hit confirm')},
         required=True,
+        widget=forms.TextInput(attrs={})
     )
 
     class Meta:

@@ -138,7 +138,7 @@ aria-labelledby="delete-account-modal-title" aria-hidden="true">
         <div class="modal-header bg-danger">
             <h5 class="modal-title text-light" id="delete-account-modal-title">Delete Account Confirmation</h5>
         </div>
-        <form method="post">
+        <form method="post" id="account-delete-form">
             {% csrf_token %}
             <div class="modal-body">
                 <p>
