@@ -1691,8 +1691,8 @@ def update_email(request: object, _list: list):
     except IntegrityError as err:
         if 'UNIQUE constraint failed: auth_user.email' in err.args:
             return {'result': False, 'reason': "Email address already taken"}
-    except ValidationError as e:
-        for errors in e.message_dict.items():
+    except ValidationError as err:
+        for errors in err.message_dict.items():
             return {'result': False, 'reason': errors[1]}
 
     # Send verification email to the user.
