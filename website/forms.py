@@ -8,9 +8,7 @@ from django.core.validators import FileExtensionValidator
 from tinymce.widgets import TinyMCE
 from cloudinary.forms import CloudinaryFileField
 
-from .models import (
-    CustomUser, Game, Tag, ServerListing, Images
-)
+from .models import CustomUser, Game, Tag, ServerListing, Images
 
 
 class UserForm(forms.ModelForm):
@@ -73,8 +71,7 @@ class UserForm(forms.ModelForm):
         model = CustomUser
         fields = [
             'id', 'username', 'email', 'email_verified',
-            'is_active', 'is_banned', 'is_staff', 'is_superuser'
-            ]
+            'is_active', 'is_banned', 'is_staff', 'is_superuser']
 
 
 class ProfileForm(forms.ModelForm):
@@ -103,8 +100,7 @@ class ProfileForm(forms.ModelForm):
         label=("Email address"),
         required=True,
         error_messages={
-            'required': "Email is required. (Falcon)", }
-        )
+            'required': "Email is required. (Falcon)", })
     email_verified = forms.BooleanField(label=("Verified?"), disabled=True)
 
     class Meta:
@@ -140,13 +136,13 @@ class SignupForm(UserCreationForm):
         required=True,
         help_text='Required',
         error_messages={
-            'required': 'Username is required. (Ferret)', })
+            'required': 'Username is required. (Ferret)'})
     email = forms.EmailField(
         max_length=200,
         help_text='Required',
         required=True,
         error_messages={
-            'required': 'Email is required. (Ferret)', })
+            'required': 'Email is required. (Ferret)'})
 
     class Meta:
         model = CustomUser
@@ -186,8 +182,7 @@ class ConfirmAccountDeleteForm(forms.ModelForm):
             'To confirm deletion please type "<strong>remove</strong>" '
             'in the below box and then hit confirm')},
         required=True,
-        widget=forms.TextInput(attrs={})
-    )
+        widget=forms.TextInput(attrs={}))
 
     class Meta:
         model = CustomUser
@@ -258,8 +253,7 @@ class ConfirmGameDeleteForm(forms.ModelForm):
         error_messages={'required': (
             'To confirm deletion please type "<strong>delete</strong>" '
             'in the below box and then hit confirm')},
-        required=True,
-    )
+        required=True)
 
     class Meta:
         model = Game
@@ -341,26 +335,21 @@ class CreateServerListingForm(forms.ModelForm):
         label="Choose game:",
         queryset=Game.objects.filter(status=1).order_by('name'),
         required=True,
-        error_messages={'required': 'Choose a game.'},
-    )
+        error_messages={'required': 'Choose a game.'})
 
     tags = forms.ModelMultipleChoiceField(
         label="Choose tags:  (max: 10)",
         queryset=Tag.objects.order_by('name'),
         required=True,
         error_messages={
-            'required': 'Choose at least 1 tag.'
-        },
-    )
+            'required': 'Choose at least 1 tag.'})
 
     title = forms.CharField(
         label="Name of server:",
         max_length=50,
         required=True,
         error_messages={
-            'required': 'Provide a server name.'
-        },
-    )
+            'required': 'Provide a server name.'})
 
     short_description = forms.CharField(
         label="Short description: (min: 100, max: 200 characters)",
@@ -371,9 +360,7 @@ class CreateServerListingForm(forms.ModelForm):
         error_messages={
             'required': 'Required.',
             'min_length': 'Must be over 100 and below 200 characters.',
-            'max_length': 'Must be over 100 and below 200 characters.'
-        },
-    )
+            'max_length': 'Must be over 100 and below 200 characters.'})
 
     long_description = forms.CharField(
         label="Long description: (min: 200, max: 2000 characters)",
@@ -384,9 +371,7 @@ class CreateServerListingForm(forms.ModelForm):
         error_messages={
             'required': 'Required.',
             'min_length': 'Must be over 200 and below 2000 characters.',
-            'max_length': 'Must be over 200 and below 2000 characters.'
-        },
-    )
+            'max_length': 'Must be over 200 and below 2000 characters.'})
 
     status = forms.TypedChoiceField(
         label="Status:",
@@ -396,32 +381,26 @@ class CreateServerListingForm(forms.ModelForm):
         initial=0,
         required=True,
         error_messages={
-            'required': 'Required.',
-        },
-    )
+            'required': 'Required.'})
 
     discord = forms.CharField(
         label="Discord server invite:",
         max_length=10,
         required=True,
         error_messages={
-            'required': 'Required.',
-        },
-    )
+            'required': 'Required.'})
 
     tiktok = forms.CharField(
         label="Tiktok profile link:",
         max_length=20,
-        required=False,
-    )
+        required=False)
 
     class Meta:
         model = ServerListing
         fields = [
             'game', 'tags', 'title', 'short_description',
             'long_description', 'status', 'discord', 'logo',
-            'tiktok'
-        ]
+            'tiktok']
 
 
 class ImageForm(forms.ModelForm):
@@ -449,8 +428,7 @@ class ImageForm(forms.ModelForm):
         label="Upload image:",
         widget=forms.FileInput,
         required=False,
-        validators=[FileExtensionValidator(['jpeg', 'jpg', 'png'])]
-    )
+        validators=[FileExtensionValidator(['jpeg', 'jpg', 'png'])])
 
     class Meta:
         model = Images
@@ -525,21 +503,16 @@ class GameManageForm(forms.ModelForm):
         max_length=50,
         required=True,
         error_messages={
-            'required': 'Required.',
-        },
-        )
+            'required': 'Required.', })
     slug = forms.SlugField(max_length=50)
     tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.all(),
         blank=False,
         error_messages={
-            'required': 'Choose at least 1 tag.'
-        },
-    )
+            'required': 'Choose at least 1 tag.'})
     image = CloudinaryFileField(
         label="Upload new image:",
-        required=False,
-    )
+        required=False)
     status = forms.TypedChoiceField(
         label="Set status as:",
         choices=((0, "Draft"), (1, "Published")),
@@ -548,9 +521,7 @@ class GameManageForm(forms.ModelForm):
         widget=forms.RadioSelect,
         required=True,
         error_messages={
-            'required': 'Required.'
-        },
-    )
+            'required': 'Required.'})
 
     class Meta:
         model = Game
@@ -586,9 +557,7 @@ class TagsManageForm(forms.ModelForm):
         max_length=50,
         required=True,
         error_messages={
-            'required': 'Required.'
-        },
-    )
+            'required': 'Required.'})
     slug = forms.SlugField(max_length=50)
 
     class Meta:
@@ -621,8 +590,7 @@ class ConfirmTagDeleteForm(forms.ModelForm):
             'the below box and then hit confirm:'),
         max_length=10,
         required=True,
-        error_messages={'required': 'Follow the instructions.'},
-    )
+        error_messages={'required': 'Follow the instructions.'})
 
     class Meta:
         model = Tag
@@ -654,5 +622,4 @@ class DeleteConfirmForm(forms.Form):
             'in the below box and then hit confirm:'),
         max_length=10,
         error_messages={'required': 'Follow the instructions.'},
-        required=True,
-    )
+        required=True)

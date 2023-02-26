@@ -279,7 +279,7 @@ def server_create(request: object):
                     folder="server_directory/",
                     allowed_formats=['jpg', 'png', 'jpeg'],
                     format='jpg'
-                    )
+                )
                 image_form.instance.image = new_image['url']
                 image_form.instance.public_id = new_image['public_id']
                 image_form.instance.user = request.user
@@ -354,8 +354,7 @@ def server_edit(request: object, _pk: int):
                     request.FILES['image'],
                     folder="server_directory/",
                     allowed_formats=['jpg', 'png', 'jpeg'],
-                    format='jpg'
-                    )
+                    format='jpg')
 
             # If no current listing image
             # and image trying to be saved.
@@ -366,7 +365,7 @@ def server_edit(request: object, _pk: int):
                     folder="server_directory/",
                     allowed_formats=['jpg', 'png', 'jpeg'],
                     format='jpg'
-                    )
+                )
                 image = image_form.instance
                 image.user = request.user
                 image.listing = get_object_or_404(ServerListing, pk=_pk)
@@ -1114,8 +1113,7 @@ def login_view(request: object):
             # ERROR: User not found, or password mismatch.
             error_message = (
                 "Either user does not exist or password does not "
-                "match account."
-            )
+                "match account.")
         else:
             # Check if user is banned.
             if user.is_banned:
@@ -1222,8 +1220,7 @@ def add_new_game(data: object, files: object = None):
                 files["image"],
                 folder="server_directory/",
                 allowed_formats=['jpg', 'png', 'jpeg'],
-                format='jpg'
-                )
+                format='jpg')
             game.image = new_image["url"]
             game.save()
             return HttpResponse('New game added with image.')
@@ -1231,7 +1228,7 @@ def add_new_game(data: object, files: object = None):
     return HttpResponse('Failed to add new game.')
 
 
-def update_game(data: object, files: object = {}):
+def update_game(data: object, files: object = None):
     """
     Updates game in the database.
 
@@ -1290,8 +1287,7 @@ def update_game(data: object, files: object = {}):
                 files["image"],
                 folder="server_directory/",
                 allowed_formats=['jpg', 'png', 'jpeg'],
-                format='jpg'
-                )
+                format='jpg')
             game.image = new_image["url"]
 
         # Save game object
@@ -1470,16 +1466,14 @@ def staff_user_management_user(request: object, _id: int):
         _id = request.POST['id']
         ban_user(request, _id)
         return redirect(
-            "staff_user_management_user", _id=request.POST['id']
-            )
+            "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to unban target user.
     if "unban" in request.POST:
         _id = request.POST['id']
         unban_user(request, _id)
         return redirect(
-            "staff_user_management_user", _id=request.POST['id']
-            )
+            "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to delete a listing of the
     # target user.
@@ -1489,8 +1483,7 @@ def staff_user_management_user(request: object, _id: int):
             item = get_object_or_404(ServerListing, id=request.POST['id'])
             item.delete()
             return redirect(
-                "staff_user_management_user", _id=request.POST['id']
-                )
+                "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to send a email verification
     # to the target user.
@@ -1500,24 +1493,21 @@ def staff_user_management_user(request: object, _id: int):
         # Send email verification to the user
         send_email_verification(request, user)
         return redirect(
-            "staff_user_management_user", _id=request.POST['id']
-            )
+            "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to assign the target user
     # as a staff member.
     if "promote" in request.POST:
         promote_user_to_staff(request, request.POST['id'])
         return redirect(
-            "staff_user_management_user", _id=request.POST['id']
-            )
+            "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to resign the target user
     # as a staff member.
     if "demote" in request.POST:
         demote_user_from_staff(request, request.POST['id'])
         return redirect(
-            "staff_user_management_user", _id=request.POST['id']
-            )
+            "staff_user_management_user", _id=request.POST['id'])
 
     # Get images for server listings
     # Makes sure they are status 1: approved.
@@ -1561,8 +1551,7 @@ def staff_user_management_user(request: object, _id: int):
             "form": form,
             "form_2": DeleteConfirmForm(),
             "server_listings": listings
-        },
-    )
+        })
 
 
 def promote_user_to_staff(request: object, target_id: int):
@@ -1655,8 +1644,7 @@ def check_email(email: str):
     pat = (
         r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#"
         "#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9"
-        r"-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
-        )
+        r"-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
     if re.match(pat, email) is None:
         return {'result': False, 'reason': "Email address not valid"}
     return {'result': True, 'reason': ""}

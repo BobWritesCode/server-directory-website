@@ -64,23 +64,20 @@ class CustomUser(AbstractUser):
         unique=True,
         error_messages={
             'required': "Username is required. (Panda)",
-            'unique': 'Username already taken. (Panda)', }
-        )
+            'unique': 'Username already taken. (Panda)'})
     username_lower = models.CharField(max_length=100)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(
         max_length=50,
         default=None,
         null=True,
-        blank=True
-        )
+        blank=True)
     email = models.EmailField(
         unique=True,
         blank=False,
         error_messages={
             'required': "Email is required. (Cobra)",
-            'unique': 'Email already taken. (Cobra)', }
-        )
+            'unique': 'Email already taken. (Cobra)'})
     email_verified = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
@@ -202,8 +199,7 @@ class Tag(models.Model):
             Class as a JSON: str
         """
         return json.dumps(
-            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
-            )
+            self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 
 class Game(models.Model):
@@ -281,8 +277,7 @@ class Game(models.Model):
             Class as a JSON: str
         """
         return json.dumps(
-            self, default=lambda o: o.__dict__, sort_keys=True, indent=4
-            )
+            self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 
 class ServerListing(models.Model):
@@ -345,39 +340,32 @@ class ServerListing(models.Model):
     game = models.ForeignKey(
         Game, on_delete=models.CASCADE,
         related_name="listings",
-        related_query_name="listing",
-        )
+        related_query_name="listing")
     owner = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE,
         related_name="listings",
-        related_query_name="listing",
-        )
+        related_query_name="listing")
     title = models.CharField(
         max_length=50,
-        blank=False,
-        )
+        blank=False)
     slug = models.SlugField(max_length=50, unique=True)
     logo = CloudinaryField('image', default='placeholder')
     tags = models.ManyToManyField(Tag, blank=True)
     short_description = models.TextField(
         max_length=200,
-        blank=False,
-        )
+        blank=False)
     long_description = tinymce_models.HTMLField(
         max_length=2000,
-        blank=False,
-        )
+        blank=False)
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     discord = models.CharField(
         max_length=50,
-        blank=False,
-        )
+        blank=False)
     tiktok = models.CharField(
         default='',
         max_length=50,
-        blank=True
-        )
+        blank=True)
     status = models.IntegerField(choices=STATUS, default=0)
     bump_count = models.IntegerField(default=0)
 
@@ -440,7 +428,6 @@ class ServerListing(models.Model):
                 next_id = 1
             else:
                 next_id = ServerListing.objects.order_by('-id').first().id + 1
-
             self.slug = f'Listing-{next_id}'
         super(ServerListing, self).save(*args, **kwargs)
 
@@ -526,24 +513,20 @@ class Images(models.Model):
     user = models.ForeignKey(
         CustomUser,
         on_delete=models.CASCADE,
-        related_name="user_uploaded"
-        )
+        related_name="user_uploaded")
     reviewed_by = models.ForeignKey(
         CustomUser,
         blank=True,
         null=True,
         on_delete=models.DO_NOTHING,
-        related_name="user_approved"
-        )
+        related_name="user_approved")
     listing = models.ForeignKey(ServerListing, on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=(
             (0, 'Unapproved'),
             (1, 'Approved'),
             (2, 'Rejected'),
-            (3, 'Rejected and User banned')
-            ),
-        default=0
-        )
+            (3, 'Rejected and User banned')),
+        default=0)
     date_added = models.DateField(auto_now_add=True)
     expiry = models.DateField(null=True, blank=True)
