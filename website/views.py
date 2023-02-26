@@ -16,7 +16,7 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core import mail
 from django.db import IntegrityError
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse, Http404,  HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
@@ -53,7 +53,8 @@ def index(request: object):
     Returns:
         render() (func): Loads the html page.
     """
-    games = Game.objects.filter(status=1)
+    games = Game.objects.filter(status=1).annotate(
+        listing_count=Count('listing')).order_by('-listing_count')
     ctx = {
         'games': games,
         'tag_string': "0",

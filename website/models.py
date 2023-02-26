@@ -230,6 +230,9 @@ class Game(models.Model):
     __str__():
         returns name as the class str.
 
+    listing_count():
+        returns number of active listings for each game.
+
     to_json():
         converts class into a json string.
     """
@@ -239,6 +242,9 @@ class Game(models.Model):
     image = CloudinaryField('image', null=True, default=None, blank=True,
                             allowed_formats=['png', 'jpg', 'jpeg'])
     status = models.IntegerField(choices=STATUS, default=0)
+
+    class Meta:
+        ordering = ['name']
 
     def __str__(self):
         """
@@ -251,6 +257,18 @@ class Game(models.Model):
             name: str
         """
         return f"{self.name}"
+
+    def listing_count(self):
+        """
+        Provides how many active servers this game is listed on.
+
+        Args:
+            None
+
+        Returns:
+            Count: int
+        """
+        return ServerListing.objects.filter(game=self, status=1).count()
 
     def to_json(self):
         """
