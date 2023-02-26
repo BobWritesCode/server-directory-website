@@ -135,6 +135,7 @@ class SignupForm(UserCreationForm):
         label='Username', max_length=20,
         required=True,
         help_text='Required',
+        strip=True,
         error_messages={
             'required': 'Username is required. (Ferret)'})
     email = forms.EmailField(
@@ -348,6 +349,7 @@ class CreateServerListingForm(forms.ModelForm):
         label="Name of server:",
         max_length=50,
         required=True,
+        strip=True,
         error_messages={
             'required': 'Provide a server name.'})
 
@@ -357,6 +359,7 @@ class CreateServerListingForm(forms.ModelForm):
         max_length=200,
         widget=TinyMCE(attrs={'cols': 80, 'rows': 2}),
         required=True,
+        strip=True,
         error_messages={
             'required': 'Required.',
             'min_length': 'Must be over 100 and below 200 characters.',
@@ -366,6 +369,7 @@ class CreateServerListingForm(forms.ModelForm):
         label="Long description: (min: 200, max: 2000 characters)",
         min_length=200,
         max_length=2000,
+        strip=True,
         widget=TinyMCE(attrs={'cols': 80, 'rows': 15, }),
         required=True,
         error_messages={
@@ -387,12 +391,14 @@ class CreateServerListingForm(forms.ModelForm):
         label="Discord server invite:",
         max_length=10,
         required=True,
+        strip=True,
         error_messages={
             'required': 'Required.'})
 
     tiktok = forms.CharField(
         label="Tiktok profile link:",
         max_length=20,
+        strip=True,
         required=False)
 
     class Meta:
@@ -502,6 +508,7 @@ class GameManageForm(forms.ModelForm):
         label="Game",
         max_length=50,
         required=True,
+        strip=True,
         error_messages={
             'required': 'Required.', })
     slug = forms.SlugField(max_length=50)
@@ -556,6 +563,7 @@ class TagsManageForm(forms.ModelForm):
         label="Tag",
         max_length=50,
         required=True,
+        strip=True,
         error_messages={
             'required': 'Required.'})
     slug = forms.SlugField(max_length=50)
