@@ -2166,6 +2166,76 @@ I used 2 linters for my Python code, which were both installed on my IDE. These 
 - [PyLint](https://pylint.org/), and,
 - [PyCodeStyle](https://pycodestyle.pycqa.org/en/latest/index.html) formally pep8.
 
+### User Testing
+
+These tests are an actual user using the site. Making sure that all functionality works as expected.
+
+AE = As expected.
+
+| **Test** | **Expected result** | **Outcome** | **Final Result** |
+| ---- | ------ | ------ | ------ |
+|  **Homepage** |
+| Load homepage | Homepage loads | AE | Pass |
+| Select game on homepage | Listings page opens with any available listings | AE | Pass |
+| Click Gamer's-verse in footer | Load homepage | AE | Pass |
+| Click Facebook icon in footer | Goto Facebook | AE | Pass |
+| Click Twitter icon in footer | Goto Twitter | AE | Pass |
+| Click Discord icon in footer | Goto Discord | AE | Pass |
+| Click Terms and conditions in footer | Open Terms and conditions page | AE | Pass |
+| Click Privacy policy in footer | Open Privacy Policy page | AE | Pass |
+| Click Contact Us in footer | Open Contact Us page | AE | Pass |
+| Click My Account in footer | If not signed in go to login page, if signed in go to My Account page | AE | Pass |
+| Click Gamer's-verse in header | Loads homepage | AE | Pass |
+| Click Login (if currently signed out) | Goto Login page | AE | Pass |
+| Click Sign Up (if currently signed out) | Goto Sign Up page | AE | Pass |
+|  **Listings Page**  |
+| Click on any listing | Loads listing's page | AE | Pass |
+| Choose to add tags to filter | Narrows listings based on tag choices | AE | Pass |
+| Choose to remove tags from filter | Open up listing results base on tag choices | AE | Pass |
+| Click bump (when signed out) | Nothing | AE | Pass |
+| Click bump when signed in and not at max | Adds 1 bump to listing | AE | Pass |
+| Click bump when already active bump on listing | Nothing | AE | Pass |
+| Click bump when signed in and at max | Nothing | AE | Pass |
+|  Listing page  |
+| Click bump (when signed out) | Nothing | AE | Pass |
+| Click bump when signed in and not at max | Adds 1 bump to listing | AE | Pass |
+| Click bump when already active bump on listing | Nothing | AE | Pass |
+| Click bump when signed in and at max | Nothing | AE | Pass |
+| Click Discord button | Should try to open discord server | AE | Pass |
+| Click TikTok button if there |  |  |  |
+| If staff, click  |  |  |  |
+| If staff, click  |  |  |  |
+|  **Sign Up page** |
+| Try to submit form empty | Prompt to complete form | AE | Pass |
+| Try to submit form with only username | Prompt to complete form | AE | Pass |
+| Try to submit form with only username, and email | Prompt to complete form | AE | Pass |
+| Try to submit form with username, email and 1 password | Prompt to complete form | AE | Pass |
+| Try to submit form with username, email and mismatch password | Form submits but then shows error that passwords do not match | AE | Pass |
+| Try to submit form with email and matching passwords | Prompt to complete form | AE | Pass |
+| Try to submit form with username and matching passwords | Prompt to complete form | AE | Pass |
+| Try to submit form with username, email and matching passwords | Form submits and user sees next page, user will also receive email to verify email address. | AE | Pass |
+| Try to submit completed form with already in use email | Form submits but then shows error email already in use | AE | Pass |
+| Try to submit completed form with already in use username | Form submits but then shows error username already in use | AE | Pass |
+|  **Login page**  |
+| Try to login with incorrect details | Error showing details do not match any account | AE | Pass |
+| Click Forgotten Password | Goes to Forgotten Password page | AE | Pass |
+| Try to login with correct details | Takes user to My Account page | AE | Pass |
+|  **Forgotten Password page**  |
+| Enter an email address that does not exist | Shows user next screen. This is intentional as advised by Django. | AE | Pass |
+| Enter an email address that does exist | Shows user next screen. | AE | Pass |
+|  **My Account page** |
+| Check page loads as expected |  | AE | Pass |
+| Email update: Click update email address | Modal should open | AE | Pass |
+| Email update: Enter non-matching email addresses | Error message saying both inputs needs to match | Nothing happens. | Fixed: commit c56671c |
+| Email update: Enter email address known to be linked to a different account | Error message saying this email is already in use | AE | Pass |
+| Email update: Enter email address not connected to another user | Next screen | AE. Received verification email and visited link to verify my email address. | Pass |
+| Delete account: Click Delete account button | Opens delete account modal | Error message saying enter correct phrase |  |
+| Delete account: Try to submit with no phrase and incorrect phrase | Error message saying enter correct phrase | While empty, prompt appearers saying input required. With incorrect phrase, form submitted and page reloaded, but nothing happened. | Fixed: commit 4d8ef21 |
+| Delete account: Try to submit with correct phrase | Next screen | As above | Fixed: commit 4d8ef21 |
+| Change Password: Click button to change password  | Opens open change password page | AE | Pass |
+| Change Password: Enter correct current password but mis-match new password | Error message | AE | Pass |
+| Change Password: Enter incorrect current password, and match new password | Error message | AE | Pass |
+| Change Password: Enter correct current password and match new password | Success, next page | AE | Pass |
 [Back to top🔝](#table-of-contents)
 
 ---
