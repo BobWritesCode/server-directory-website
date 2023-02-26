@@ -11,11 +11,17 @@ const demoteForm = $('#user-demote-form');
 // const btnUpdate = $('button[name="user_management_save"]');
 const btnUnban = $('#btnUnban');
 
-const btnDeleteConfirm = userDeleteForm.find('button[name="user-delete-confirm"]');
-const btnListingDeleteConfirm = listingDeleteForm.find('button[name="listing-delete-confirm"]');
+const btnDeleteConfirm = userDeleteForm.find(
+  'button[name="user-delete-confirm"]',
+);
+const btnListingDeleteConfirm = listingDeleteForm.find(
+  'button[name="listing-delete-confirm"]',
+);
 const btnBanConfirm = banForm.find('button[name="user-ban-confirm"]');
 const btnVerifyConfirm = $('button[name="user-verify-confirm"]');
-const btnPromoteConfirm = promoteForm.find('button[name="user-promote-confirm"]');
+const btnPromoteConfirm = promoteForm.find(
+  'button[name="user-promote-confirm"]',
+);
 const btnDemoteConfirm = demoteForm.find('button[name="user-demote-confirm"]');
 
 let lastDeleteBtnID = null;
@@ -28,10 +34,9 @@ function ListingDeleteConfirm() {
   $('.error-message').remove();
   // Check user has input correct string.
   if ($('#delete_listing_confirm').val() !== 'delete') {
-    $('#delete_listing_confirm')
-      .after(
-        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
-      );
+    $('#delete_listing_confirm').after(
+      "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+    );
   }
   // If no error messages then send request to server.
   if ($('.error-message').length === 0) {
@@ -55,10 +60,9 @@ function UserBanConfirm() {
   $('.error-message').remove();
   // Check user has input correct string.
   if ($('#ban_confirm').val() !== 'ban') {
-    $('#ban_confirm')
-      .after(
-        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
-      );
+    $('#ban_confirm').after(
+      "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+    );
   }
   // If no error messages then send request to server.
   if ($('.error-message').length === 0) {
@@ -79,10 +83,9 @@ function UserDeleteConfirm() {
   $('.error-message').remove();
   // Check user has input correct string.
   if ($('#id_delete_confirm').val() !== 'delete') {
-    $('#id_delete_confirm')
-      .after(
-        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
-      );
+    $('#id_delete_confirm').after(
+      "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+    );
   }
   // If no error messages then send request to server.
   if ($('.error-message').length === 0) {
@@ -121,17 +124,24 @@ function demoteUserFromStaff() {
 
 // DOM Ready
 $(document).ready(() => {
-  form.find('#id_id').prop('readonly', 'readonly').addClass('form-control-plaintext text-light border border-light ps-2').css('pointer-events', 'none');
+  form
+    .find('#id_id')
+    .prop('readonly', 'readonly')
+    .addClass('form-control-plaintext text-light border border-light ps-2')
+    .css('pointer-events', 'none');
 });
 
 // Listeners
 window.addEventListener('DOMContentLoaded', () => {
   // Keep track of last item id pressed.
-  $("button[data-target='#listing-delete-modal']").on('click', function getID() {
-    if ($(this).attr('data-item')) {
-      lastDeleteBtnID = $(this).attr('data-item');
-    }
-  });
+  $("button[data-target='#listing-delete-modal']").on(
+    'click',
+    function getID() {
+      if ($(this).attr('data-item')) {
+        lastDeleteBtnID = $(this).attr('data-item');
+      }
+    },
+  );
 
   btnUnban.on('click', (e) => {
     e.preventDefault();

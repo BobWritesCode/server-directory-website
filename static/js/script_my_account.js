@@ -4,14 +4,21 @@
 // Global HTML Elements
 const emailForm = $('#email_update_form');
 const btnDeleteAccount = $("button[data-target='#delete-account-modal']");
-const btnEmailUpdateConfirm = $('#email_update_form').find('button[name="email_address_update_confirm"]');
-const btnServerListingDeleteConfirm = $('#server-listing-delete-form').find('button[name="server-listing-delete-confirm"]');
+const btnEmailUpdateConfirm = $('#email_update_form').find(
+  'button[name="email_address_update_confirm"]',
+);
+const btnServerListingDeleteConfirm = $('#server-listing-delete-form').find(
+  'button[name="server-listing-delete-confirm"]',
+);
 
 let lastDeleteBtnID = null;
 
 // DOM Ready
 $(document).ready(() => {
-  $('#profile-form').find('#id_email').prop('readonly', 'readonly').addClass('form-control-plaintext text-light border border-light ps-2')
+  $('#profile-form')
+    .find('#id_email')
+    .prop('readonly', 'readonly')
+    .addClass('form-control-plaintext text-light border border-light ps-2')
     .css('pointer-events', 'none');
 });
 
@@ -69,10 +76,7 @@ function clearRemoveInput() {
  * @returns {json}
  */
 async function askServer(url = '', data = {}) {
-  const csrftoken = document.querySelector(
-    '[name=csrfmiddlewaretoken]',
-  )
-    .value;
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
@@ -97,41 +101,44 @@ async function askServer(url = '', data = {}) {
 function action(...args) {
   askServer('/call_server', {
     args,
-  })
-    .then((data) => {
-      if (data.result.success) {
-        // Show BootStrap toast
-        window.location.href = 'my_account';
-      } else {
-        switch (data.result.reason) {
-          case 'Email address not valid':
-            emailForm.find('#email_update')
-              .after(
-                '<div class="error-message alert alert-danger mt-1" role="alert">Email address not valid</div>',
-              );
-            break;
-          case 'Does not match':
-            emailForm.find('#email_update_confirm')
-              .after(
-                '<div class="error-message alert alert-danger mt-1" role="alert">Email does not match</div>',
-              );
-            break;
-          case 'Email address already taken':
-            emailForm.find('#email_update')
-              .after(
-                '<div class="error-message alert alert-danger mt-1" role="alert">Email address already taken</div>',
-              );
-            break;
+  }).then((data) => {
+    if (data.result.success) {
+      // Show BootStrap toast
+      window.location.href = 'my_account';
+    } else {
+      switch (data.result.reason) {
+        case 'Email address not valid':
+          emailForm
+            .find('#email_update')
+            .after(
+              '<div class="error-message alert alert-danger mt-1" role="alert">Email address not valid</div>',
+            );
+          break;
+        case 'Does not match':
+          emailForm
+            .find('#email_update_confirm')
+            .after(
+              '<div class="error-message alert alert-danger mt-1" role="alert">Email does not match</div>',
+            );
+          break;
+        case 'Email address already taken':
+          emailForm
+            .find('#email_update')
+            .after(
+              '<div class="error-message alert alert-danger mt-1" role="alert">Email address already taken</div>',
+            );
+          break;
 
-          default:
-            emailForm.find('#email_update')
-              .after(
-                `<div class="error-message alert alert-danger mt-1" role="alert"> ${data.result.reason} </div>`,
-              );
-          // skip default case
-        }
+        default:
+          emailForm
+            .find('#email_update')
+            .after(
+              `<div class="error-message alert alert-danger mt-1" role="alert"> ${data.result.reason} </div>`,
+            );
+        // skip default case
       }
-    });
+    }
+  });
 }
 
 /**
@@ -147,11 +154,14 @@ function userEmailUpdate() {
 
 window.addEventListener('DOMContentLoaded', () => {
   // Keep track of last item id pressed.
-  $('button[data-target="#server-listing-delete-modal"]').on('click', function getID() {
-    if ($(this).attr('data-item')) {
-      lastDeleteBtnID = $(this).attr('data-item');
-    }
-  });
+  $('button[data-target="#server-listing-delete-modal"]').on(
+    'click',
+    function getID() {
+      if ($(this).attr('data-item')) {
+        lastDeleteBtnID = $(this).attr('data-item');
+      }
+    },
+  );
   btnDeleteAccount.on('click', () => {
     clearRemoveInput();
   });

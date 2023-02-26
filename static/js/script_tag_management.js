@@ -6,7 +6,9 @@ const btnDeleteTag = $('#btnDeleteTag');
 const form = $('#tag-management-form');
 const btnSubmit = form.find('button[type="submit"]');
 const formInternalContainer = $('#form-internal-container');
-const btnTagDeleteConfirm = $('#tag-delete-form').find("button[name='tag-delete-confirm']");
+const btnTagDeleteConfirm = $('#tag-delete-form').find(
+  "button[name='tag-delete-confirm']",
+);
 
 /**
  * Performs callback from server
@@ -16,10 +18,7 @@ const btnTagDeleteConfirm = $('#tag-delete-form').find("button[name='tag-delete-
  * @returns {json}
  */
 async function askServer(url = '', data = {}) {
-  const csrftoken = document.querySelector(
-    '[name=csrfmiddlewaretoken]',
-  )
-    .value;
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
@@ -46,7 +45,8 @@ function validateForm() {
   $('.error-message').remove();
   // Check tag name field is not black.
   if (!form.find('#id_name').val()) {
-    form.find('#id_name')
+    form
+      .find('#id_name')
       .after(
         "<div class='error-message alert alert-warning mt-1' role='alert'>Must not be blank</div>",
       );
@@ -62,19 +62,18 @@ function validateForm() {
 function action(...args) {
   askServer('/call_server', {
     args,
-  })
-    .then((data) => {
-      if (data.result) {
-        if (args[0] === 'get_tag_details') {
-          // Turn tag json into object
-          const obj = JSON.parse(data.result.tag);
-          // Pre-fill inputs in form
-          form.find('#id_id').val(obj.id);
-          form.find('#id_name').val(obj.name);
-          form.find('#id_slug').val(obj.slug);
-        }
+  }).then((data) => {
+    if (data.result) {
+      if (args[0] === 'get_tag_details') {
+        // Turn tag json into object
+        const obj = JSON.parse(data.result.tag);
+        // Pre-fill inputs in form
+        form.find('#id_id').val(obj.id);
+        form.find('#id_name').val(obj.name);
+        form.find('#id_slug').val(obj.slug);
       }
-    });
+    }
+  });
 }
 
 /**
@@ -128,10 +127,9 @@ function TagDeleteConfirm() {
   $('.error-message').remove();
   // Check user has input correct string.
   if ($('#id_tag_delete_confirm').val() !== 'delete') {
-    $('#id_tag_delete_confirm')
-      .after(
-        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
-      );
+    $('#id_tag_delete_confirm').after(
+      "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+    );
   }
   // If no error messages then send request to server.
   if ($('.error-message').length === 0) {
@@ -147,8 +145,16 @@ function TagDeleteConfirm() {
 // DOM Ready
 $(document).ready(() => {
   $('.tag-select-drop-down').select2().val(null).trigger('change');
-  form.find('#id_id').prop('readonly', 'readonly').addClass('form-control-plaintext text-light border border-light ps-2').css('pointer-events', 'none');
-  form.find('#id_slug').prop('readonly', 'readonly').addClass('form-control-plaintext text-light border border-light ps-2').css('pointer-events', 'none');
+  form
+    .find('#id_id')
+    .prop('readonly', 'readonly')
+    .addClass('form-control-plaintext text-light border border-light ps-2')
+    .css('pointer-events', 'none');
+  form
+    .find('#id_slug')
+    .prop('readonly', 'readonly')
+    .addClass('form-control-plaintext text-light border border-light ps-2')
+    .css('pointer-events', 'none');
   $('#tag-delete-form').find('#div_id_id').addClass('d-none');
 });
 
@@ -181,5 +187,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('keyup', () => {
-  form.find('#id_slug').val(form.find('#id_name').val().replace(/\s+/g, '-').toLowerCase());
+  form
+    .find('#id_slug')
+    .val(form.find('#id_name').val().replace(/\s+/g, '-').toLowerCase());
 });

@@ -8,9 +8,7 @@ const btnNext = $('#btnNext');
 const banForm = $('#user-ban-form');
 
 async function askServer(url = '', data = {}) {
-  const csrftoken = document.querySelector(
-    '[name=csrfmiddlewaretoken]',
-  ).value;
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
@@ -49,10 +47,9 @@ function UserBanConfirm() {
   $('.error-message').remove();
   // Check user has input correct string.
   if ($('#ban_confirm').val() !== 'ban') {
-    $('#ban_confirm')
-      .after(
-        "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
-      );
+    $('#ban_confirm').after(
+      "<div class='error-message alert alert-warning mt-1' role='alert'>Follow instructions above</div>",
+    );
   }
   // If no error messages then send request to server.
   if ($('.error-message').length === 0) {
