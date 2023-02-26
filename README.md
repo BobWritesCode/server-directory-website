@@ -113,14 +113,14 @@ Cloudinary, Select2 and tinyMCE.
       - [Select2](#select2)
       - [tinyMCE](#tinymce)
   - [Testing](#testing) (OUTSTANDING)
-    - [Extensive Testing](#extensive-testing) (OUTSTANDING)
-    - [Testers](#testers) (OUTSTANDING)
     - [HTML](#html-testing)
-    - [CSS](#css-testing) (OUTSTANDING)
+    - [CSS](#css-testing)
     - [JavaScript](#javascript-testing)
-    - [PyLint](#testers) (OUTSTANDING)
-    - [Unit Testing](#unit-testing) (OUTSTANDING)
-    - [Testers](#testers) (OUTSTANDING)
+    - [Python](#python-testing) (OUTSTANDING)
+      - [Linters](#python-linters)
+      - [Unit Testing](#unit-testing) (OUTSTANDING)
+      - [Coverage](#coverage) (OUTSTANDING)
+    - [User Testing](#user-testing) (OUTSTANDING)
   - [Bugs](#bugs)
     - [Unresolved](#unresolved)
     - [Resolved](#resolved)
@@ -2071,16 +2071,14 @@ body {
 
 ## Testing
 
-- [Extensive Testing](#extensive-testing) (OUTSTANDING)
-- [Testers](#testers) (OUTSTANDING)
 - [HTML](#html-testing)
 - [CSS](#css-testing)
 - [JavaScript](#javascript-testing)
-- [PyLint](#testers) (OUTSTANDING)
-- [Unit Testing](#unit-testing) (OUTSTANDING)
-- [Testers](#testers) (OUTSTANDING)
-
-### Extensive Testing
+- [Python](#python-testing) (OUTSTANDING)
+  - [Linters](#python-linters)
+  - [Unit Testing](#unit-testing)
+  - [Coverage](#coverage)
+- [User Testing](#user-testing)
 
 ### Testers
 
@@ -2158,6 +2156,15 @@ Testing for JavaScript was done using [ESLint](https://eslint.org/). The great t
 | tag_management | 0 | n/a | Pass |
 | user_management_user | 0 | n/a | Pass |
 | user_management | 0 | n/a | Pass |
+
+### Python Testing
+
+#### Python Linters
+
+I used 2 linters for my Python code, which were both installed on my IDE. These both provided live feedback on my code and allowed me to make sure I was always conforming to best practices.
+
+- [PyLint](https://pylint.org/), and,
+- [PyCodeStyle](https://pycodestyle.pycqa.org/en/latest/index.html) formally pep8.
 
 [Back to top🔝](#table-of-contents)
 
