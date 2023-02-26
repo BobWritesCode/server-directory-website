@@ -1,69 +1,68 @@
 :root {
-    --_orange: #d63600;
+  --_orange: #d63600;
 }
 
 .bumps {
-    border: 1px solid;
-    border-radius: 12px;
-    padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 12px;
+  padding: 3px 10px;
 }
 
 .max-height-300 {
-    max-height: 300px;
+  max-height: 300px;
 }
 
 .img-cover {
-    object-fit: cover;
+  object-fit: cover;
 }
 
 .bottom-center {
-    position: absolute;
-    background-color: rgba(0,0,0,0.7);
-    bottom: 8px;
-    padding: 0 10px 0 10px;
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.7);
+  bottom: 8px;
+  padding: 0 10px 0 10px;
 }
 
 .bg-main {
-    background-color: rgb(21, 21, 21);
+  background-color: rgb(21, 21, 21);
 }
 
 .bg-orange {
-    background-color: var(--_orange) !important;
+  background-color: var(--_orange) !important;
 }
 
 .border-orange {
-    border-color: var(--_orange) !important;
+  border-color: var(--_orange) !important;
 }
 
 .bg-semi {
-    background-color: rgba(255, 255, 255, 0.076);
+  background-color: rgba(255, 255, 255, 0.076);
 }
 
 .btn-outline-orange {
-    border-color: var(--_orange) !important;
+  border-color: var(--_orange) !important;
 }
 
 .text-orange {
-    color: var(--_orange) !important;
+  color: var(--_orange) !important;
 }
 
-
 .form-control-plaintext {
-    background-color: rgba(67, 67, 67, 0.7);
-    border: 0 !important;
+  background-color: rgba(67, 67, 67, 0.7);
+  border: 0 !important;
 }
 
 /* -------- SELECT2 */
 .select2-selection__choice__display {
-    color: black;
+  color: black;
 }
 
 /* -------- tinyMCE */
 .tox .tox-edit-area__iframe {
-    background-color: rgba(255,255,255,0) !important;
+  background-color: rgba(255, 255, 255, 0) !important;
 }
 
 /* -------- tooltip */
 .custom-tooltip {
-    --bs-tooltip-arrow-width: 0;
+  --bs-tooltip-arrow-width: 0;
 }
