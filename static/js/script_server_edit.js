@@ -5,6 +5,13 @@
 const form = $('#listing-form');
 const btnSubmit = form.find('button[type="submit"]');
 const dropDownGame = form.find('#id_game');
+const formListingDelete = $('#server-listing-delete-form');
+const btnListingDeleteConfirm = $(
+  'button[name="server-listing-delete-confirm"',
+);
+const btnListingDeleteModal = $(
+  'button[data-target="#server-listing-delete-modal"]',
+);
 
 /**
  * Performs callback from server
@@ -76,6 +83,31 @@ async function setUp() {
   // Populate multi choice dropdown with correct tags
   $('#tags-multiple').val(tags);
   $('#tags-multiple').trigger('change');
+}
+
+/**
+ * Validates listing delete form. Shows errors to the user if any.
+ * And if form is valid deletes listing
+ */
+function listingDelete() {
+  // Clear any current error messages from screen.
+  formListingDelete.find('.error-message').remove();
+  // Check user has input correct string.
+  if (
+    formListingDelete
+      .find('input[name="server_listing_delete_confirm"]')
+      .val() !== 'delete'
+  ) {
+    formListingDelete
+      .find('input[name="server_listing_delete_confirm"]')
+      .after(
+        '<div class="error-message alert alert-warning mt-1" role="alert">Follow instructions above</div>',
+      );
+  }
+  // If no error messages then send request to server.
+  if (formListingDelete.find('.error-message').length === 0) {
+    formListingDelete.submit();
+  }
 }
 
 /**
@@ -191,6 +223,13 @@ $(document).ready(() => {
 
 // Listeners
 window.addEventListener('DOMContentLoaded', () => {
+  btnListingDeleteModal.on('click', () => {
+    formListingDelete.find('.error-message').remove();
+  });
+  btnListingDeleteConfirm.on('click', (e) => {
+    e.preventDefault();
+    listingDelete();
+  });
   btnSubmit.on('click', (e) => {
     e.preventDefault();
     validateForm();
