@@ -18,7 +18,7 @@ from django.core import mail
 from django.db import IntegrityError
 from django.db.models import Q, Count
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse, Http404,  HttpResponseRedirect, HttpResponseNotFound
+from django.http import (HttpResponse)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
