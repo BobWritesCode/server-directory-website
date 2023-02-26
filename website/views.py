@@ -942,7 +942,7 @@ def call_server(request: object):
 
         case 'get_game_details':
             if request.user.is_staff:
-                game = get_object_or_404(Game, pk=content[1])
+                game = get_object_or_404(Game, id=content[1])
                 query = Q(game=content[1])
                 tags = Tag.objects.filter(query).order_by('name')
                 result = {
@@ -1152,26 +1152,16 @@ def game_management(request: object):
     Returns:
         render: Loads html page
     """
-
     if request.method == "POST":
-
-        # Let's see if the user is trying to delete a game.
-        if (
-            ConfirmGameDeleteForm(request.POST)
-            and "game_delete_confirm" in request.POST
-        ):
-            form = ConfirmGameDeleteForm(request.POST)
-            delete_game(form)
-            return redirect("game_management")
-
-        # Checking if updating a current game
+        # User is trying to delete a game.
+        if "game_delete_confirm" in request.POST:
+            delete_game(request.POST)
+        # User is trying to update a game.
         elif request.POST["id"]:
             update_game(data=request.POST, files=request.FILES)
-
-        # Or if inputting a new game
+        # Uer is trying to add a new game.
         else:
-            add_new_game(request.POST, request.FILES)
-
+            add_new_game(data=request.POST, files=request.FILES)
     # Render page
     return render(
         request,
@@ -1185,7 +1175,7 @@ def game_management(request: object):
     )
 
 
-def delete_game(form: object):
+def delete_game(data: object):
     """
     Deletes game from the database.
 
@@ -1195,6 +1185,7 @@ def delete_game(form: object):
     Returns:
         HttpResponse (class): Feedback result of codeblock.
     """
+    form = ConfirmGameDeleteForm(data)
     if form.data["game_delete_confirm"] == "delete" and form.data["itemID"]:
         item_id = form.data["itemID"]
         # Get current image for game
@@ -1239,36 +1230,29 @@ def add_new_game(data: object, files: object = None):
     return HttpResponse('Failed to add new game.')
 
 
-def update_game(data: object, files: object = None):
+def update_game(data: object, files: object = {}):
     """
     Updates game in the database.
 
     Args:
-        form (object): Provides data to update game.
+        data (object): Provides data to update game.
         files (object): Image file(s)
 
     Returns:
         HttpResponse (class): Feedback result of codeblock.
 
     """
-    try:
-        game = get_object_or_404(Game, pk=data["id"])
-        form = GameManageForm(
-            data,
-            instance=game)
-    except Http404:
-        response = HttpResponseNotFound('test')
-        response.status_code = 404
-        return HttpResponseRedirect('404',
-                                    content='404')
+
+    game = get_object_or_404(Game, pk=data["id"])
+    form = GameManageForm(data=data, instance=game)
 
     if form.is_valid():
         # Get correct game from database
-        game = get_object_or_404(Game, pk=form.data["id"])
+        game = get_object_or_404(Game, pk=data["id"])
         # Update values
-        game.name = form.data["name"]
-        game.status = form.data["status"]
-        game.slug = form.data["slug"]
+        game.name = data["name"]
+        game.status = data["status"]
+        game.slug = data["slug"]
 
         # Get tags selected from the form
         query = Q(id__in=form.cleaned_data["tags"])
