@@ -117,7 +117,7 @@ Cloudinary, Select2 and tinyMCE.
     - [Testers](#testers) (OUTSTANDING)
     - [HTML](#html-testing)
     - [CSS](#css-testing) (OUTSTANDING)
-    - [ESLint](#testers) (OUTSTANDING)
+    - [JavaScript](#javascript-testing)
     - [PyLint](#testers) (OUTSTANDING)
     - [Unit Testing](#unit-testing) (OUTSTANDING)
     - [Testers](#testers) (OUTSTANDING)
@@ -2074,8 +2074,8 @@ body {
 - [Extensive Testing](#extensive-testing) (OUTSTANDING)
 - [Testers](#testers) (OUTSTANDING)
 - [HTML](#html-testing)
-- [CSS](#css-testing) (OUTSTANDING)
-- [ESLint](#testers) (OUTSTANDING)
+- [CSS](#css-testing)
+- [JavaScript](#javascript-testing)
 - [PyLint](#testers) (OUTSTANDING)
 - [Unit Testing](#unit-testing) (OUTSTANDING)
 - [Testers](#testers) (OUTSTANDING)
@@ -2142,6 +2142,22 @@ As I primarily stuck with BootStrap for the styling of this project, there is no
 | ---- | ------ | ------ | ------ |
 | style.css | 0  | n/a | Pass |
 | tinymce.css | 0 | n/a | Pass |
+
+### JavaScript Testing
+
+Testing for JavaScript was done using [ESLint](https://eslint.org/). The great thing about having [ESLint](https://eslint.org/) built into the IDE is that it shows me problems live, so I was able to fix them immediately. This has led to their be 0 problems according to [ESLint](https://eslint.org/) in my files.
+
+| **File** | **Errors** | **Errors Resolved?** | **Final Result** |
+| ---- | ------ | ------ | ------ |
+| bumps | 0  | n/a | Pass |
+| game_management | 0 | n/a | Pass |
+| image_approval | 0 | n/a | Pass |
+| my_account | 0 | n/a | Pass |
+| server_create | 0 | n/a | Pass |
+| server_edit | 0 | n/a | Pass |
+| tag_management | 0 | n/a | Pass |
+| user_management_user | 0 | n/a | Pass |
+| user_management | 0 | n/a | Pass |
 
 [Back to top🔝](#table-of-contents)
 
