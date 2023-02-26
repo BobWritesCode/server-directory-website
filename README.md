@@ -116,7 +116,7 @@ Cloudinary, Select2 and tinyMCE.
     - [Extensive Testing](#extensive-testing) (OUTSTANDING)
     - [Testers](#testers) (OUTSTANDING)
     - [HTML](#html-testing)
-    - [CSS](#testers) (OUTSTANDING)
+    - [CSS](#css-testing) (OUTSTANDING)
     - [ESLint](#testers) (OUTSTANDING)
     - [PyLint](#testers) (OUTSTANDING)
     - [Unit Testing](#unit-testing) (OUTSTANDING)
@@ -2074,7 +2074,7 @@ body {
 - [Extensive Testing](#extensive-testing) (OUTSTANDING)
 - [Testers](#testers) (OUTSTANDING)
 - [HTML](#html-testing) (OUTSTANDING)
-- [CSS](#testers) (OUTSTANDING)
+- [CSS](#css-testing) (OUTSTANDING)
 - [ESLint](#testers) (OUTSTANDING)
 - [PyLint](#testers) (OUTSTANDING)
 - [Unit Testing](#unit-testing) (OUTSTANDING)
@@ -2088,7 +2088,7 @@ body {
 
 To validate all HTML, I loaded each page in a browser, I right clicked on the page, and clicked view page course (also done with keyboard shortcut CTRL+U on Chrome and Edge). I copied the code and pasted it directly in to the [W3C validator](https://validator.w3.org/nu/#textarea).
 
-| Page | Errors | Errors Resolved? | Final Result |
+| **Page** | **Errors** | **Errors Resolved?** | **Final Result** |
 | ---- | ------ | ------ | ------ |
 | base | 0  | n/a | Pass |
 | index | 0 | n/a | Pass |
@@ -2131,6 +2131,15 @@ To validate all HTML, I loaded each page in a browser, I right clicked on the pa
 |  | Warning: Empty heading. | Add placeholder text and add class 'd-none' that is removed when an appropriate action is completed. | Pass |
 |  | Error: The aria-labelledby attribute must point to an element in the same document. | Added Space | Pass |
 | Account Delete Confirmation | 0 | n/a | Pass |
+
+### CSS Testing
+
+As I primarily stuck with BootStrap for the styling of this project, there is not much to test for my own written CSS, but there is still a little bit, and we need to test it! For the tests we are using [W3C CSS validation Service](https://jigsaw.w3.org/css-validator/#validate_by_input).
+
+| **File** | **Errors** | **Errors Resolved?** | **Final Result** |
+| ---- | ------ | ------ | ------ |
+| style.css | 0  | n/a | Pass |
+| tinymce.css | 0 | n/a | Pass |
 
 [Back to top🔝](#table-of-contents)
 
