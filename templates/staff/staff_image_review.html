@@ -24,9 +24,9 @@
                     <td>User</td>
                     <td>
                         <a href="/staff_user_management_user/{{image.user_id}}" class="text-light">
-                            <button type="button" class="btn btn-link text-start text-light text-decoration-none w-100 h-100 p-0">
+                            <div class="btn btn-link text-start text-light text-decoration-none w-100 h-100 p-0">
                                 {{user.id}} - {{user.username}}
-                            </button>
+                            </div>
                         </a>
                     </td>
                 </tr>
@@ -34,9 +34,9 @@
                     <td>Listing</td>
                     <td>
                         <a href="{% url 'listing' listing.slug %}" class="text-light">
-                            <button type="button" class="btn btn-link text-start text-light text-decoration-none w-100 h-100 p-0">
+                            <div class="btn btn-link text-start text-light text-decoration-none w-100 h-100 p-0">
                                 {{listing.id}} - {{listing.title}}
-                            </button>
+                            </div>
                         </a>
                     </td>
                 </tr>
@@ -51,12 +51,12 @@
     </div>
 </div>
 <!-- user Ban Modal -->
-<div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="User Ban Modal"
+<div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="ban-user-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title" id="modal-title">Ban User Confirmation</h5>
+                <h5 class="modal-title" id="ban-user-modal-title">Ban User Confirmation</h5>
             </div>
             <form method="post" id="user-ban-form">
                 {% csrf_token %}

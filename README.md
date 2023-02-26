@@ -2073,7 +2073,7 @@ body {
 
 - [Extensive Testing](#extensive-testing) (OUTSTANDING)
 - [Testers](#testers) (OUTSTANDING)
-- [HTML](#html-testing) (OUTSTANDING)
+- [HTML](#html-testing)
 - [CSS](#css-testing) (OUTSTANDING)
 - [ESLint](#testers) (OUTSTANDING)
 - [PyLint](#testers) (OUTSTANDING)
@@ -2131,6 +2131,8 @@ To validate all HTML, I loaded each page in a browser, I right clicked on the pa
 |  | Warning: Empty heading. | Add placeholder text and add class 'd-none' that is removed when an appropriate action is completed. | Pass |
 |  | Error: The aria-labelledby attribute must point to an element in the same document. | Added Space | Pass |
 | Account Delete Confirmation | 0 | n/a | Pass |
+| Staff - Image Review | Error: The element button must not appear as a descendant of the a element. x2 | Change button to div | Pass |
+|  | Error: The aria-labelledby attribute must point to an element in the same document. | Pointed to correct element | Pass |
 
 ### CSS Testing
 
