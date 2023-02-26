@@ -107,11 +107,11 @@
 
 <!-- Listing delete Modal -->
 <div class="modal fade text-dark" id="listing-delete-modal" tabindex="-1" role="dialog"
-aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
+aria-labelledby="listing-delete-modal-title" aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header bg-danger">
-            <h5 class="modal-title text-light" id="modal-title">Delete Listing Confirmation</h5>
+            <h5 class="modal-title text-light" id="listing-delete-modal-title">Delete Listing Confirmation</h5>
         </div>
         <form method="post" id="listing-delete-form">
             {% csrf_token %}
@@ -131,12 +131,12 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
 </div>
 
 <!-- user delete Modal -->
-<div class="modal fade text-dark" id="user-delete-modal" tabindex="-1" role="dialog" aria-labelledby="User Delete Modal"
+<div class="modal fade text-dark" id="user-delete-modal" tabindex="-1" role="dialog" aria-labelledby="user-delete-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger">
-                <h5 class="modal-title text-light" id="modal-title">Delete User Confirmation</h5>
+                <h5 class="modal-title text-light" id="user-delete-modal-title">Delete User Confirmation</h5>
             </div>
             <form method="post" id="user-delete-form">
                 {% csrf_token %}
@@ -154,12 +154,12 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
     </div>
 </div>
 <!-- user Verify Confirm Modal -->
-<div class="modal fade text-dark" id="user-verify-modal" tabindex="-1" role="dialog" aria-labelledby="User Verify Modal"
+<div class="modal fade text-dark" id="user-verify-modal" tabindex="-1" role="dialog" aria-labelledby="user-verify-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h5 class="modal-title text-light" id="modal-title">Verify Confirmation</h5>
+                <h5 class="modal-title text-light" id="user-verify-modal-title">Verify Confirmation</h5>
             </div>
             <form method="post" id="user-verify-form" name="email-verify">
                 {% csrf_token %}
@@ -176,12 +176,12 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
 </div>
 {% if user.is_superuser %}
 <!-- user Promote Confirm Modal -->
-<div class="modal fade text-dark" id="user-promote-modal" tabindex="-1" role="dialog" aria-labelledby="User Promote Modal"
+<div class="modal fade text-dark" id="user-promote-modal" tabindex="-1" role="dialog" aria-labelledby="user-promote-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title text-dark" id="modal-title">Promote Confirmation</h5>
+                <h5 class="modal-title text-dark" id="user-promote-modal-title">Promote Confirmation</h5>
             </div>
             <form method="post" id="user-promote-form" name="email-promote">
                 {% csrf_token %}
@@ -197,12 +197,12 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
     </div>
 </div>
 <!-- user Demote Confirm Modal -->
-<div class="modal fade text-dark" id="user-demote-modal" tabindex="-1" role="dialog" aria-labelledby="User Demote Modal"
+<div class="modal fade text-dark" id="user-demote-modal" tabindex="-1" role="dialog" aria-labelledby="user-demote-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title text-dark" id="modal-title">Demote Confirmation</h5>
+                <h5 class="modal-title text-dark" id="user-demote-modal-title">Demote Confirmation</h5>
             </div>
             <form method="post" id="user-demote-form" name="email-demote">
                 {% csrf_token %}
@@ -219,12 +219,12 @@ aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
 </div>
 {% endif %}
 <!-- user Ban Modal -->
-<div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="User Ban Modal"
+<div class="modal fade text-dark" id="user-ban-modal" tabindex="-1" role="dialog" aria-labelledby="ban-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title" id="modal-title">Ban User Confirmation</h5>
+                <h5 class="modal-title" id="ban-modal-title">Ban User Confirmation</h5>
             </div>
             <form method="post" id="user-ban-form">
                 {% csrf_token %}

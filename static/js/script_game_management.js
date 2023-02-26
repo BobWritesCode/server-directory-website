@@ -74,7 +74,7 @@ function clearForm() {
  * Prepare html form ready to input a new game
  */
 function prepareFormForNewGame() {
-  $('#form-header').text('Adding New Game');
+  $('#form-header').text('Adding New Game').removeClass('d-none');
   formInternalContainer.removeClass('d-none');
   form.find('#div_id_id').addClass('d-none');
   btnSubmit.html('<i class="bi bi-save"></i>');
@@ -87,7 +87,7 @@ function prepareFormForNewGame() {
  * Prepare html form ready to update selected game
  */
 function prepareFormForUpdateGame() {
-  $('#form-header').text('Update Game');
+  $('#form-header').text('Update Game').removeClass('d-none');
   formInternalContainer.removeClass('d-none');
   form.find('#div_id_id').removeClass('d-none');
   form.find('#div_id_slug').removeClass('d-none');

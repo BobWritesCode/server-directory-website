@@ -132,11 +132,11 @@
 
 <!-- Delete Account Modal -->
 <div class="modal fade text-dark" id="delete-account-modal" tabindex="-1" role="dialog"
-aria-labelledby="Delete Account Modal" aria-hidden="true">
+aria-labelledby="delete-account-modal-title" aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header bg-danger">
-            <h5 class="modal-title text-light" id="modal-title">Delete Account Confirmation</h5>
+            <h5 class="modal-title text-light" id="delete-account-modal-title">Delete Account Confirmation</h5>
         </div>
         <form method="post">
             {% csrf_token %}
@@ -159,13 +159,13 @@ aria-labelledby="Delete Account Modal" aria-hidden="true">
 
 <!-- Email Address Update Modal -->
 <div class="modal fade text-dark" id="email-address-update-modal" tabindex="-1" role="dialog"
-aria-labelledby="Email Address Update Modal" aria-hidden="true">
+aria-labelledby="email-modal-title" aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header bg-orange">
-            <h5 class="modal-title text-light" id="modal-title">Email Address Update</h5>
+            <h5 class="modal-title text-light" id="email-modal-title">Email Address Update</h5>
         </div>
-        <form method="post" id="email-update-form">
+        <form method="post" id="email_update_form">
             {% csrf_token %}
             <div class="modal-body">
                 <p>
@@ -178,11 +178,11 @@ aria-labelledby="Email Address Update Modal" aria-hidden="true">
                     <br>Without a verified email address, some feature will become inaccessible to you.
                 </p>
                 <hr class="border border-secondary border-1 opacity-50 w-100 mt-0">
-                {{ email_form|crispy }}
+                {{email_form|crispy }}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary"
-                    name="email-address-update-confirm">Confirm</button>
+                    name="email_address_update_confirm">Confirm</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </form>
@@ -193,11 +193,11 @@ aria-labelledby="Email Address Update Modal" aria-hidden="true">
 
 <!-- Listing delete Modal -->
 <div class="modal fade text-dark" id="server-listing-delete-modal" tabindex="-1" role="dialog"
-aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
+aria-labelledby="delete-modal-title" aria-hidden="true">
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header bg-danger">
-            <h5 class="modal-title text-light" id="modal-title">Delete Listing Confirmation</h5>
+            <h5 class="modal-title text-light" id="delete-modal-title">Delete Listing Confirmation</h5>
         </div>
         <form method="post" id="server-listing-delete-form">
             {% csrf_token %}

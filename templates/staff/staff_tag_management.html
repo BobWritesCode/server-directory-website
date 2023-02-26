@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% block head %}
 <!-- Scripts / styles specific for this page -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 {% endblock %}
 {% block content %}
 <div class="container-fluid no-gutters justify-content-center d-flex ps-0 pe-0 text-light">
@@ -32,7 +32,7 @@
         </form>
         <hr class="border border-light border-3 opacity-75 w-100">
         <!-- Form header -->
-        <h3 id="form-header"></h3>
+        <h3 id="form-header" class="d-none">Choose option above</h3>
         <!-- Form used to add or update tag -->
         <form method="post" id='tag-management-form' enctype="multipart/form-data" class="d-flex flex-column w-100">
             {%csrf_token %}
@@ -51,12 +51,12 @@
     </div>
 </div>
 <!-- tag delete Modal -->
-<div class="modal fade text-dark" id="tag-delete-modal" tabindex="-1" role="dialog" aria-labelledby="tag Delete Modal"
+<div class="modal fade text-dark" id="tag-delete-modal" tabindex="-1" role="dialog" aria-labelledby="tag-delete-modal-title"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger">
-                <h5 class="modal-title text-light" id="modal-title">Delete Tag Confirmation</h5>
+                <h5 class="modal-title text-light" id="tag-delete-modal-title">Delete Tag Confirmation</h5>
             </div>
             <form method="post" id="tag-delete-form" class="mb-3">
                 {% csrf_token %}

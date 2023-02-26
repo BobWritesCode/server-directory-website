@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% load cloudinary %}
 {% block head %}
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block content %}
@@ -52,11 +52,11 @@
 </div>
 <!-- Listing delete Modal -->
 <div class="modal fade text-dark" id="server-listing-delete-modal" tabindex="-1" role="dialog"
-    aria-labelledby="Sever Listing Delete Modal" aria-hidden="true">
+    aria-labelledby="delete-modal-title" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-danger">
-                <h5 class="modal-title text-light" id="modal-title">Delete Listing Confirmation</h5>
+                <h5 class="modal-title text-light" id="delete-modal-title">Delete Listing Confirmation</h5>
             </div>
             <form method="post" id="server-listing-delete-form">
                 {% csrf_token %}

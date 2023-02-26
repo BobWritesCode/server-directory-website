@@ -89,7 +89,7 @@ function clearForm() {
  * Prepare html form ready to input a new tag
  */
 function prepareFormForNewTag() {
-  $('#form-header').text('Adding New Tag');
+  $('#form-header').text('Adding New Tag').removeClass('d-none');
   formInternalContainer.removeClass('d-none');
   form.find('#div_id_id').addClass('d-none');
   btnSubmit.html('<i class="bi bi-save"></i>');
@@ -102,7 +102,7 @@ function prepareFormForNewTag() {
  * Prepare html form ready to update selected tag
  */
 function prepareFormForUpdateTag() {
-  $('#form-header').text('Update Tag');
+  $('#form-header').text('Update Tag').removeClass('d-none');
   formInternalContainer.removeClass('d-none');
   form.find('#div_id_id').removeClass('d-none');
   form.find('#div_id_slug').removeClass('d-none');

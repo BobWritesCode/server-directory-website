@@ -6,7 +6,6 @@ from django.contrib.auth.forms import UserCreationForm
 from django.core.validators import FileExtensionValidator
 
 from tinymce.widgets import TinyMCE
-
 from cloudinary.forms import CloudinaryFileField
 
 from .models import (
@@ -289,15 +288,15 @@ class UserUpdateEmailAddressForm(forms.Form):
     """
     email = forms.EmailField(
         label='New email address:',
+        widget=forms.TextInput(attrs={'id': 'email_update'}),
         error_messages={'required': 'Required'},
-        required=True,
-    )
+        required=True)
 
     email_confirm = forms.EmailField(
         label='Repeat new email address:',
+        widget=(forms.TextInput(attrs={'id': 'email_update_confirm'})),
         error_messages={'required': 'Required'},
-        required=True,
-    )
+        required=True)
 
 
 class CreateServerListingForm(forms.ModelForm):

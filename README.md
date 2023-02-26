@@ -115,6 +115,12 @@ Cloudinary, Select2 and tinyMCE.
   - [Testing](#testing) (OUTSTANDING)
     - [Extensive Testing](#extensive-testing) (OUTSTANDING)
     - [Testers](#testers) (OUTSTANDING)
+    - [HTML](#html-testing)
+    - [CSS](#testers) (OUTSTANDING)
+    - [ESLint](#testers) (OUTSTANDING)
+    - [PyLint](#testers) (OUTSTANDING)
+    - [Unit Testing](#unit-testing) (OUTSTANDING)
+    - [Testers](#testers) (OUTSTANDING)
   - [Bugs](#bugs)
     - [Unresolved](#unresolved)
     - [Resolved](#resolved)
@@ -2065,9 +2071,66 @@ body {
 
 ## Testing
 
+- [Extensive Testing](#extensive-testing) (OUTSTANDING)
+- [Testers](#testers) (OUTSTANDING)
+- [HTML](#html-testing) (OUTSTANDING)
+- [CSS](#testers) (OUTSTANDING)
+- [ESLint](#testers) (OUTSTANDING)
+- [PyLint](#testers) (OUTSTANDING)
+- [Unit Testing](#unit-testing) (OUTSTANDING)
+- [Testers](#testers) (OUTSTANDING)
+
 ### Extensive Testing
 
 ### Testers
+
+### HTML Testing
+
+To validate all HTML, I loaded each page in a browser, I right clicked on the page, and clicked view page course (also done with keyboard shortcut CTRL+U on Chrome and Edge). I copied the code and pasted it directly in to the [W3C validator](https://validator.w3.org/nu/#textarea).
+
+| Page | Errors | Errors Resolved? | Final Result |
+| ---- | ------ | ------ | ------ |
+| base | 0  | n/a | Pass |
+| index | 0 | n/a | Pass |
+| listings | The element button must not appear as a descendant of the a element. |  |  |
+| listing | Element p not allowed as child of element span in this context. | Change `p` to `span`. | Pass |
+| Terms and conditions | 0 | n/a | Pass |
+| Privacy policy | 0 | n/a | Pass |
+| Contact us | 0 | n/a | Pass |
+| 404 | 0 | n/a | Pass |
+| Login | 0 | n/a | Pass |
+| Sign Up | The aria-labelledby attribute must point to an element in the same document. | Pointed to correct element. | Pass |
+| Password reset | Duplicate attribute class. | Removed duplicate attr. | Pass |
+| Password reset request done | 0 | n/a | Pass |
+| Password reset set new password | 0 | n/a | Pass |
+| Password reset completed | 0 | n/a | Pass |
+| My Account | Duplicate ID modal-title. | Changed name | Pass |
+|  | Duplicate ID div_id_email. | Unresolved. I was unable to find a solution using Django to change the label's id. | Error |
+|  | Duplicate ID id_email. | Changed ID | Pass |
+|  | Duplicate ID modal-title. | Changed name | Pass |
+|  | The aria-labelledby attribute must point to an element in the same document. | Pointed to correct element | Pass |
+|  | The aria-labelledby attribute must point to an element in the same document. | Pointed to correct element | Pass |
+|  | The aria-labelledby attribute must point to an element in the same document. | Pointed to correct element | Pass |
+| Password Change | Duplicate attribute class. | Delete duplicate attr. | Pass |
+| Password Change Done | 0 | n/a | Pass |
+| Server Create | Info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values. | Removed trailing slash | Pass |
+| Server Edit | Info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values. | Removed trailing slash | Pass |
+|  | Error: The aria-labelledby attribute must point to an element in the same document. | Pointed to correct element | Pass |
+| Unauthorized | 0 | n/a | Pass |
+| Sign Up - Verify email | 0 | n/a | Pass |
+| Sign Up - Email verified | 0 | n/a | Pass |
+| Staff account page | 0 | n/a | Pass |
+| Staff - User search | Error: Stray end tag form. | Removed | Pass |
+| Staff - User profile | Duplicate ID modal-title. x6 | All renamed. |  |
+|  | Error: The aria-labelledby attribute must point to an element in the same document. x6 | All pointed to correct elements. | Pass |
+| Staff - Game Management | Info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values. | Removed trailing slash | Pass |
+|  | Warning: Empty heading. | Add placeholder text and add class 'd-none' that is removed when an appropriate action is completed. | Pass |
+|  | Error: No space between attributes. | Added Space | Pass |
+|  | Error: The aria-labelledby attribute must point to an element in the same document.| Pointed to element. | Pass |
+| Staff - Tag Management | Info: Trailing slash on void elements has no effect and interacts badly with unquoted attribute values. | Removed trailing slash | Pass |
+|  | Warning: Empty heading. | Add placeholder text and add class 'd-none' that is removed when an appropriate action is completed. | Pass |
+|  | Error: The aria-labelledby attribute must point to an element in the same document. | Added Space | Pass |
+| Account Delete Confirmation | 0 | n/a | Pass |
 
 [Back to top🔝](#table-of-contents)
 
