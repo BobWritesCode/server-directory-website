@@ -1612,30 +1612,6 @@ def delete_user(request: object, form: object):
             user.delete()
 
 
-def check_username(username: str):
-    """
-    Checks username given conforms to rules.
-
-    Args:
-        username (string): Username given.
-
-    Returns:
-        {result (bool), reason (string)}
-
-    """
-    if " " in username:
-        return {'result': False,
-                'reason': "No spaces allowed"}
-    if len(username) < 5:
-        return {'result': False,
-                'reason': "Must be at least 5 characters long"}
-    if len(username) > 20:
-        return {'result': False,
-                'reason': "Must be at 20 characters or less"}
-    return {'result': True,
-            'reason': ""}
-
-
 def check_email(email: str):
     """
     Checks email address given conforms to rules.
