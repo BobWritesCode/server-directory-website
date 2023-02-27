@@ -1389,8 +1389,15 @@ def update_tag(form: object):
     # Update values
     tag.name = form.data["name"]
     tag.slug = form.data["slug"]
-    # Save tag object
-    tag.save()
+    try:
+        # Check for any validation errors
+        tag.full_clean()
+    except ValidationError as err:
+        for field, errors in err.message_dict.items():
+            form.add_error(field, errors)
+    else:
+        # Save tag object
+        tag.save()
 
 
 @staff_member_required

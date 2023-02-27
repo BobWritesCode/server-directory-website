@@ -173,8 +173,20 @@ class Tag(models.Model):
     to_json():
         converts class into a json string.
     """
-    name = models.CharField(max_length=20, unique=True)
-    slug = models.SlugField(max_length=20, unique=True)
+    name = models.CharField(
+        max_length=20,
+        blank=False,
+        unique=True,
+        error_messages={
+            'required': 'Tag name is required. (Parrot)',
+            'unique': 'Tag already taken. (Parrot)'})
+    slug = models.SlugField(
+        max_length=20,
+        blank=False,
+        unique=True,
+        error_messages={
+            'required': 'Tag slug is required. (Parrot)',
+            'unique': 'Tag slug already taken. (Parrot)'})
 
     def __str__(self):
         """

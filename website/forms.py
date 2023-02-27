@@ -565,8 +565,13 @@ class TagsManageForm(forms.ModelForm):
         required=True,
         strip=True,
         error_messages={
-            'required': 'Required.'})
-    slug = forms.SlugField(max_length=50)
+            'required': 'Required. (Puma)',
+            'unique': 'Tag already taken. (Puma)'})
+    slug = forms.SlugField(
+        max_length=50,
+        error_messages={
+            'required': 'Required. (Puma)',
+            'unique': 'Tag already taken. (Puma)'})
 
     class Meta:
         model = Tag
