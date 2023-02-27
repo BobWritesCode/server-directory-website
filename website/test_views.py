@@ -1602,7 +1602,8 @@ class TestUpdateGame(TestCase):
         self.assertEqual(response.content, b"Success - Game updated.")
 
 class TestTagManagement(TestCase):
-    '''Test for tag_management view'''
+    '''Test for `tag_management` view, this also tests:
+     `add_new_tag`, `update_tag` and `delete_tag`.'''
 
     def test_get_as_guest(self):
         '''Test GET as guest, should redirect'''
