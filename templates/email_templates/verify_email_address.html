@@ -1,9 +1,9 @@
 {% autoescape off %}
 Hi {{ user.username }},
 
-Please click on the link to confirm your registration,
+Please click on the link below to verify your email address. If you cannot click the link you can copy and paste it into your browser's URL bar.
 
-{{ protocol}}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{{protocol}}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 
 If you think, it's not you, then just ignore this email.
 

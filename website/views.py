@@ -823,6 +823,7 @@ def send_email_verification(request: object, user: object):
     message = render_to_string('email_templates/verify_email_address.html', {
         'user': user,
         'domain': current_site.domain,
+        'protocol': 'https' if request.is_secure() else 'http',
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
         'token': default_token_generator.make_token(user)})
     # Send email to user.
