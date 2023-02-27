@@ -467,31 +467,24 @@ def my_account(request: object):
         redirect (function): My account page
         render (function): Loads html page
     """
-
     if request.method == 'POST':
 
         # Let's see if the user is trying to delete a listing.
         if 'server_listing_delete_confirm' in request.POST:
             form_4 = ConfirmServerListingDeleteForm(request.POST)
-
             if request.POST['server_listing_delete_confirm'] == 'delete':
                 item_pk = form_4.data['itemID']
-
                 # Get current image for listing
                 item = get_object_or_404(ServerListing, pk=item_pk)
                 image = Images.objects.filter(listing_id=item_pk).first()
                 if image is not None:
                     # Delete listing image from Cloudinary server
                     uploader.destroy(image.public_id)
-
                 # Delete server listing from database
                 item.delete()
-
                 return redirect("my_account")
-
-        # Let's see if the user is trying to delete there account.
+        # Let's see if the user is trying to delete there own account.
         if 'account_delete_confirm' in request.POST:
-            form_2 = ConfirmAccountDeleteForm(request.POST)
             # Check if user has typed the correct phrase and hit submit
             if request.POST['account_delete_confirm'] == 'remove':
                 CustomUser.objects.get(pk=request.user.pk).delete()
