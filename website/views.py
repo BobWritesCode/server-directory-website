@@ -1312,31 +1312,17 @@ def tag_management(request: object):
         render (function): Loads html page
     """
     if request.method == "POST":
-
         # Let's see if the user is trying to delete a tag.
-        if (
-            ConfirmTagDeleteForm(request.POST)
-            and "tag_delete_confirm" in request.POST
-        ):
-            form = ConfirmTagDeleteForm(request.POST)
-            delete_tag(form)
-            return redirect("tag_management")
+        if "tag_delete_confirm" in request.POST:
+            delete_tag(request.POST)
 
         # Checking if updating a current tag
-        elif request.POST["id"]:
-            form = TagsManageForm(
-                request.POST, instance=get_object_or_404(
-                    Tag, pk=request.POST["id"])
-            )
-            update_tag(form)
+        elif request.POST['id'] != '' :
+            update_tag(request.POST)
 
         # Or if inputting a new tag
         else:
-            form = TagsManageForm(request.POST)
-            if form.is_valid():
-                form_data = form.data.copy()
-                # form_data['id'] = Tag.objects.order_by("-id").first().id + 1
-                add_new_tag(TagsManageForm(form_data))
+            add_new_tag(request.POST)
 
     # Render page
     return render(
@@ -1350,39 +1336,49 @@ def tag_management(request: object):
     )
 
 
-def delete_tag(form: object):
+def delete_tag(data: object):
     """
     Delete tag from the database.
 
     Args:
-        form (object): Data used to delete tag.
+        data (object): Data used to delete tag.
     """
-    if form.data["tag_delete_confirm"] == "delete" and form.data["itemID"]:
-        item_id = form.data["itemID"]
+    if data["tag_delete_confirm"] == "delete" and data["itemID"]:
+        item_id = data["itemID"]
         # Get tag object
         tag = get_object_or_404(Tag, id=item_id)
         # Delete tag from database
         tag.delete()
+        return HttpResponse('Success - Tag deleted.')
+    return HttpResponse('Failed - Tag not deleted.')
 
 
-def add_new_tag(form: object):
+def add_new_tag(data: object):
     """
     Saves new tag to database.
 
     Args:
-        form (object): Data used to add tag.
+        data (object): Data used to add tag.
     """
     # Save form to database as a new tag
-    form.save()
+    form = TagsManageForm(data)
+    if form.is_valid():
+        # form_data = form.data.copy()
+        # add_new_tag(TagsManageForm(form_data))
+        form.save()
 
 
-def update_tag(form: object):
+def update_tag(data: object):
     """
     Update tag in database.
 
     Args:
-        form (object): Data used to update tag.
+        data (object): Data used to update tag.
     """
+    form = TagsManageForm(
+        data, instance=get_object_or_404(
+            Tag, pk=data["id"])
+    )
     # Get correct tag from database
     tag = get_object_or_404(Tag, pk=form.data["id"])
     # Update values
