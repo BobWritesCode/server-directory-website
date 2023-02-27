@@ -1600,3 +1600,86 @@ class TestUpdateGame(TestCase):
         mock_destroy.assert_not_called()
         mock_upload.assert_called()
         self.assertEqual(response.content, b"Success - Game updated.")
+
+class TestTagManagement(TestCase):
+    '''Test for tag_management view'''
+
+    def test_get_as_guest(self):
+        '''Test GET as guest, should redirect'''
+        response = self.client.get(reverse('tag_management'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_as_non_staffuser(self):
+        '''Test GET as non-staffuser, should redirect'''
+        user = create_user(53255754)
+        self.client.force_login(user=user)
+        response = self.client.get(reverse('tag_management'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_as_staffuser(self):
+        '''Test GET as staffuser, should load view'''
+        staff_user = create_user_staff(234563)
+        self.client.force_login(user=staff_user)
+        response = self.client.get(reverse('tag_management'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'staff/staff_tag_management.html')
+
+
+    def test_post_delete_tag(self):
+        '''Test delete_tag successful'''
+        staff_user = create_user_staff(4353576)
+        self.client.force_login(user=staff_user)
+        tag = create_tag(3436534)
+        _id = tag.id
+        data = {'tag_delete_confirm': 'delete',
+                'itemID': tag.id}
+        response = self.client.post(reverse('tag_management'), data=data)
+        self.assertFalse(Tag.objects.filter(id=_id).count())
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_delete_tag_fail_bad_phrase(self):
+        '''Test delete_tag fail, bad phrase'''
+        staff_user = create_user_staff(4353576)
+        self.client.force_login(user=staff_user)
+        tag = create_tag(3436534)
+        _id = tag.id
+        data = {'tag_delete_confirm': 'de333let',
+                'itemID': tag.id}
+        response = self.client.post(reverse('tag_management'), data=data)
+        self.assertTrue(Tag.objects.filter(id=_id).count())
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_update_tag(self):
+        '''Test POST as staffuser trying to update tag'''
+        tag = create_tag(32423465)
+        staff_user = create_user_staff(4353576)
+        self.client.force_login(user=staff_user)
+        data = {'id': tag.id, 'name': 'TESTNewName893940', 'slug': tag.slug}
+        response = self.client.post(reverse('tag_management'), data=data)
+        self.assertTrue(Tag.objects.filter(name='TESTNewName893940').count())
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_update_tag_fail_duplicate(self):
+        '''Test POST as staffuser trying to update tag but fail
+        due to duplicate'''
+        create_tag(22222333)
+        tag = create_tag(32423465)
+        staff_user = create_user_staff(37242784)
+        self.client.force_login(user=staff_user)
+        data = {'id': tag.id, 'name': '22222333', 'slug': '22222333'}
+        response = self.client.post(reverse('tag_management'), data=data)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_add_tag(self):
+        '''Test POST as staffuser trying to add tag'''
+        staff_user = create_user_staff(34523565)
+        self.client.force_login(user=staff_user)
+        data = {'id': '',
+                'name': 'TEST New Tag',
+                'slug': 'test_new_tag'}
+        response = self.client.post(reverse('tag_management'), data=data)
+        self.assertTrue(Tag.objects.filter(name=data['name']).count())
+        self.assertEqual(response.status_code, 200)
