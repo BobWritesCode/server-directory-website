@@ -1240,7 +1240,7 @@ class TestCallServer(TestCase):
             {'success': True, 'users': serializers.serialize('json', users)}))
 
     @patch("website.views.send_email_verification", autospec=True)
-    def test_update_email_when_both_values_match(self, mock):
+    def test_update_email_when_both_values_match(self, mock_verify):
         '''Test case for update_email'''
         self.client.force_login(user=self.staffuser)
         data = {'args': [
@@ -1249,6 +1249,7 @@ class TestCallServer(TestCase):
         response = self.client.post(
             self.url, data=data, content_type="application/json",
             follow=True)
+        mock_verify.assert_called_once()
         self.assertContains(response, json.dumps(
             {'success': True, 'reason': ''}))
 
