@@ -120,7 +120,7 @@ Cloudinary, Select2 and tinyMCE.
       - [Linters](#python-linters)
       - [Unit Testing](#unit-testing) (OUTSTANDING)
       - [Coverage](#coverage) (OUTSTANDING)
-    - [User Testing](#user-testing) (OUTSTANDING)
+    - [User Testing](#user-testing)
   - [Bugs](#bugs)
     - [Unresolved](#unresolved)
     - [Resolved](#resolved)
@@ -2266,6 +2266,69 @@ AE = As expected.
 | Ban user modal: Enter blank and incorrect phrase | Error message | AE | Pass |
 | Ban user modal: Delete Listing: Enter correct phrase | Reject image, and ban user | AE (confirmed by accidentally banning myself) | Pass |
 | Click next button | Loads next image | Even though it seems to work there is an error in the terminal `regarding HttpResponse(json.dumps({'result': result}))` | Fixed: commit c0e53de |
+| **Tag Management page** |  |  |  |
+| New tag: Click add new tag button | Lower section of page loads | AE | Pass |
+| New tag: Try to save an empty tag | Error message | AE | Pass |
+| New tag: Enter a new tag and save | Saves new tag | AE | Pass |
+| New tag: Enter a tag that already exists and save | Does not duplicate | AE | Pass |
+| Update tag: Choose tag from the drop down | Loads lower section with selected tag data | AE | Pass |
+| Update tag: Change name to something unique and save | Change saved | AE | Pass |
+| Update tag: Do not change anything, just save | Nothing changes | AE | Pass |
+| Update tag: Change to a name of another tag that already exists | Nothing changes | Debug page due to Unique integrity error | Fixed: commit a8b127b |
+| Delete tag: Click on delete tag button | Opens modal | AE | Pass |
+| Delete tag: Try to leave input blank and try incorrect input | Error messages | AE | Pass |
+| Delete tag: Try expected phrase | Deletes tag | AE | Pass |
+| **Game Management page** |  |  |  |
+| New game: Click add new game button | Loads add new game form in lower section of page | AE | Pass |
+| New game: Try to save an empty form | Error messages | AE | Pass |
+| New game: Add name, no tags, no image, no status | Error messages | AE | Pass |
+| New game: Complete form but no image | Save game | AE | Pass |
+| New game: Complete form with image  | Save game | AE | Pass |
+| New game: Add game with same name as one that already exists | Does not duplicate | AE | Pass |
+| Update game: Choose game from the drop down | Loads lower section with selected game data | AE | Pass |
+| Update game: Change name to something unique and save | Change saved | AE | Pass |
+| Update game: Update image | Change saved | AE | Pass |
+| Update game: Update tags | Change saved | AE | Pass |
+| Update game: Do not change anything, just save | Nothing changes | AE | Pass |
+| Update game: Change to a name of another game that already exists | Nothing changes | AE | Pass |
+| Delete game: Click on delete game button | Opens modal | AE | Pass |
+| Delete game: Try to leave input blank and try incorrect input | Error messages | AE | Pass |
+| Delete game: Try expected phrase | Deletes game | AE | Pass |
+| **User Management - Search page** |  |  |  |
+| Try to search a blank entry using ID, Name, Email. | Error message | AE | Pass |
+| ID search: Try searching with integers | Should see results, if any | AE | Pass |
+| ID search: Try searching with non-integers | No results | JS console and Python terminal errors | Fixed: commit d613737 |
+| Username search: Search with any string | Should see results, if any | AE | Pass |
+| Email search: Search with any string | Should see results, if any | AE | Pass |
+| Click on any result | Should load staff view of user profile | AE | Pass |
+| **User Management - User Profile** |  |  |
+| User: Make no changes and save | Form should save | AE | Pass |
+| User: Change username and save | Form should save | AE | Pass |
+| User: Change email and save | Form should save | AE | Pass |
+| User: Change Account Active and save | Form should save | AE (Tried on own profile and it logged me out immediately too) | Pass |
+| Ban user: Click ban user button | Opens modal | AE | Pass |
+| Ban user: Try to leave input blank and try incorrect input | Error messages | AE | Pass |
+| Ban user: Try expected phrase | Bans user | AE (confirmed in database) | Pass |
+| Unban user: Click unban user | Should just unban the user | AE (confirmed in database) | Pass |
+| Verification email: Click button | Opens modal to confirm request | AE | Pass |
+| Verification email: Click confirm | User's email is flagged as unverified and email sent to user to verify | AE | Pass |
+| Promote user to staff: Click button | Modal open for confirmation | AE | Pass |
+| Promote user to staff: Click confirm | User is flagged as staff member | AE | Pass |
+| Demote user from staff: Click button | Modal open for confirmation | AE | Pass |
+| Demote user from staff: Click confirm | User is un-flagged as staff member | AE | Pass |
+| Delete user: Click Delete user button | Opens modal | AE | Pass |
+| Delete user: Try to leave input blank and try incorrect input | Error messages | AE | Pass |
+| Delete user: Try expected phrase | Deletes user | Form submits but the user is not deleted, no terminal error messages | Fixed: commit 29555a8 |
+| Listings: Click view button on any listing | Should load listing page | AE | Pass |
+| Listings: Click edit button on any listing | Should like edit listing page | AE | Pass |
+| Listings: Click delete listing on any listing | Should load modal | AE | Pass |
+| Listings: Delete Listing: Enter blank and incorrect phrase | Error message | AE | Pass |
+| Listings: Delete Listing: Enter correct phrase | Listing is deleted | Deletes listing but then loads another user profile | Fixed: commit 8645bed |
+| **Misc** |  |  |  |
+| As a guest or non-listing owner try viewing a listing that is currently saved as draft | See 404 page | Currently receive unexpected error | Fixed: commit a7b4764 |
+| As owner try and view your own listing that is currently saved as draft | See listing as normal | Same as above | As above |
+| As staff user try and view your own listing that is currently saved as draft | See listing as normal | Same as above | As above |
+
 [Back to top🔝](#table-of-contents)
 
 ---
