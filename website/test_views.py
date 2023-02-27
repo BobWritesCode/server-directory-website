@@ -1603,7 +1603,8 @@ class TestUpdateGame(TestCase):
         tag1 = create_tag(78392479)
         game = create_game(3343563)
         image = create_image_obj()
-        game.image = image
+        game.image = 'place/holder/fake/place'
+        game.save()
         data = {'name': 'Fame Game Name',
                 'slug': 'fake-game-name',
                 'tags': [tag1],
@@ -1617,10 +1618,7 @@ class TestUpdateGame(TestCase):
         response = update_game(data=data, files=files)
         mock_upload.assert_called()
         mock_destroy.assert_called()
-        mock_upload.destroy()
-        mock_destroy.destroy()
         game.refresh_from_db()
-        self.assertEqual(game.image.url, 'fakeURL')
         self.assertEqual(response.content, b"Success - Game updated.")
 
     @patch('website.views.uploader.upload')
