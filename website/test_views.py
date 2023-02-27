@@ -939,7 +939,7 @@ class TestListingsView(TestCase):
 
 
 class TestListingView(TestCase):
-    '''Test listing_detail view'''
+    '''Test listing_view view'''
 
     @classmethod
     def setUpClass(cls):
@@ -952,6 +952,9 @@ class TestListingView(TestCase):
             num=7837842, user=cls.user, game=cls.game,
             tags=[cls.tag1, cls.tag2])
         cls.bump = create_bump(user=cls.user, listing=cls.listing)
+
+    def setUp(self):
+        self.listing.status = 1
 
     @classmethod
     def tearDownClass(cls):
@@ -986,6 +989,37 @@ class TestListingView(TestCase):
             'listing.html'
         )
 
+    def test_get_try_view_draft_listing_as_guest(self):
+        '''Test to try and view a draft listing, when not the
+        listing owner or staff user'''
+        self.listing.status = 0
+        self.listing.save()
+        response = self.client.get(reverse(
+            'listing', args=[self.listing.slug]))
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_try_view_draft_listing_as_owner(self):
+        '''Test to try and view a draft listing, when user is
+        listing owner.'''
+        req_fac = RequestFactory().get('/fake_path')
+        req_fac.user = self.user
+        self.listing.status = 0
+        self.listing.save()
+        self.assertAlmostEqual(self.listing.owner_id, req_fac.user.id)
+        self.client.force_login(user=req_fac.user)
+        response = self.client.get(reverse(
+            'listing', args=[self.listing.slug]),request=req_fac)
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_try_view_draft_listing_as_staff(self):
+        '''Test to try and view a draft listing, when user is
+        staff user.'''
+        self.listing.status = 0
+        self.listing.save()
+        self.client.force_login(user=self.staffuser)
+        response = self.client.get(reverse(
+            'listing', args=[self.listing.slug]))
+        self.assertEqual(response.status_code, 200)
 
 class TestSendEmailVerification(TestCase):
     '''Test send_email_verification view'''

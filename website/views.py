@@ -770,7 +770,7 @@ def listing_view(request: object, slug: str):
     # If listing is currently saved as draft (unpublished).
     if listing.status == 0:
         # Check if request user is the owner or staff.
-        if not request.user.is_staff or request.user.id != listing.owner_id:
+        if not request.user.is_staff and request.user.id != listing.owner_id:
             # if not direct to 404.
             raise Http404
 
