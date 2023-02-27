@@ -18,7 +18,7 @@ from django.core import mail
 from django.db import IntegrityError
 from django.db.models import Q, Count
 from django.views.decorators.http import require_POST
-from django.http import (HttpResponse)
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -772,7 +772,14 @@ def listing_view(request: object, slug: str):
         render(): Loads html page.
     """
     # Get correct listing, check if approved.
-    listing = get_object_or_404(ServerListing, status=1, slug=slug)
+    listing = get_object_or_404(ServerListing, slug=slug)
+
+    # If listing is currently saved as draft (unpublished).
+    if listing.status == 0:
+        # Check if request user is the owner or staff.
+        if not request.user.is_staff or request.user.id != listing.owner_id:
+            # if not direct to 404.
+            raise Http404
 
     if request.user.is_staff:
         listing_owner = listing.owner
