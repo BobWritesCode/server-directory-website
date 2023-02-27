@@ -1253,8 +1253,6 @@ def update_game(data: object, files: object = None):
     form = GameManageForm(data=data, instance=game)
 
     if form.is_valid():
-        # Get correct game from database
-        game = get_object_or_404(Game, pk=data["id"])
         # Update values
         game.name = data["name"]
         game.status = data["status"]
