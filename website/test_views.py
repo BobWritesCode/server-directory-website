@@ -18,7 +18,7 @@ from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
 from .forms import (CreateServerListingForm, SignupForm,
                     GameManageForm)
 from .views import (send_email_verification, delete_game,
-                    add_new_game, update_game)
+                    add_new_game, update_game, update_email)
 
 
 def create_user(num: str):
@@ -1955,3 +1955,43 @@ class TestStaffManagementUser(TestCase):
         user.refresh_from_db()
         self.assertFalse(user.is_staff)
         self.assertEqual(response.status_code, 302)
+
+class TestUpdateEmail(TestCase):
+    '''Tests `update_email` which also tests `check_email`'''
+
+    def test_correct_email_formats(self):
+        '''Test a bunch of emails in expected correct format'''
+        reqFac = RequestFactory().get('/fake_path')
+        reqFac.user = create_user(8374382)
+        tests = []
+        tests.append(['a@a.a', 'a@a.a'])
+        tests.append(['josh@hotmail.com', 'josh@hotmail.com'])
+        tests.append(['bob@123.tech', 'bob@123.tech'])
+        tests.append(['dot.dot@dot.dot', 'dot.dot@dot.dot'])
+        tests.append(['under_spy123@FAKEreality.unr', 'under_spy123@FAKEreality.unr'])
+        for test in tests:
+            res = update_email(reqFac, _list=test)
+            self.assertEqual(res, {'result': True, 'reason': ''})
+
+    def test_incorrect_email_formats(self):
+        '''Test a bunch of emails in an unexpected correct format'''
+        reqFac = RequestFactory().get('/fake_path')
+        reqFac.user = create_user(8374382)
+        tests = []
+        tests.append(['@a', '@a'])
+        tests.append(['reallyBadAtHotmail.com', 'reallyBadAtHotmail.com'])
+        tests.append(['12345@1232', '12345@1232'])
+        tests.append(['', ''])
+        tests.append(['NoMatch@Here.com', 'DoesNot@Match.com'])
+        for test in tests:
+            res = update_email(reqFac, _list=test)
+            self.assertNotEqual(res, {'result': True, 'reason': ''})
+
+    def test_correct_email_duplicate(self):
+        '''Test a bunch of emails in expected correct format'''
+        reqFac = RequestFactory().get('/fake_path')
+        reqFac.user = create_user(8374382)
+        user2 = create_user(346564)
+        reqFac.user.email = user2.email
+        res = update_email(reqFac, _list=[user2.email, user2.email])
+        self.assertEqual(res, {'reason': ['Email already taken. (Jackal)'], 'result': False})
