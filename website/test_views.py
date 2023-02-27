@@ -1683,3 +1683,263 @@ class TestTagManagement(TestCase):
         response = self.client.post(reverse('tag_management'), data=data)
         self.assertTrue(Tag.objects.filter(name=data['name']).count())
         self.assertEqual(response.status_code, 200)
+
+class TestStaffManagementSearch(TestCase):
+    '''Test for `staff_user_management_search view`'''
+
+    def test_get_guest(self):
+        '''Test GET as guest'''
+        response = self.client.post(reverse('staff_user_management_search'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_user(self):
+        '''Test GET as user'''
+        user = create_user(564356)
+        self.client.force_login(user=user)
+        response = self.client.post(reverse('staff_user_management_search'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_staffuser(self):
+        '''Test GET as guest'''
+        user = create_user_staff(67533243)
+        self.client.force_login(user=user)
+        response = self.client.post(reverse('staff_user_management_search'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'staff/staff_user_management_search.html')
+
+class TestStaffManagementUser(TestCase):
+    '''Test for `staff_user_management_user view`'''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.staffuser = create_user_staff(22589495)
+        cls.user = create_user(5664576)
+        cls.tag = create_tag(8934378)
+        cls.game = create_game(5367835)
+        cls.listing1 = create_listing(3429343, cls.user, cls.game, [cls.tag])
+        cls.listing2 = create_listing(324234, cls.user, cls.game, [cls.tag])
+        cls.listing3 = create_listing(765453, cls.user, cls.game, [cls.tag])
+        cls.listing4 = create_listing(8564325, cls.user, cls.game, [cls.tag])
+        cls.listing5 = create_listing(3453654, cls.user, cls.game, [cls.tag])
+        cls.image1 = create_image(34324, cls.user, cls.listing1, 0)
+        cls.image2 = create_image(35243, cls.user, cls.listing2, 1)
+        cls.image3 = create_image(57645, cls.user, cls.listing3, 2)
+        cls.image4 = create_image(74535, cls.user, cls.listing4, 3)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.image4.delete()
+        cls.image3.delete()
+        cls.image2.delete()
+        cls.image1.delete()
+        cls.listing4.delete()
+        cls.listing3.delete()
+        cls.listing2.delete()
+        cls.listing1.delete()
+        cls.game.delete()
+        cls.tag.delete()
+        cls.user.delete()
+
+    def test_get_guest(self):
+        '''Test GET as guest'''
+        testuser = create_user(37839456)
+        response = self.client.post(reverse('staff_user_management_user', args=[testuser.id]))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_user(self):
+        '''Test GET as user'''
+        testuser = create_user(37839456)
+        user = create_user(35632432)
+        self.client.force_login(user=user)
+        response = self.client.post(reverse('staff_user_management_user', args=[testuser.id]))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_staffuser(self):
+        '''Test GET as guest'''
+        self.client.force_login(user=self.staffuser)
+        response = self.client.post(reverse('staff_user_management_user', args=[self.user.id]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response,
+                                'staff/staff_user_management_user.html')
+
+    def test_post_update_user(self):
+        '''Test POST to update user'''
+        self.client.force_login(user=self.staffuser)
+        data = {'user_management_save': '',
+                'id': self.user.id,
+                'username': "TEST43443243",
+                'email': "TEST43443243@TEST43443243.com",
+                'email_verified': self.user.email_verified,
+                'is_staff': self.user.is_staff,
+                'is_active': self.user.is_active,
+                'is_banned': self.user.is_banned,
+                'is_superuser': self.user.is_superuser}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[self.user.id]), data=data)
+        self.assertTrue(CustomUser.objects.filter(
+            username='TEST43443243').count())
+        self.assertTrue(CustomUser.objects.filter(
+            email='test43443243@test43443243.com').count())
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_update_user_fail_duplicate(self):
+        '''Test POST to update user but fail due to duplicate'''
+        user = create_user(1111111)
+        self.client.force_login(user=self.staffuser)
+        data = {'user_management_save': '',
+                'id': self.user.id,
+                'username': user.username,
+                'email': user.email,
+                'email_verified': self.user.email_verified,
+                'is_staff': self.user.is_staff,
+                'is_active': self.user.is_active,
+                'is_banned': self.user.is_banned,
+                'is_superuser': self.user.is_superuser}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[self.user.id]), data=data)
+        self.assertTrue(CustomUser.objects.filter(
+            username=self.user.username).count())
+        self.assertTrue(CustomUser.objects.filter(
+            email=self.user.email).count())
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_delete_target_user_success(self):
+        '''Test POST to delete target user'''
+        user = create_user(23365567)
+        self.client.force_login(user=self.staffuser)
+        data = {'delete_confirm': 'delete',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        self.assertFalse(CustomUser.objects.filter(
+            email=user.email).count())
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_delete_target_user_fail_bad_phrase(self):
+        '''Test POST to delete target user due to bad phrase'''
+        user = create_user(23365567)
+        self.client.force_login(user=self.staffuser)
+        data = {'delete_confirm': 'Apple',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        self.assertTrue(CustomUser.objects.filter(
+            email=user.email).count())
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_ban_target_user_success(self):
+        '''Test POST to ban target user'''
+        user = create_user(5445435)
+        self.client.force_login(user=self.staffuser)
+        data = {'ban_confirm': 'ban',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        user.refresh_from_db()
+        self.assertTrue(user.is_banned)
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_ban_target_user_fail_bad_phrase(self):
+        '''Test POST to ban target user due to bad phrase'''
+        user = create_user(3248765)
+        self.client.force_login(user=self.staffuser)
+        data = {'ban_confirm': 'Apple',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        user.refresh_from_db()
+        self.assertFalse(user.is_banned)
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_unban_target_user_success(self):
+        '''Test POST to unban target user'''
+        user = create_user(3246534)
+        user.is_banned = True
+        user.save()
+        self.client.force_login(user=self.staffuser)
+        data = {'unban': '',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        user.refresh_from_db()
+        self.assertFalse(user.is_banned)
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_delete_target_user_target_listing(self):
+        '''Test POST delete target user's target listing'''
+        user = create_user(4465563)
+        listing = create_listing(3476634, user, self.game, [self.tag])
+        l_id =  listing.id
+        user.is_banned = True
+        user.save()
+        self.client.force_login(user=self.staffuser)
+        data = {'delete_listing_confirm': 'delete',
+                'id': listing.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        self.assertFalse(ServerListing.objects.filter(
+            id=l_id).count())
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_delete_target_user_target_listing_fail_bad_phrase(self):
+        '''Test POST delete target user's target listing fail
+        due to bad phrase'''
+        user = create_user(4465563)
+        listing = create_listing(3476634, user, self.game, [self.tag])
+        l_id =  listing.id
+        user.is_banned = True
+        user.save()
+        self.client.force_login(user=self.staffuser)
+        data = {'delete_listing_confirm': 'apple',
+                'id': listing.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        self.assertTrue(ServerListing.objects.filter(
+            id=l_id).count())
+        self.assertEqual(response.status_code, 200)
+
+    @patch("website.views.send_email_verification")
+    def test_post_send_verification_email_to_target(self, mock_verify):
+        '''Test POST send verification email to user and flag use's
+        email as unverified'''
+        user = create_user(3243423)
+        self.client.force_login(user=self.staffuser)
+        data = {'email-verify': '',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        user.refresh_from_db()
+        mock_verify.assert_called()
+        mock_verify.mock_destroy()
+        self.assertFalse(user.email_verified)
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_promote_user_to_staff(self):
+        '''Test POST promote user to staff'''
+        user = create_user(4357843)
+        self.assertFalse(user.is_staff)
+        super_u = create_user_super(7482432)
+        self.client.force_login(user=super_u)
+        data = {'promote': '',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        user.refresh_from_db()
+        self.assertTrue(user.is_staff)
+        self.assertEqual(response.status_code, 302)
+
+    def test_post_demote_user_from_staff(self):
+        '''Test POST demote user from staff'''
+        user = create_user(45325432)
+        user.is_staff = True
+        self.assertTrue(user.is_staff)
+        super_u = create_user_super(4532643)
+        self.client.force_login(user=super_u)
+        data = {'demote': '',
+                'id': user.id}
+        response = self.client.post(reverse(
+            'staff_user_management_user', args=[user.id]), data=data)
+        user.refresh_from_db()
+        self.assertFalse(user.is_staff)
+        self.assertEqual(response.status_code, 302)
