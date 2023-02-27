@@ -2023,9 +2023,9 @@ class TestUpdateEmail(TestCase):
 
     def test_correct_email_duplicate(self):
         '''Test a bunch of emails in expected correct format'''
-        reqFac = RequestFactory().get('/fake_path')
-        reqFac.user = create_user(8374382)
+        req_fac = RequestFactory().get('/fake_path')
+        req_fac.user = create_user(8374382)
         user2 = create_user(346564)
-        reqFac.user.email = user2.email
-        res = update_email(reqFac, _list=[user2.email, user2.email])
+        req_fac.user.email = user2.email
+        res = update_email(req_fac, _list=[user2.email, user2.email])
         self.assertEqual(res, {'reason': ['Email already taken. (Jackal)'], 'result': False})
