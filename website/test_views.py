@@ -42,6 +42,17 @@ def create_user_staff(num: int):
             is_active=True,
             is_staff=True)
 
+def create_user_super(num: int):
+    '''Create test staff user'''
+    return CustomUser.objects.create(
+            username=f'T_Staff_User_{num}',
+            password=f'TPass_{num}',
+            email=f't_staff_user_{num}@email34232343.com',
+            email_verified=True,
+            is_active=True,
+            is_staff=True,
+            is_superuser=True)
+
 
 def create_tag(num: int):
     '''Create test tag'''
