@@ -1488,9 +1488,10 @@ def staff_user_management_user(request: object, _id: int):
         # Let's see if the user is trying to delete the listing.
         if request.POST["delete_listing_confirm"] == "delete":
             item = get_object_or_404(ServerListing, id=request.POST['id'])
+            owner = item.owner_id
             item.delete()
             return redirect(
-                "staff_user_management_user", _id=request.POST['id'])
+                "staff_user_management_user", _id=owner)
 
     # Let's see if the user is trying to send a email verification
     # to the target user.
