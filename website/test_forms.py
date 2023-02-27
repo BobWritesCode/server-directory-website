@@ -57,12 +57,12 @@ class TestUserForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['username']),
             self.form.fields['username'].max_length
-            )
+        )
         self.form.data['username'] += 'a'
         self.assertGreater(
             len(self.form.data['username']),
             self.form.fields['username'].max_length
-            )
+        )
 
     def test_username_strip(self):
         '''Test to check white spaces are removed'''
@@ -84,7 +84,7 @@ class TestUserForm(TestCase):
         self.assertEqual(self.form.Meta.fields, [
             'id', 'username', 'email', 'email_verified',
             'is_active', 'is_banned', 'is_staff', 'is_superuser'
-            ])
+        ])
 
 
 class TestProfileForm(TestCase):
@@ -185,12 +185,12 @@ class TestSignupForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['username']),
             self.form.fields['username'].max_length
-            )
+        )
         self.form.data['username'] += 'a'
         self.assertGreater(
             len(self.form.data['username']),
             self.form.fields['username'].max_length
-            )
+        )
 
     def test_email_is_required(self):
         '''Test email is required'''
@@ -208,12 +208,12 @@ class TestSignupForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['email']),
             self.form.fields['email'].max_length
-            )
+        )
         self.form.data['email'] += 'a'
         self.assertGreater(
             len(self.form.data['email']),
             self.form.fields['email'].max_length
-            )
+        )
 
     def test_email_field_does_not_have_autofocus_attribute(self):
         '''Test form will not autofocus to email field'''
@@ -261,12 +261,12 @@ class TestConfirmAccountDeleteForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['account_delete_confirm']),
             self.form.fields['account_delete_confirm'].max_length
-            )
+        )
         self.form.data['account_delete_confirm'] += 'a'
         self.assertGreater(
             len(self.form.data['account_delete_confirm']),
             self.form.fields['account_delete_confirm'].max_length
-            )
+        )
 
     def test_confirm_is_required(self):
         '''Test account_delete_confirm is required'''
@@ -321,12 +321,12 @@ class TestConfirmServerListingDeleteForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['server_listing_delete_confirm']),
             self.form.fields['server_listing_delete_confirm'].max_length
-            )
+        )
         self.form.data['server_listing_delete_confirm'] += 'a'
         self.assertGreater(
             len(self.form.data['server_listing_delete_confirm']),
             self.form.fields['server_listing_delete_confirm'].max_length
-            )
+        )
 
     def test_server_listing_delete_confirm_is_required(self):
         '''Test server_listing_delete_confirm is required'''
@@ -381,12 +381,12 @@ class TestConfirmGameDeleteForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['game_delete_confirm']),
             self.form.fields['game_delete_confirm'].max_length
-            )
+        )
         self.form.data['game_delete_confirm'] += 'a'
         self.assertGreater(
             len(self.form.data['game_delete_confirm']),
             self.form.fields['game_delete_confirm'].max_length
-            )
+        )
 
     def test_game_delete_confirm_is_required(self):
         '''Test game_delete_confirm is required'''
@@ -455,17 +455,17 @@ class TestCreateServerListingForm(TestCase):
         cls.tag = Tag.objects.create(
             name='testRoleplay',
             slug='testRoleplay',
-            )
+        )
         cls.tag2 = Tag.objects.create(
             name='testAction',
             slug='testAction',
-            )
+        )
         cls.game = Game.objects.create(
             name='gta6',
             slug='gta6',
             image=None,
             status=1,
-            )
+        )
         # add created cls.tag to game.
         cls.game.tags.set([cls.tag])
 
@@ -485,13 +485,13 @@ class TestCreateServerListingForm(TestCase):
             'status': 1,
             'discord': 'discord',
             'tiktok': 'tiktok'
-            })
+        })
         self.form.data['short_description'] = (
             'a' * self.form.fields['short_description'].min_length
-            )
+        )
         self.form.data['long_description'] = (
             'a' * self.form.fields['long_description'].min_length
-            )
+        )
 
     def check_form_valid(self):
         '''Test to check form is valid as expected'''
@@ -504,25 +504,25 @@ class TestCreateServerListingForm(TestCase):
             .__name__, 'ModelChoiceField')
         self.assertEqual(type(
             self.form.fields['tags'])
-                .__name__, 'ModelMultipleChoiceField')
+            .__name__, 'ModelMultipleChoiceField')
         self.assertEqual(type(
             self.form.fields['title'])
-                .__name__, 'CharField')
+            .__name__, 'CharField')
         self.assertEqual(type(
             self.form.fields['short_description'])
-                .__name__, 'CharField')
+            .__name__, 'CharField')
         self.assertEqual(type(
             self.form.fields['long_description'])
-                .__name__, 'CharField')
+            .__name__, 'CharField')
         self.assertEqual(type(
             self.form.fields['status'])
-                .__name__, 'TypedChoiceField')
+            .__name__, 'TypedChoiceField')
         self.assertEqual(type(
             self.form.fields['discord'])
-                .__name__, 'CharField')
+            .__name__, 'CharField')
         self.assertEqual(type(
             self.form.fields['tiktok'])
-                .__name__, 'CharField')
+            .__name__, 'CharField')
 
     def test_using_correct_model(self):
         '''Test to make sure using Game model'''
@@ -543,8 +543,8 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['game'][0], (
                 'Choose a game.'
-                )
             )
+        )
 
     def test_tags_is_required(self):
         '''Test tags is required'''
@@ -554,8 +554,8 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['tags'][0], (
                 'Choose at least 1 tag.'
-                )
             )
+        )
 
     def test_title_max_length(self):
         '''Test max_length of title'''
@@ -564,12 +564,12 @@ class TestCreateServerListingForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['title']),
             self.form.fields['title'].max_length
-            )
+        )
         self.form.data['title'] += 'a'
         self.assertGreater(
             len(self.form.data['title']),
             self.form.fields['title'].max_length
-            )
+        )
 
     def test_title_is_required(self):
         '''Test title is required'''
@@ -579,8 +579,8 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['title'][0], (
                 'Provide a server name.'
-                )
             )
+        )
 
     def test_short_description_min_length(self):
         '''Test min_length of short_description'''
@@ -589,18 +589,18 @@ class TestCreateServerListingForm(TestCase):
         self.assertGreaterEqual(
             len(self.form.data['short_description']),
             self.form.fields['short_description'].min_length
-            )
+        )
         self.form.data['short_description'] = (
             self.form.data['short_description'][:-1])
         self.assertLess(
             len(self.form.data['short_description']),
             self.form.fields['short_description'].min_length
-            )
+        )
         self.assertEqual(
             self.form.errors['short_description'][0], (
                 'Must be over 100 and below 200 characters.'
-                )
             )
+        )
 
     def test_short_description_max_length(self):
         '''Test max_length of short_description'''
@@ -609,17 +609,17 @@ class TestCreateServerListingForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['short_description']),
             self.form.fields['short_description'].max_length
-            )
+        )
         self.form.data['short_description'] += 'a'
         self.assertGreater(
             len(self.form.data['short_description']),
             self.form.fields['short_description'].max_length
-            )
+        )
         self.assertEqual(
             self.form.errors['short_description'][0], (
                 'Must be over 100 and below 200 characters.'
-                )
             )
+        )
 
     def test_short_description_is_required(self):
         '''Test short_description is required'''
@@ -629,30 +629,30 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['short_description'][0], (
                 'Required.'
-                )
             )
+        )
 
     def test_long_description_min_length(self):
         '''Test min_length of long_description'''
 
         self.form.data['long_description'] = (
             'a' * self.form.fields['long_description'].min_length
-            )
+        )
         self.assertGreaterEqual(
             len(self.form.data['long_description']),
             self.form.fields['long_description'].min_length
-            )
+        )
         self.form.data['long_description'] = (
             self.form.data['long_description'][:-1])
         self.assertLess(
             len(self.form.data['long_description']),
             self.form.fields['long_description'].min_length
-            )
+        )
         self.assertEqual(
             self.form.errors['long_description'][0], (
                 'Must be over 200 and below 2000 characters.'
-                )
             )
+        )
 
     def test_long_description_max_length(self):
         '''Test max_length of long_description'''
@@ -661,17 +661,17 @@ class TestCreateServerListingForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['long_description']),
             self.form.fields['long_description'].max_length
-            )
+        )
         self.form.data['long_description'] += 'a'
         self.assertGreater(
             len(self.form.data['long_description']),
             self.form.fields['long_description'].max_length
-            )
+        )
         self.assertEqual(
             self.form.errors['long_description'][0], (
                 'Must be over 200 and below 2000 characters.'
-                )
             )
+        )
 
     def test_long_description_is_required(self):
         '''Test long_description is required'''
@@ -681,8 +681,8 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['long_description'][0], (
                 'Required.'
-                )
             )
+        )
 
     def test_status_is_required(self):
         '''Test status is required'''
@@ -692,8 +692,8 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['status'][0], (
                 'Required.'
-                )
             )
+        )
 
     def test_status_choices_are_correct(self):
         '''Test choices are correct'''
@@ -715,8 +715,8 @@ class TestCreateServerListingForm(TestCase):
         self.assertEqual(
             self.form.errors['discord'][0], (
                 'Required.'
-                )
             )
+        )
 
     def test_tiktok_is_not_required(self):
         '''Test tiktok is not required'''
@@ -738,7 +738,7 @@ class TestImageForm(TestCase):
     def setUp(self):
         self.form = ImageForm({
             'image': None,
-            }
+        }
         )
 
     def test_correct_field_types(self):
@@ -777,7 +777,7 @@ class TestLoginForm(TestCase):
         self.form = LoginForm({
             'email': 'name@email.com',
             'password': 'password',
-            }
+        }
         )
 
     def test_correct_field_types(self):
@@ -797,7 +797,7 @@ class TestLoginForm(TestCase):
         '''Test to make sure the correct fields are to be shown'''
         self.assertEqual(self.form.Meta.fields, [
             'email', 'password'
-            ])
+        ])
 
     def test_password_using_correct_widget(self):
         '''Test to make sure correct widget being used'''
@@ -815,11 +815,11 @@ class TestGameManageForm(TestCase):
         cls.tag = Tag.objects.create(
             name='testRoleplay',
             slug='testRoleplay',
-            )
+        )
         cls.tag2 = Tag.objects.create(
             name='testAction',
             slug='testAction',
-            )
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -833,7 +833,7 @@ class TestGameManageForm(TestCase):
             'tags': [self.tag, self.tag2],
             'image': None,
             'status': 1,
-            }
+        }
         )
 
     def check_form_valid(self):
@@ -869,7 +869,7 @@ class TestGameManageForm(TestCase):
         '''Test to make sure the correct fields are to be shown'''
         self.assertEqual(self.form.Meta.fields, [
             'id', 'name', 'slug', 'tags', 'image', 'status'
-            ]
+        ]
         )
 
     def test_id_is_not_required(self):
@@ -885,8 +885,8 @@ class TestGameManageForm(TestCase):
         self.assertEqual(
             self.form.errors['name'][0], (
                 'Required.'
-                )
             )
+        )
 
     def test_name_max_length(self):
         '''Test max_length of name'''
@@ -895,12 +895,12 @@ class TestGameManageForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['name']),
             self.form.fields['name'].max_length
-            )
+        )
         self.form.data['name'] += 'a'
         self.assertGreater(
             len(self.form.data['name']),
             self.form.fields['name'].max_length
-            )
+        )
 
     def test_slug_max_length(self):
         '''Test max_length of slug'''
@@ -909,12 +909,12 @@ class TestGameManageForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
-            )
+        )
         self.form.data['slug'] += 'a'
         self.assertGreater(
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
-            )
+        )
 
     def test_tags_is_required(self):
         '''Test tags is required'''
@@ -924,8 +924,8 @@ class TestGameManageForm(TestCase):
         self.assertEqual(
             self.form.errors['tags'][0], (
                 'Choose at least 1 tag.'
-                )
             )
+        )
 
     def test_image_is_not_required(self):
         '''Test image is not required'''
@@ -940,8 +940,8 @@ class TestGameManageForm(TestCase):
         self.assertEqual(
             self.form.errors['status'][0], (
                 'Required.'
-                )
             )
+        )
 
     def test_status_choices_are_correct(self):
         '''Test choices are correct'''
@@ -972,7 +972,7 @@ class TestTagsManageForm(TestCase):
             'id': 1,
             'name': 'GameName',
             'slug': 'slug',
-            }
+        }
         )
 
     def check_form_valid(self):
@@ -999,7 +999,7 @@ class TestTagsManageForm(TestCase):
         '''Test to make sure the correct fields are to be shown'''
         self.assertEqual(self.form.Meta.fields, [
             'id', 'name', 'slug'
-            ]
+        ]
         )
 
     def test_name_is_required(self):
@@ -1010,7 +1010,7 @@ class TestTagsManageForm(TestCase):
         self.assertEqual(
             self.form.errors['name'][0], (
                 'Required. (Puma)'
-                )
+            )
         )
 
     def test_name_max_length(self):
@@ -1034,12 +1034,12 @@ class TestTagsManageForm(TestCase):
         self.assertLessEqual(
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
-            )
+        )
         self.form.data['slug'] += 'a'
         self.assertGreater(
             len(self.form.data['slug']),
             self.form.fields['slug'].max_length
-            )
+        )
 
 
 class TestConfirmTagDeleteForm(TestCase):
@@ -1056,7 +1056,7 @@ class TestConfirmTagDeleteForm(TestCase):
     def setUp(self):
         self.form = ConfirmTagDeleteForm({
             'tag_delete_confirm': 'aaaaa',
-            }
+        }
         )
 
     def check_form_valid(self):
@@ -1077,7 +1077,7 @@ class TestConfirmTagDeleteForm(TestCase):
         '''Test to make sure the correct fields are to be shown'''
         self.assertEqual(self.form.Meta.fields, [
             'id',
-            ]
+        ]
         )
 
     def test_tag_delete_confirm_is_required(self):
@@ -1088,7 +1088,7 @@ class TestConfirmTagDeleteForm(TestCase):
         self.assertEqual(
             self.form.errors['tag_delete_confirm'][0], (
                 'Follow the instructions.'
-                )
+            )
         )
 
     def test_tag_delete_confirm_max_length(self):
@@ -1120,7 +1120,7 @@ class TestDeleteConfirmForm(TestCase):
     def setUp(self):
         self.form = DeleteConfirmForm({
             'delete_confirm': 'Abc',
-            }
+        }
         )
 
     def check_form_valid(self):
@@ -1141,7 +1141,7 @@ class TestDeleteConfirmForm(TestCase):
         self.assertEqual(
             self.form.errors['delete_confirm'][0], (
                 'Follow the instructions.'
-                )
+            )
         )
 
     def test_delete_confirm_max_length(self):

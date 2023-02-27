@@ -1,7 +1,6 @@
 """
 All urls for app.
 """
-
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import (
     PasswordChangeForm, SetPasswordForm, PasswordResetForm
@@ -88,7 +87,7 @@ urlpatterns = [
         'accounts/email_address_verified',
         views.email_address_verified,
         name='email_address_verified'
-        ),
+    ),
 
     path(
         'accounts/password_change/',

@@ -1,9 +1,9 @@
 '''Tests for views.py'''
 
 import json
-from PIL import Image as PILImage
 from unittest.mock import patch, MagicMock
 from io import BytesIO
+from PIL import Image as PILImage
 from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
 from django.http import HttpResponse
@@ -35,23 +35,24 @@ def create_user(num: str):
 def create_user_staff(num: int):
     '''Create test staff user'''
     return CustomUser.objects.create(
-            username=f'T_Staff_User_{num}',
-            password=f'TPass_{num}',
-            email=f't_staff_user_{num}@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=True)
+        username=f'T_Staff_User_{num}',
+        password=f'TPass_{num}',
+        email=f't_staff_user_{num}@email34232343.com',
+        email_verified=True,
+        is_active=True,
+        is_staff=True)
+
 
 def create_user_super(num: int):
     '''Create test staff user'''
     return CustomUser.objects.create(
-            username=f'T_Staff_User_{num}',
-            password=f'TPass_{num}',
-            email=f't_staff_user_{num}@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=True,
-            is_superuser=True)
+        username=f'T_Staff_User_{num}',
+        password=f'TPass_{num}',
+        email=f't_staff_user_{num}@email34232343.com',
+        email_verified=True,
+        is_active=True,
+        is_staff=True,
+        is_superuser=True)
 
 
 def create_tag(num: int):
@@ -105,13 +106,14 @@ def create_bump(user: object, listing: object):
 def create_image_obj():
     '''Create an image object'''
     io = BytesIO()
-    image = PILImage.new("RGB", (1,1), (255,255,255))
+    image = PILImage.new("RGB", (1, 1), (255, 255, 255))
     image.save(io, format="JPEG")
     image_file = InMemoryUploadedFile(
         io, 'image', 'image.jpg',
         "image/jpeg", io.getbuffer().nbytes, None)
     image_file.seek(0)
     return image_file
+
 
 class TestViews(TestCase):
 
@@ -140,7 +142,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'index.html'
-            )
+        )
 
     def test_account_deleted(self):
         '''Test to check getting correct page'''
@@ -149,7 +151,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'registration/account_deleted.html'
-            )
+        )
 
     def test_signup_verify_email(self):
         '''Test to check getting correct page'''
@@ -158,7 +160,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'registration/signup_verify_email.html'
-            )
+        )
 
     def test_email_address_verified(self):
         '''Test to check getting correct page'''
@@ -167,7 +169,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'registration/email_address_verified.html'
-            )
+        )
 
     def test_terms_and_conditions(self):
         '''Test to check getting correct page'''
@@ -176,7 +178,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'terms_and_conditions.html'
-            )
+        )
 
     def test_privacy_policy(self):
         '''Test to check getting correct page'''
@@ -185,7 +187,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'privacy_policy.html'
-            )
+        )
 
     def test_contact_us(self):
         '''Test to check getting correct page'''
@@ -194,7 +196,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'contact_us.html'
-            )
+        )
 
     def test_unauthorized(self):
         '''Test to check getting correct page'''
@@ -203,7 +205,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'unauthorized.html'
-            )
+        )
 
     def test_staff_account(self):
         '''Test to check getting correct page'''
@@ -225,7 +227,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(
             response,
             'staff/staff_account.html'
-            )
+        )
 
 
 class TestStaffImageReview(TestCase):
@@ -241,7 +243,7 @@ class TestStaffImageReview(TestCase):
             game=cls.game,
             owner=cls.user,
             status=1,
-            )
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -1008,7 +1010,7 @@ class TestListingView(TestCase):
         self.assertAlmostEqual(self.listing.owner_id, req_fac.user.id)
         self.client.force_login(user=req_fac.user)
         response = self.client.get(reverse(
-            'listing', args=[self.listing.slug]),request=req_fac)
+            'listing', args=[self.listing.slug]), request=req_fac)
         self.assertEqual(response.status_code, 200)
 
     def test_get_try_view_draft_listing_as_staff(self):
@@ -1020,6 +1022,7 @@ class TestListingView(TestCase):
         response = self.client.get(reverse(
             'listing', args=[self.listing.slug]))
         self.assertEqual(response.status_code, 200)
+
 
 class TestSendEmailVerification(TestCase):
     '''Test send_email_verification view'''
@@ -1356,7 +1359,7 @@ class TestLoginView(TestCase):
         mock_auth.destroy()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['error_message'],
-                            "This account is banned.")
+                         "This account is banned.")
 
     def test_post_unsuccessful_login(self):
         '''Test POST with incorrect credentials'''
@@ -1448,7 +1451,7 @@ class TestDeleteGame(TestCase):
         mock_func.assert_called()
         mock_func.mock_destroy()
         self.assertEqual(response.content,
-                             b"Success - Game deleted.")
+                         b"Success - Game deleted.")
 
     @patch('website.views.uploader.destroy')
     def test_delete_game_with_no_image_successfully(self, mock_func):
@@ -1460,7 +1463,7 @@ class TestDeleteGame(TestCase):
         mock_func.assert_not_called()
         mock_func.mock_destroy()
         self.assertEqual(response.content,
-                            b"Success - Game deleted.")
+                         b"Success - Game deleted.")
 
     @patch('website.views.uploader.destroy')
     def test_delete_game_with_no_image_failed_phrase(self, mock_func):
@@ -1472,7 +1475,7 @@ class TestDeleteGame(TestCase):
         mock_func.assert_not_called()
         mock_func.mock_destroy()
         self.assertEqual(response.content,
-                            b"Failed - No game deleted.")
+                         b"Failed - No game deleted.")
 
     @patch('website.views.uploader.destroy')
     def test_delete_game_with_no_image_failed_no_id(self, mock_func):
@@ -1483,7 +1486,7 @@ class TestDeleteGame(TestCase):
         mock_func.assert_not_called()
         mock_func.mock_destroy()
         self.assertEqual(response.content,
-                            b"Failed - No game deleted.")
+                         b"Failed - No game deleted.")
 
 
 class TestNewGame(TestCase):
@@ -1499,7 +1502,7 @@ class TestNewGame(TestCase):
             'tags': [tag1],
             'image': None,
             'status': 1,
-            }
+        }
         form = MagicMock()
         form.data = {'url': 'FakeUrl'}
         mock_func.return_value = {
@@ -1509,7 +1512,7 @@ class TestNewGame(TestCase):
         mock_func.assert_not_called()
         mock_func.mock_destroy()
         self.assertEqual(response.content,
-                            b"Failed to add new game.")
+                         b"Failed to add new game.")
 
     @patch('website.views.uploader.upload')
     def test_add_new_game_successfully_with_no_image(self, mock_func):
@@ -1521,7 +1524,7 @@ class TestNewGame(TestCase):
             'tags': [tag1],
             'image': None,
             'status': 1,
-            }
+        }
         mock_func.return_value = {
             'url': 'fakeURL',
         }
@@ -1529,7 +1532,7 @@ class TestNewGame(TestCase):
         mock_func.assert_not_called()
         mock_func.mock_destroy()
         self.assertEqual(response.content,
-                            b"New game added with no image.")
+                         b"New game added with no image.")
 
     @patch('website.views.uploader.upload')
     def test_add_new_game_successfully_with_image(self, mock_func):
@@ -1540,7 +1543,7 @@ class TestNewGame(TestCase):
             'slug': 'fake-game-name',
             'tags': [tag1],
             'status': 1,
-            }
+        }
         files = {
             'image': create_image_obj(),
         }
@@ -1570,13 +1573,6 @@ class TestUpdateGame(TestCase):
         response = update_game(data=data)
         self.assertEqual(response.content, b"Failed - Game not updated.")
 
-    # def test_update_game_fail_no_game_instance_found(self):
-    #     '''Test to update game with no image.
-    #     FAIL due to no game id given'''
-    #     data = {'id': 999999}  # No game id given.
-    #     response = update_game(data=data)
-    #     print(response)
-
     @patch('website.views.uploader.upload')
     def test_update_game_success_no_image(self, mock_func):
         '''Test updating game when not updating image'''
@@ -1598,7 +1594,8 @@ class TestUpdateGame(TestCase):
 
     @patch('website.views.uploader.upload')
     @patch('website.views.uploader.destroy')
-    def test_update_game_success_replace_image(self, mock_destroy, mock_upload):
+    def test_update_game_success_replace_image(self, mock_destroy,
+                                               mock_upload):
         '''Test updating game when updating image'''
         tag1 = create_tag(78392479)
         game = create_game(3343563)
@@ -1645,6 +1642,7 @@ class TestUpdateGame(TestCase):
         mock_upload.assert_called()
         self.assertEqual(response.content, b"Success - Game updated.")
 
+
 class TestTagManagement(TestCase):
     '''Test for `tag_management` view, this also tests:
      `add_new_tag`, `update_tag` and `delete_tag`.'''
@@ -1668,7 +1666,6 @@ class TestTagManagement(TestCase):
         response = self.client.get(reverse('tag_management'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'staff/staff_tag_management.html')
-
 
     def test_post_delete_tag(self):
         '''Test delete_tag successful'''
@@ -1694,7 +1691,6 @@ class TestTagManagement(TestCase):
         self.assertTrue(Tag.objects.filter(id=_id).count())
         self.assertEqual(response.status_code, 200)
 
-
     def test_post_update_tag(self):
         '''Test POST as staffuser trying to update tag'''
         tag = create_tag(32423465)
@@ -1704,7 +1700,6 @@ class TestTagManagement(TestCase):
         response = self.client.post(reverse('tag_management'), data=data)
         self.assertTrue(Tag.objects.filter(name='TESTNewName893940').count())
         self.assertEqual(response.status_code, 200)
-
 
     def test_post_update_tag_fail_duplicate(self):
         '''Test POST as staffuser trying to update tag but fail
@@ -1717,7 +1712,6 @@ class TestTagManagement(TestCase):
         response = self.client.post(reverse('tag_management'), data=data)
         self.assertEqual(response.status_code, 200)
 
-
     def test_post_add_tag(self):
         '''Test POST as staffuser trying to add tag'''
         staff_user = create_user_staff(34523565)
@@ -1728,6 +1722,7 @@ class TestTagManagement(TestCase):
         response = self.client.post(reverse('tag_management'), data=data)
         self.assertTrue(Tag.objects.filter(name=data['name']).count())
         self.assertEqual(response.status_code, 200)
+
 
 class TestStaffManagementSearch(TestCase):
     '''Test for `staff_user_management_search view`'''
@@ -1752,6 +1747,7 @@ class TestStaffManagementSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,
                                 'staff/staff_user_management_search.html')
+
 
 class TestStaffManagementUser(TestCase):
     '''Test for `staff_user_management_user view`'''
@@ -1789,7 +1785,8 @@ class TestStaffManagementUser(TestCase):
     def test_get_guest(self):
         '''Test GET as guest'''
         testuser = create_user(37839456)
-        response = self.client.post(reverse('staff_user_management_user', args=[testuser.id]))
+        response = self.client.post(
+            reverse('staff_user_management_user', args=[testuser.id]))
         self.assertEqual(response.status_code, 302)
 
     def test_get_user(self):
@@ -1797,13 +1794,15 @@ class TestStaffManagementUser(TestCase):
         testuser = create_user(37839456)
         user = create_user(35632432)
         self.client.force_login(user=user)
-        response = self.client.post(reverse('staff_user_management_user', args=[testuser.id]))
+        response = self.client.post(
+            reverse('staff_user_management_user', args=[testuser.id]))
         self.assertEqual(response.status_code, 302)
 
     def test_get_staffuser(self):
         '''Test GET as guest'''
         self.client.force_login(user=self.staffuser)
-        response = self.client.post(reverse('staff_user_management_user', args=[self.user.id]))
+        response = self.client.post(
+            reverse('staff_user_management_user', args=[self.user.id]))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response,
                                 'staff/staff_user_management_user.html')
@@ -1915,7 +1914,7 @@ class TestStaffManagementUser(TestCase):
         '''Test POST delete target user's target listing'''
         user = create_user(4465563)
         listing = create_listing(3476634, user, self.game, [self.tag])
-        l_id =  listing.id
+        l_id = listing.id
         user.is_banned = True
         user.save()
         self.client.force_login(user=self.staffuser)
@@ -1932,7 +1931,7 @@ class TestStaffManagementUser(TestCase):
         due to bad phrase'''
         user = create_user(4465563)
         listing = create_listing(3476634, user, self.game, [self.tag])
-        l_id =  listing.id
+        l_id = listing.id
         user.is_banned = True
         user.save()
         self.client.force_login(user=self.staffuser)
@@ -1989,27 +1988,29 @@ class TestStaffManagementUser(TestCase):
         self.assertFalse(user.is_staff)
         self.assertEqual(response.status_code, 302)
 
+
 class TestUpdateEmail(TestCase):
     '''Tests `update_email` which also tests `check_email`'''
 
     def test_correct_email_formats(self):
         '''Test a bunch of emails in expected correct format'''
-        reqFac = RequestFactory().get('/fake_path')
-        reqFac.user = create_user(8374382)
+        req_fac = RequestFactory().get('/fake_path')
+        req_fac.user = create_user(8374382)
         tests = []
         tests.append(['a@a.a', 'a@a.a'])
         tests.append(['josh@hotmail.com', 'josh@hotmail.com'])
         tests.append(['bob@123.tech', 'bob@123.tech'])
         tests.append(['dot.dot@dot.dot', 'dot.dot@dot.dot'])
-        tests.append(['under_spy123@FAKEreality.unr', 'under_spy123@FAKEreality.unr'])
+        tests.append(['under_spy123@FAKEreality.unr',
+                     'under_spy123@FAKEreality.unr'])
         for test in tests:
-            res = update_email(reqFac, _list=test)
+            res = update_email(req_fac, _list=test)
             self.assertEqual(res, {'result': True, 'reason': ''})
 
     def test_incorrect_email_formats(self):
         '''Test a bunch of emails in an unexpected correct format'''
-        reqFac = RequestFactory().get('/fake_path')
-        reqFac.user = create_user(8374382)
+        req_fac = RequestFactory().get('/fake_path')
+        req_fac.user = create_user(8374382)
         tests = []
         tests.append(['@a', '@a'])
         tests.append(['reallyBadAtHotmail.com', 'reallyBadAtHotmail.com'])
@@ -2017,7 +2018,7 @@ class TestUpdateEmail(TestCase):
         tests.append(['', ''])
         tests.append(['NoMatch@Here.com', 'DoesNot@Match.com'])
         for test in tests:
-            res = update_email(reqFac, _list=test)
+            res = update_email(req_fac, _list=test)
             self.assertNotEqual(res, {'result': True, 'reason': ''})
 
     def test_correct_email_duplicate(self):
@@ -2027,4 +2028,6 @@ class TestUpdateEmail(TestCase):
         user2 = create_user(346564)
         req_fac.user.email = user2.email
         res = update_email(req_fac, _list=[user2.email, user2.email])
-        self.assertEqual(res, {'reason': ['Email already taken. (Jackal)'], 'result': False})
+        self.assertEqual(
+            res, {'reason': ['Email already taken. (Jackal)'],
+                  'result': False})

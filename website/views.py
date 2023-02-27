@@ -1240,29 +1240,23 @@ def update_game(data: object, files: object = None):
         HttpResponse (class): Feedback result of codeblock.
 
     """
-
     game = get_object_or_404(Game, pk=data["id"])
     form = GameManageForm(data=data, instance=game)
-
     if form.is_valid():
         # Update values
         game.name = data["name"]
         game.status = data["status"]
         game.slug = data["slug"]
-
         # Get tags selected from the form
         query = Q(id__in=form.cleaned_data["tags"])
         tags = Tag.objects.filter(query).all().order_by('name')
-
         # Update tags with tags selected from form
         game.tags.set(tags)
-
         # If game image already exists, delete from server and replace with
         # new image.
         if game.image is not None and files:
             # Delete old image from Cloudinary server
             uploader.destroy(game.image.public_id)
-
             # Get public ID
             txt = game.image.public_id
             public_id = txt.rsplit("/", 1)[1]
@@ -1277,7 +1271,6 @@ def update_game(data: object, files: object = None):
             )
             # Save new url to game object
             game.image = new_image["url"]
-
         # If game image does not exists, just upload.
         if game.image is None and files:
             # Upload new image
@@ -1316,7 +1309,7 @@ def tag_management(request: object):
             delete_tag(request.POST)
 
         # Checking if updating a current tag
-        elif request.POST['id'] != '' :
+        elif request.POST['id'] != '':
             update_tag(request.POST)
 
         # Or if inputting a new tag

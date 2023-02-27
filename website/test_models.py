@@ -3,6 +3,7 @@ import unittest
 from django.core.exceptions import ValidationError
 from .models import CustomUser, Tag, Game, ServerListing, Images
 
+
 def create_user(num: int):
     '''Create test user'''
     return CustomUser.objects.create(
@@ -13,19 +14,22 @@ def create_user(num: int):
         is_active=True,
         is_staff=False)
 
+
 def create_user_staff(num: int):
     '''Create test staff user'''
     return CustomUser.objects.create(
-            username=f'T_Staff_User_{num}',
-            password=f'TPass_{num}',
-            email=f't_staff_user_{num}@email34232343.com',
-            email_verified=True,
-            is_active=True,
-            is_staff=True)
+        username=f'T_Staff_User_{num}',
+        password=f'TPass_{num}',
+        email=f't_staff_user_{num}@email34232343.com',
+        email_verified=True,
+        is_active=True,
+        is_staff=True)
+
 
 def create_tag(num: int):
     '''Create test tag'''
     return Tag.objects.create(name=f'{num}', slug=f'{num}')
+
 
 def create_game(num: int):
     '''Create test game'''
@@ -34,23 +38,25 @@ def create_game(num: int):
         slug=f'{num}',
         image=None,
         status=1)
-        # add created cls.tag to game.
+    # add created cls.tag to game.
     obj.tags.set([Tag.objects.all().last()])
     return obj
+
 
 def create_server_listing(num: int):
     '''Create test listing'''
     obj = ServerListing.objects.create(
-        game= Game.objects.all().last(),
-        owner= CustomUser.objects.all().last(),
-        title= f'{num}',
-        short_description= 'a' * 200,
-        long_description= 'a' * 200,
-        status= 1,
-        discord= f'{num}',
-        tiktok= f'{num}')
+        game=Game.objects.all().last(),
+        owner=CustomUser.objects.all().last(),
+        title=f'{num}',
+        short_description='a' * 200,
+        long_description='a' * 200,
+        status=1,
+        discord=f'{num}',
+        tiktok=f'{num}')
     obj.tags.set([Tag.objects.all().last()])
     return obj
+
 
 def create_test_image():
     '''Create test image'''

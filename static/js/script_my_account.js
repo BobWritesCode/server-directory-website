@@ -68,7 +68,9 @@ function AccountDeleteConfirm() {
   $('.error-message').remove();
   // Check user has input correct string.
   if (
-    $('#account-delete-form').find('input[name="account_delete_confirm"]').val() !== 'remove'
+    $('#account-delete-form')
+      .find('input[name="account_delete_confirm"]')
+      .val() !== 'remove'
   ) {
     $('#account-delete-form')
       .find('input[name="account_delete_confirm"]')
