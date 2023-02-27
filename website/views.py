@@ -1185,9 +1185,8 @@ def delete_game(data: object):
     Returns:
         HttpResponse (class): Feedback result of codeblock.
     """
-    form = ConfirmGameDeleteForm(data)
-    if form.data["game_delete_confirm"] == "delete" and form.data["itemID"]:
-        item_id = form.data["itemID"]
+    if data["game_delete_confirm"] == "delete" and data["itemID"]:
+        item_id = data["itemID"]
         # Get current image for game
         game = get_object_or_404(Game, id=item_id)
         if game.image is not None:
@@ -1445,30 +1444,32 @@ def staff_user_management_user(request: object, _id: int):
     # Let's see if the user is trying to update target user.
     if "user_management_save" in request.POST:
         form = UserForm(request.POST, instance=user)
-        if form.is_valid():
-            user.username = form.cleaned_data["username"]
-            user.email = form.cleaned_data["email"].lower()
-            user.is_active = "is_active" in request.POST
-            try:
-                user.save()
-                return redirect(
-                    "staff_user_management_user", _id=request.POST['id'])
-            except ValidationError as err:
-                for field, errors in err.message_dict.items():
-                    form.add_error(field, errors)
+        user.username = request.POST["username"]
+        user.email = request.POST["email"].lower()
+        user.is_active = "is_active" in request.POST
+        try:
+            user.save()
+        except ValidationError as err:
+            for field, errors in err.message_dict.items():
+                form.add_error(field, errors)
+        else:
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to delete target user.
     if "delete_confirm" in request.POST:
-        form = DeleteConfirmForm(request.POST)
-        delete_user(request, form)
-        return redirect("staff_user_management_search")
+        if request.POST["delete_confirm"] == "delete":
+            form = DeleteConfirmForm(request.POST)
+            delete_user(request, form)
+            return redirect("staff_user_management_search")
 
     # Let's see if the user is trying to ban target user.
     if "ban_confirm" in request.POST:
-        _id = request.POST['id']
-        ban_user(request, _id)
-        return redirect(
-            "staff_user_management_user", _id=request.POST['id'])
+        if request.POST["ban_confirm"] == "ban":
+            _id = request.POST['id']
+            ban_user(request, _id)
+            return redirect(
+                "staff_user_management_user", _id=request.POST['id'])
 
     # Let's see if the user is trying to unban target user.
     if "unban" in request.POST:
@@ -1643,7 +1644,7 @@ def update_email(request: object, _list: list):
         {result (bool), reason (string)}
 
     """
-    result = check_email(_list[0])
+    result = check_email(_list[0].lower())
     if not result['result']:
         return result
 
@@ -1652,7 +1653,7 @@ def update_email(request: object, _list: list):
 
     # Get correct user from database
     user = get_object_or_404(CustomUser, pk=request.user.pk)
-    user.email = _list[0]
+    user.email = _list[0].lower()
     user.email_verified = False
     # Save user object
     try:
