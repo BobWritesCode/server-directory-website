@@ -116,10 +116,10 @@ Cloudinary, Select2 and tinyMCE.
     - [HTML](#html-testing)
     - [CSS](#css-testing)
     - [JavaScript](#javascript-testing)
-    - [Python](#python-testing) (OUTSTANDING)
+    - [Python](#python-testing)
       - [Linters](#python-linters)
-      - [Unit Testing](#unit-testing) (OUTSTANDING)
-      - [Coverage](#coverage) (OUTSTANDING)
+      - [Unit Testing](#unit-testing)
+      - [Coverage](#coverage)
     - [User Testing](#user-testing)
   - [Bugs](#bugs)
     - [Unresolved](#unresolved)
@@ -2074,7 +2074,7 @@ body {
 - [HTML](#html-testing)
 - [CSS](#css-testing)
 - [JavaScript](#javascript-testing)
-- [Python](#python-testing) (OUTSTANDING)
+- [Python](#python-testing)
   - [Linters](#python-linters)
   - [Unit Testing](#unit-testing)
   - [Coverage](#coverage)
@@ -2165,6 +2165,18 @@ I used 2 linters for my Python code, which were both installed on my IDE. These 
 
 - [PyLint](https://pylint.org/), and,
 - [PyCodeStyle](https://pycodestyle.pycqa.org/en/latest/index.html) formally pep8.
+
+#### Unit Testing
+
+I made a really good go at unit testing for this project. Due to the complex nature of it, I know there are probably hundreds more test that could be implemented but my main focus was to at least provides a decent coverage of most of the code.
+
+In all I have created 211 tests, with 460 assertions!
+
+#### Coverage
+
+Using Coverage I was able to see how much code I did cover. And I  managed to cover 99% of the code. Some code I was unable to test because I believe it is unreachable due to the fact that things like the forms would do the validation checks before it got to my validation checks in the code.
+
+![Coverage report](./README_Images/coverage_report.png)
 
 ### User Testing
 
