@@ -4,19 +4,28 @@ const btnUsernameSearch = $('#btnUserSearch');
 const btnEmailSearch = $('#btnEmailSearch');
 const btnIDSearch = $('#btnIDSearch');
 const userSearchForm = $('#user-search-form');
+const inputSearch = $('#search-name');
 
 /**
  * Validates the form and provides error messages to the user if any.
  */
-function validateForm() {
+function validateForm(btnType) {
   // Clear any current error messages from screen.
   $('.error-message').remove();
   // Check game name field is not blank.
-  if (!userSearchForm.find('#search-name').val()) {
+  if (!inputSearch.val()) {
     userSearchForm
       .find('#search-name')
       .after(
         "<div class='error-message alert alert-warning mt-1' role='alert'>Must not be blank</div>",
+      );
+    return;
+  }
+  if (btnType === 'id' && !Number.isInteger(parseInt(inputSearch.val(), 10))) {
+    userSearchForm
+      .find('#search-name')
+      .after(
+        "<div class='error-message alert alert-warning mt-1' role='alert'>Must be whole number when searching by ID</div>",
       );
   }
 }
@@ -117,7 +126,7 @@ function action(...args) {
 window.addEventListener('DOMContentLoaded', () => {
   btnUsernameSearch.on('click', (e) => {
     e.preventDefault();
-    validateForm();
+    validateForm('username');
     if ($('.error-message').length === 0) {
       action('search_users_username', $('#search-name').val());
     }
@@ -125,7 +134,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   btnEmailSearch.on('click', (e) => {
     e.preventDefault();
-    validateForm();
+    validateForm('email');
     if ($('.error-message').length === 0) {
       action('search_users_email', $('#search-name').val());
     }
@@ -133,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   btnIDSearch.on('click', (e) => {
     e.preventDefault();
-    validateForm();
+    validateForm('id');
     if ($('.error-message').length === 0) {
       action('search_users_id', $('#search-name').val());
     }
