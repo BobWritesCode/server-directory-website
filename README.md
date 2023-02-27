@@ -2188,6 +2188,8 @@ AE = As expected.
 | Click Gamer's-verse in header | Loads homepage | AE | Pass |
 | Click Login (if currently signed out) | Goto Login page | AE | Pass |
 | Click Sign Up (if currently signed out) | Goto Sign Up page | AE | Pass |
+| Can only see admin button | Only if user logged in and is staff | AE | Pass |
+| Click Admin button (if staff) | Goto Staff Account Page | AE | Pass |
 |  **Listings Page**  |
 | Click on any listing | Loads listing's page | AE | Pass |
 | Choose to add tags to filter | Narrows listings based on tag choices | AE | Pass |
@@ -2202,9 +2204,9 @@ AE = As expected.
 | Click bump when already active bump on listing | Nothing | AE | Pass |
 | Click bump when signed in and at max | Nothing | AE | Pass |
 | Click Discord button | Should try to open discord server | AE | Pass |
-| Click TikTok button if there |  |  |  |
-| If staff, click  |  |  |  |
-| If staff, click  |  |  |  |
+| Click TikTok button if there | Goes to TikTok profile | AE | Pass |
+| If staff, click view owner button | Loads page | AE | Pass |
+| If staff, click view listing button | Loads page | AE | Pass |
 |  **Sign Up page** |
 | Try to submit form empty | Prompt to complete form | AE | Pass |
 | Try to submit form with only username | Prompt to complete form | AE | Pass |
@@ -2229,13 +2231,41 @@ AE = As expected.
 | Email update: Enter non-matching email addresses | Error message saying both inputs needs to match | Nothing happens. | Fixed: commit c56671c |
 | Email update: Enter email address known to be linked to a different account | Error message saying this email is already in use | AE | Pass |
 | Email update: Enter email address not connected to another user | Next screen | AE. Received verification email and visited link to verify my email address. | Pass |
-| Delete account: Click Delete account button | Opens delete account modal | Error message saying enter correct phrase |  |
+| Delete account: Click Delete account button | Opens delete account modal | AE | Pass |
 | Delete account: Try to submit with no phrase and incorrect phrase | Error message saying enter correct phrase | While empty, prompt appearers saying input required. With incorrect phrase, form submitted and page reloaded, but nothing happened. | Fixed: commit 4d8ef21 |
 | Delete account: Try to submit with correct phrase | Next screen | As above | Fixed: commit 4d8ef21 |
 | Change Password: Click button to change password  | Opens open change password page | AE | Pass |
 | Change Password: Enter correct current password but mis-match new password | Error message | AE | Pass |
 | Change Password: Enter incorrect current password, and match new password | Error message | AE | Pass |
 | Change Password: Enter correct current password and match new password | Success, next page | AE | Pass |
+| Delete Listing: Click button for any listing on My account page | Modal to open | AE | Pass |
+| Delete Listing: Enter blank and incorrect phrase | Error message | AE | Pass |
+| Delete Listing: Enter correct phrase | Listing is deleted | AE | Pass |
+| Click create listing button | Loads page | AE | Pass |
+| **Listing Create page** |  |  |  |
+| Try to submit incomplete form | Error messages to user |AE | Pass |
+| Complete form and submit without image | Saves listing with image | AE | Pass |
+| Complete form and submit with image | Saves listing with image | AE | Pass |
+| **Listing Edit page** |  |  |  |
+| Edit Listing: Click button for any listing | Load page | AE | Pass |
+| Edit Listing: Make changes to text and save | Changes are saved | AE | Pass |
+| Edit Listing: Update Image and save | Changes are saved | AE | Pass |
+| Edit Listing: Make changes to test and update image and save | Changes are saved | AE | Pass |
+| Edit Listing: Click delete listing button | Open modal | AE | Pass |
+| Edit Listing: Delete Listing: Enter blank and incorrect phrase | Error message | Nothing happens | Fixed: commit d7e40c9 |
+| Edit Listing: Delete Listing: Enter correct phrase | Listing is deleted | Nothing happens | Fixed: commit d7e40c9 |
+| **Staff Account page** |  |  |  |
+| Click image approval button if there are images to be reviewed | Loads page | AE | Pass |
+| Click manage user button | Loads page | AE | Pass |
+| Click mange games button | Loads page | AE | Pass |
+| Click manage tags button | Loads page | AE | Pass |
+| **Image review page** |  |  |  |
+| Click approve button | Approves image | AE (confirmed by viewing database) | Pass |
+| Click reject button | Rejects image and set for expiry | AE (confirmed by viewing database) | Pass |
+| Click ban button | Opens ban user modal | AE | Pass |
+| Ban user modal: Enter blank and incorrect phrase | Error message | AE | Pass |
+| Ban user modal: Delete Listing: Enter correct phrase | Reject image, and ban user | AE (confirmed by accidentally banning myself) | Pass |
+| Click next button | Loads next image | Even though it seems to work there is an error in the terminal `regarding HttpResponse(json.dumps({'result': result}))` | Fixed: commit c0e53de |
 [Back to top🔝](#table-of-contents)
 
 ---
