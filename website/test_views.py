@@ -1,15 +1,12 @@
 '''Tests for views.py'''
 
 import json
-from PIL import Image
-from unittest import mock
+from PIL import Image as PILImage
 from unittest.mock import patch, MagicMock
 from io import BytesIO
-from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.tokens import default_token_generator
 from django.core import serializers
-from django.core.exceptions import ObjectDoesNotExist, ValidationError
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.urls import reverse
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.shortcuts import get_object_or_404
@@ -18,8 +15,9 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from .models import CustomUser, Tag, Game, ServerListing, Images, Bumps
-from .forms import CreateServerListingForm, ImageForm, SignupForm
-from .views import (unban_user, send_email_verification, delete_game,
+from .forms import (CreateServerListingForm, SignupForm,
+                    GameManageForm)
+from .views import (send_email_verification, delete_game,
                     add_new_game, update_game)
 
 
@@ -50,12 +48,12 @@ def create_tag(num: int):
     return Tag.objects.create(name=f'{num}', slug=f'{num}')
 
 
-def create_game(num: int, image: object = None):
+def create_game(num: int, placeholder: bool = False):
     '''Create test game, adds latest tag automatically'''
     obj = Game.objects.create(
         name=f'{num}',
         slug=f'{num}',
-        image=image,
+        image='placeholder' if placeholder else None,
         status=1)
     # add created cls.tag to game.
     obj.tags.set([Tag.objects.all().last()])
@@ -94,20 +92,15 @@ def create_bump(user: object, listing: object):
 
 
 def create_image_obj():
-    '''Create fake image object'''
-    # Create fake image
-    image = Image.new(mode='RGB', size=(200, 200))
-    image_io = BytesIO()
-    image.save(image_io, 'JPEG')
-    return InMemoryUploadedFile(
-        file=image_io,
-        field_name='image',
-        name='image.jpg',
-        content_type='image/jpeg',
-        size=len(image_io.getvalue()),
-        charset=None,
-        content_type_extra={'public_id': "Fake/Public/Id"})
-
+    '''Create an image object'''
+    io = BytesIO()
+    image = PILImage.new("RGB", (1,1), (255,255,255))
+    image.save(io, format="JPEG")
+    image_file = InMemoryUploadedFile(
+        io, 'image', 'image.jpg',
+        "image/jpeg", io.getbuffer().nbytes, None)
+    image_file.seek(0)
+    return image_file
 
 class TestViews(TestCase):
 
@@ -123,7 +116,11 @@ class TestViews(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        cls.server_listing.delete()
+        cls.game.delete()
+        cls.tag.delete()
+        cls.staff_user.delete()
+        cls.user.delete()
 
     def test_index(self):
         '''Test to check getting correct page'''
@@ -243,9 +240,7 @@ class TestStaffImageReview(TestCase):
         self.test_image = Images.objects.create(
             user=self.user,
             listing=self.server_listing,
-            status=1,
-        )
-        self.client.logout()
+            status=1)
 
     def tearDown(self):
         self.test_image.delete()
@@ -280,8 +275,7 @@ class TestStaffImageReview(TestCase):
 
         self.assertTemplateUsed(
             response,
-            'staff/staff_image_review.html'
-        )
+            'staff/staff_image_review.html')
 
     def test_staff_image_review_status_text(self):
         '''Check image status text'''
@@ -352,7 +346,11 @@ class TestServerCreate(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        cls.listing.delete()
+        cls.game.delete()
+        cls.tag.delete()
+        cls.staff_user.delete()
+        cls.user.delete()
 
     def setUp(self):
         self.client = Client()
@@ -368,18 +366,11 @@ class TestServerCreate(TestCase):
             'long_description': '',
             'status': 1,
             'discord': 'discord',
-            'tiktok': 'tiktok',
-            }
-        )
+            'tiktok': 'tiktok'})
         self.form.data['short_description'] = (
-            'a' * self.form.fields['short_description'].min_length
-            )
+            'a' * self.form.fields['short_description'].min_length)
         self.form.data['long_description'] = (
-            'a' * self.form.fields['long_description'].min_length
-            )
-
-    def tearDown(self):
-        pass
+            'a' * self.form.fields['long_description'].min_length)
 
     def test_get(self):
         '''Test GET'''
@@ -392,23 +383,14 @@ class TestServerCreate(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'server_create.html'
-        )
+            'server_create.html')
 
     @patch("cloudinary.uploader.upload", autospec=True)
-    def test_post(self, upload_mock):
+    def test_post(self, mock_upload):
         '''Test POST'''
         self.client.force_login(self.user)
         # Create fake image
-        image_data = BytesIO(b'')
-        image_file = InMemoryUploadedFile(
-                file=image_data,
-                field_name='image',
-                name='image.jpg',
-                content_type='image/jpeg',
-                size=image_data.getbuffer().nbytes,
-                charset=None
-            )
+        image_file = create_image_obj()
         data = {
             'game': self.game.id,
             'tags': [self.tag.id],
@@ -421,18 +403,17 @@ class TestServerCreate(TestCase):
             'status': 1,
             'discord': 'discord',
             'tiktok': 'tiktok',
-            'image': image_file
-            }
+            'image': image_file}
         fake_upload_result = {
             'url': 'https://fake-url.com/fake-image.jpg',
             'public_id': 'fake-image-id'}
-        upload_mock.return_value = fake_upload_result
+        mock_upload.return_value = fake_upload_result
         response = self.client.post(reverse(
             'server_create'), data=data, follow=True)
         # Asserts
         self.assertTrue(response.status_code == 200)
-        upload_mock.assert_called()
-        upload_mock.assert_called_once()
+        mock_upload.assert_called()
+        mock_upload.assert_called_once()
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/my_account']
@@ -489,8 +470,7 @@ class TestServerEdit(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
             response,
-            'server_edit.html'
-        )
+            'server_edit.html')
 
     def test_get_image_status_0(self):
         '''Test GET with image status 0'''
@@ -548,22 +528,12 @@ class TestServerEdit(TestCase):
     @patch("cloudinary.uploader.upload", autospec=True)
     @patch("cloudinary.uploader.destroy", autospec=True)
     def test_post_update_listing_with_image_already(self,
-                                                    destroy_mock,
-                                                    upload_mock):
+                                                    mock_destroy,
+                                                    mock_upload):
         '''Test POST and updating a listing that already have an
         image linked to it.'''
         self.client.force_login(self.user)
-
-        # Create fake image
-        image_data = BytesIO(b'')
-        image_file = InMemoryUploadedFile(
-            file=image_data,
-            field_name='image',
-            name='image.jpg',
-            content_type='image/jpeg',
-            size=image_data.getbuffer().nbytes,
-            charset=None)
-
+        image_file = create_image_obj()
         # Fake listing data
         data = {
             'game': self.game.id,
@@ -584,21 +554,20 @@ class TestServerEdit(TestCase):
             'success': True,
             'url': 'fakeurlcom',
             'public_id': 'FakePublicID'}
-        upload_mock.return_value = fake_upload_result
+        mock_upload.return_value = fake_upload_result
 
         # Assert correct details are being used for form
         self.assertTrue(CreateServerListingForm(data).is_valid())
-
         # POST
         response = self.client.post(
             reverse('server_edit', args=[self.listing.id]), data, follow=True)
 
         # Asserts
         self.assertTrue(response.status_code == 200)
-        upload_mock.assert_called()
-        upload_mock.assert_called_once()
-        destroy_mock.assert_called()
-        destroy_mock.assert_called_once()
+        mock_upload.assert_called()
+        mock_upload.assert_called_once()
+        mock_destroy.assert_called()
+        mock_destroy.assert_called_once()
 
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
@@ -607,19 +576,11 @@ class TestServerEdit(TestCase):
         self.assertEqual(actual_paths, expected_paths)
 
     @patch("cloudinary.uploader.upload", autospec=True)
-    def test_post_update_listing_with_no_image(self, upload_mock):
+    def test_post_update_listing_with_no_image(self, mock_upload):
         '''Test POST and updating a listing that currently does not
         have an image linked to it.'''
         self.client.force_login(self.user)
-        # Create fake image
-        image_data = BytesIO(b'')
-        image_file = InMemoryUploadedFile(
-            file=image_data,
-            field_name='image',
-            name='image.jpg',
-            content_type='image/jpeg',
-            size=image_data.getbuffer().nbytes,
-            charset=None)
+        image_file = create_image_obj()
         # Fake listing data
         data = {
             'game': self.game.id,
@@ -639,7 +600,7 @@ class TestServerEdit(TestCase):
             'success': True,
             'url': 'http://www.fakeurl.com',
             'public_id': 'FakePublicID'}
-        upload_mock.return_value = fake_upload_result
+        mock_upload.return_value = fake_upload_result
         # Assert correct details are being used for form
         self.assertTrue(CreateServerListingForm(data).is_valid())
         # POST
@@ -647,8 +608,8 @@ class TestServerEdit(TestCase):
             reverse('server_edit', args=[self.listing2.id]), data, follow=True)
         # Asserts
         self.assertTrue(response.status_code == 200)
-        upload_mock.assert_called()
-        upload_mock.assert_called_once()
+        mock_upload.assert_called()
+        mock_upload.assert_called_once()
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/my_account']
@@ -656,7 +617,7 @@ class TestServerEdit(TestCase):
         self.assertEqual(actual_paths, expected_paths)
 
     @patch("cloudinary.uploader.destroy", autospec=True)
-    def test_post_delete_listing(self, destroy_mock):
+    def test_post_delete_listing(self, mock_destroy):
         '''Test POST delete listing, also tests server_delete()'''
         self.client.force_login(self.user)
         data = {
@@ -666,15 +627,13 @@ class TestServerEdit(TestCase):
         fake_destroy_result = {
             'success': True,
         }
-        destroy_mock.return_value = fake_destroy_result
-
+        mock_destroy.return_value = fake_destroy_result
         response = self.client.post(
             reverse('server_edit', args=[self.listing.id]), data, follow=True)
 
         self.assertTrue(response.status_code == 200)
-        destroy_mock.assert_called()
-        destroy_mock.assert_called_once()
-
+        mock_destroy.assert_called()
+        mock_destroy.assert_called_once()
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/my_account']
@@ -758,7 +717,7 @@ class TestMyAccount(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @patch("cloudinary.uploader.destroy", autospec=True)
-    def test_post_delete_listing(self, destroy_mock):
+    def test_post_delete_listing(self, mock_destroy):
         '''Test POST delete listing, also tests server_delete()'''
         self.client.force_login(self.user)
         data = {
@@ -768,14 +727,13 @@ class TestMyAccount(TestCase):
         fake_destroy_result = {
             'success': True,
         }
-        destroy_mock.return_value = fake_destroy_result
-
+        mock_destroy.return_value = fake_destroy_result
         response = self.client.post(
             reverse('my_account'), data, follow=True)
 
         self.assertTrue(response.status_code == 200)
-        destroy_mock.assert_called()
-        destroy_mock.assert_called_once()
+        mock_destroy.assert_called()
+        mock_destroy.assert_called_once()
 
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
@@ -787,12 +745,9 @@ class TestMyAccount(TestCase):
         '''Test POST account delete'''
         self.client.force_login(self.user)
         data = {
-            'account-delete-confirm': 'delete',
-            'confirm': 'remove'}
-
+            'account_delete_confirm': 'remove'}
         response = self.client.post(
             reverse('my_account'), data, follow=True)
-
         # Check that the redirect chain has the correct paths
         redirect_chain = response.redirect_chain
         expected_paths = ['/accounts/account_deleted/']
@@ -936,7 +891,7 @@ class TestListingsView(TestCase):
         '''Test adding to tag string'''
         # Guest
         response = self.client.get(reverse(
-            'listings-wth-tags',
+            'listings-with-tags',
             args=[self.game.slug, f'A%25{self.tag1.slug}']))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(
@@ -948,7 +903,7 @@ class TestListingsView(TestCase):
         '''Test removing from tag string but not left empty'''
         # Guest
         response = self.client.get(reverse(
-            'listings-wth-tags',
+            'listings-with-tags',
             args=[self.game.slug,
                   f'R%25{self.tag2.slug}%25{self.tag1.slug}'
                   f'%25{self.tag2.slug}']))
@@ -962,7 +917,7 @@ class TestListingsView(TestCase):
         '''Test removing from tag string and left empty'''
         # Guest
         response = self.client.get(reverse(
-            'listings-wth-tags',
+            'listings-with-tags',
             args=[self.game.slug,
                   f'R%25{self.tag1.slug}%25{self.tag1.slug}']))
         self.assertEqual(response.status_code, 200)
@@ -1323,22 +1278,23 @@ class TestLoginView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('my_account'))
 
-    def test_post_successful_login(self):
+    @patch('website.views.authenticate')
+    def test_post_successful_login(self, mock_auth):
         '''Test POST with correct credentials'''
         user = create_user(num='1211135')
         data = {'email': user.email,
                 'password': user.password}
-        with patch('django.contrib.auth.authenticate') as mock_auth:
-            mock_auth.return_value = user
-            response = self.client.post(reverse('login'),
-                                        data=data,
-                                        Follow=True)
-            mock_auth.assert_called_once()
-            mock_auth.destroy()
-            self.assertEqual(response.url, '/accounts/my_account')
-            self.assertEqual(response.status_code, 302)
+        mock_auth.return_value = user
+        response = self.client.post(reverse('login'),
+                                    data=data,
+                                    Follow=True)
+        mock_auth.assert_called_once()
+        mock_auth.destroy()
+        self.assertEqual(response.url, '/accounts/my_account')
+        self.assertEqual(response.status_code, 302)
 
-    def test_post_fail_login_banned_user(self):
+    @patch('website.views.authenticate')
+    def test_post_fail_login_banned_user(self, mock_auth):
         '''Test POST with correct credentials'''
         user = create_user(num='867563')
         user.is_banned = True
@@ -1346,16 +1302,15 @@ class TestLoginView(TestCase):
         user.refresh_from_db()
         data = {'email': user.email,
                 'password': user.password}
-        with patch('django.contrib.auth.authenticate') as mock_auth:
-            mock_auth.return_value = user
-            response = self.client.post(reverse('login'),
-                                        data=data,
-                                        Follow=True)
-            mock_auth.assert_called_once()
-            mock_auth.destroy()
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.context['error_message'],
-                             "This account is banned.")
+        mock_auth.return_value = user
+        response = self.client.post(reverse('login'),
+                                    data=data,
+                                    Follow=True)
+        mock_auth.assert_called_once()
+        mock_auth.destroy()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['error_message'],
+                            "This account is banned.")
 
     def test_post_unsuccessful_login(self):
         '''Test POST with incorrect credentials'''
@@ -1371,62 +1326,125 @@ class TestLoginView(TestCase):
         self.assertTemplateUsed(response, 'registration/login.html')
 
 
+class TestGameManagement(TestCase):
+    '''Test for game_management view'''
+
+    def test_get_as_guest(self):
+        '''Test GET as guest, should redirect'''
+        response = self.client.get(reverse('game_management'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_as_non_staffuser(self):
+        '''Test GET as non-staffuser, should redirect'''
+        user = create_user(34234554)
+        self.client.force_login(user=user)
+        response = self.client.get(reverse('game_management'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_get_as_staffuser(self):
+        '''Test GET as staffuser, should load view'''
+        staff_user = create_user_staff(2137653)
+        self.client.force_login(user=staff_user)
+        response = self.client.get(reverse('game_management'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'staff/staff_game_management.html')
+
+    @patch('website.views.delete_game')
+    def test_post_delete_game(self, mock_delete):
+        '''Test POST as staffuser trying to delete game'''
+        data = {'game_delete_confirm': ''}
+        staff_user = create_user_staff(8465285)
+        self.client.force_login(user=staff_user)
+        response = self.client.post(reverse('game_management'), data=data)
+        mock_delete.assert_called_once()
+        mock_delete.destroy()
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_update_game(self):
+        '''Test POST as staffuser trying to update game'''
+        game = create_game(342343)
+        staff_user = create_user_staff(4353576)
+        self.client.force_login(user=staff_user)
+        data = {'id': game.id,
+                'name': 'NEW NAME',
+                'slug': game.slug,
+                'tags': game.tags,
+                'status': game.status}
+        files = {}
+        game = get_object_or_404(Game, pk=data["id"])
+        self.assertTrue(GameManageForm(data=data, files=files, instance=game))
+        response = self.client.post(reverse('game_management'),
+                                    data=data, files=files)
+        self.assertEqual(response.status_code, 200)
+
+    @patch('website.views.add_new_game')
+    def test_post_add_game(self, mock_func):
+        '''Test POST as staffuser trying to add game'''
+        data = {'id': ''}
+        staff_user = create_user_staff(63456)
+        self.client.force_login(user=staff_user)
+        response = self.client.post(reverse('game_management'), data=data)
+        mock_func.assert_called_once()
+        mock_func.destroy()
+        self.assertEqual(response.status_code, 200)
+
+
 class TestDeleteGame(TestCase):
     '''Test for delete_game function'''
 
-    def test_delete_game_with_image_successfully(self):
+    @patch('website.views.uploader.destroy')
+    def test_delete_game_with_image_successfully(self, mock_func):
         '''Test to delete game successfully'''
-        game = create_game(454545, image="image")
+        game = create_game(454545, True)
         data = {'game_delete_confirm': 'delete',
                 'itemID': game.id}
-        with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(data)
-            mock_destroy.assert_called()
-            mock_destroy.mock_destroy()
-            self.assertEqual(response.content,
+        response = delete_game(data)
+        mock_func.assert_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content,
                              b"Success - Game deleted.")
 
-    def test_delete_game_with_no_image_successfully(self):
+    @patch('website.views.uploader.destroy')
+    def test_delete_game_with_no_image_successfully(self, mock_func):
         '''Test to delete game successfully'''
-        game = create_game(2342534, image=None)
+        game = create_game(2342534)
         data = {'game_delete_confirm': 'delete',
                 'itemID': game.id}
-        with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(data)
-            mock_destroy.assert_not_called()
-            mock_destroy.mock_destroy()
-            self.assertEqual(response.content,
-                             b"Success - Game deleted.")
+        response = delete_game(data)
+        mock_func.assert_not_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content,
+                            b"Success - Game deleted.")
 
-    def test_delete_game_with_no_image_failed_phrase(self):
+    @patch('website.views.uploader.destroy')
+    def test_delete_game_with_no_image_failed_phrase(self, mock_func):
         '''Test to delete game failed due to incorrect phrase'''
-        game = create_game(2342534, image=None)
+        game = create_game(2342534)
         data = {'game_delete_confirm': '',  # Intentionally blank
                 'itemID': game.id}
-        with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(data)
-            mock_destroy.assert_not_called()
-            mock_destroy.mock_destroy()
-            self.assertEqual(response.content,
-                             b"Failed - No game deleted.")
+        response = delete_game(data)
+        mock_func.assert_not_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content,
+                            b"Failed - No game deleted.")
 
-    def test_delete_game_with_no_image_failed_no_id(self):
+    @patch('website.views.uploader.destroy')
+    def test_delete_game_with_no_image_failed_no_id(self, mock_func):
         '''Test to delete game failed due to no id'''
-        game = create_game(2342534, image=None)
         data = {'game_delete_confirm': 'delete',
                 'itemID': ''}  # Intentionally blank
-        with patch('cloudinary.uploader.destroy') as mock_destroy:
-            response = delete_game(data)
-            mock_destroy.assert_not_called()
-            mock_destroy.mock_destroy()
-            self.assertEqual(response.content,
-                             b"Failed - No game deleted.")
+        response = delete_game(data)
+        mock_func.assert_not_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content,
+                            b"Failed - No game deleted.")
 
 
 class TestNewGame(TestCase):
     '''Test for add_new_game function'''
 
-    def test_add_new_game_failed(self):
+    @patch('website.views.uploader.upload')
+    def test_add_new_game_failed(self, mock_func):
         '''Test to add new game with no image successfully'''
         tag1 = create_tag(3928489)
         data = {
@@ -1438,17 +1456,17 @@ class TestNewGame(TestCase):
             }
         form = MagicMock()
         form.data = {'url': 'FakeUrl'}
-        with patch('cloudinary.uploader.upload') as mock_upload:
-            mock_upload.return_value = {
-                'url': 'fakeURL',
-            }
-            response = add_new_game(data=data)
-            mock_upload.assert_not_called()
-            mock_upload.mock_destroy()
-            self.assertEqual(response.content,
-                             b"Failed to add new game.")
+        mock_func.return_value = {
+            'url': 'fakeURL',
+        }
+        response = add_new_game(data=data)
+        mock_func.assert_not_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content,
+                            b"Failed to add new game.")
 
-    def test_add_new_game_successfully_with_no_image(self):
+    @patch('website.views.uploader.upload')
+    def test_add_new_game_successfully_with_no_image(self, mock_func):
         '''Test to add new game with no image successfully'''
         tag1 = create_tag(3928489)
         data = {
@@ -1458,29 +1476,19 @@ class TestNewGame(TestCase):
             'image': None,
             'status': 1,
             }
-        with patch('cloudinary.uploader.upload') as mock_upload:
-            mock_upload.return_value = {
-                'url': 'fakeURL',
-            }
-            response = add_new_game(data=data)
-            mock_upload.assert_not_called()
-            mock_upload.mock_destroy()
-            self.assertEqual(response.content,
-                             b"New game added with no image.")
+        mock_func.return_value = {
+            'url': 'fakeURL',
+        }
+        response = add_new_game(data=data)
+        mock_func.assert_not_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content,
+                            b"New game added with no image.")
 
-    def test_add_new_game_successfully_with_image(self):
+    @patch('website.views.uploader.upload')
+    def test_add_new_game_successfully_with_image(self, mock_func):
         '''Test to add new game with image successfully'''
         tag1 = create_tag(3928489)
-        # Create fake image
-        image_data = BytesIO(b'')
-        image_file = InMemoryUploadedFile(
-                file=image_data,
-                field_name='image',
-                name='image.jpg',
-                content_type='image/jpeg',
-                size=image_data.getbuffer().nbytes,
-                charset=None
-            )
         data = {
             'name': 'Fake Game Name',
             'slug': 'fake-game-name',
@@ -1488,16 +1496,15 @@ class TestNewGame(TestCase):
             'status': 1,
             }
         files = {
-            'image': image_file,
+            'image': create_image_obj(),
         }
-        with patch('cloudinary.uploader.upload') as mock_upload:
-            mock_upload.return_value = {
-                'url': 'fakeURL',
-            }
-            response = add_new_game(data=data, files=files)
-            mock_upload.assert_called()
-            mock_upload.mock_destroy()
-            self.assertEqual(response.content, b"New game added with image.")
+        mock_func.return_value = {
+            'url': 'fakeURL',
+        }
+        response = add_new_game(data=data, files=files)
+        mock_func.assert_called()
+        mock_func.mock_destroy()
+        self.assertEqual(response.content, b"New game added with image.")
 
 
 class TestUpdateGame(TestCase):
@@ -1508,7 +1515,8 @@ class TestUpdateGame(TestCase):
         FAIL due to missing data'''
         tag1 = create_tag(4532343)
         game = create_game(34223234)
-        data = {'name': '',  # Name missing.
+        # name intentionally left blank
+        data = {'name': '',
                 'slug': 'fake-game-name',
                 'tags': [tag1],
                 'status': 1,
@@ -1516,70 +1524,67 @@ class TestUpdateGame(TestCase):
         response = update_game(data=data)
         self.assertEqual(response.content, b"Failed - Game not updated.")
 
-    def test_update_game_fail_no_game_instance_found_no_image(self):
-        '''Test to update game with no image.
-        FAIL due to no game id given'''
-        tag1 = create_tag(4532343)
+    # def test_update_game_fail_no_game_instance_found(self):
+    #     '''Test to update game with no image.
+    #     FAIL due to no game id given'''
+    #     data = {'id': 999999}  # No game id given.
+    #     response = update_game(data=data)
+    #     print(response)
+
+    @patch('website.views.uploader.upload')
+    def test_update_game_success_no_image(self, mock_func):
+        '''Test updating game when not updating image'''
+        tag1 = create_tag(78392479)
+        game = create_game(3343563)
+        data = {'name': 'Fake Game Name',
+                'slug': 'fake-game-name',
+                'tags': [tag1],
+                'status': 1,
+                'image': None,
+                'id': game.id}
+        mock_func.return_value = {'url': 'fakeURL'}
+        response = update_game(data=data, files=None)
+        mock_func.assert_not_called()
+        mock_func.mock_destroy()
+        game.refresh_from_db()
+        self.assertEqual(game.name, 'Fake Game Name')
+        self.assertEqual(response.content, b"Success - Game updated.")
+
+    @patch('website.views.uploader.upload')
+    @patch('website.views.uploader.destroy')
+    def test_update_game_success_replace_image(self, mock_destroy, mock_upload):
+        '''Test updating game when updating image'''
+        tag1 = create_tag(78392479)
+        game = create_game(3343563)
+        image = create_image_obj()
+        game.image = image
         data = {'name': 'Fame Game Name',
                 'slug': 'fake-game-name',
                 'tags': [tag1],
                 'status': 1,
-                'id': None}  # No game id given.
-        response = update_game(data=data)
-        self.assertEqual(response.content, b"404")
+                'image:': image,
+                'id': game.id}
+        files = {'image': image}
+        self.assertIsNotNone(game.image)
+        self.assertTrue(GameManageForm(data=data, instance=game).is_valid())
+        mock_upload.return_value = {'url': 'fakeURL'}
+        response = update_game(data=data, files=files)
+        mock_upload.assert_called()
+        mock_destroy.assert_called()
+        mock_upload.destroy()
+        mock_destroy.destroy()
+        game.refresh_from_db()
+        self.assertEqual(game.image.url, 'fakeURL')
+        self.assertEqual(response.content, b"Success - Game updated.")
 
-    def test_update_game_success_no_image(self):
-        '''Test updating game when not updating image'''
-        tag1 = create_tag(78392479)
-        game = create_game(3343563)
-        data = {
-            'name': 'Fame Game Name',
-            'slug': 'fake-game-name',
-            'tags': [tag1],
-            'status': 1,
-            'id': game.id}
-        with patch('cloudinary.uploader.upload') as mock_upload:
-            mock_upload.return_value = {
-                'url': 'fakeURL',
-            }
-            response = update_game(data=data, files=None)
-            mock_upload.assert_not_called()
-            mock_upload.mock_destroy()
-            self.assertEqual(response.content, b"Success - Game updated.")
-
-    def test_update_game_success_replace_image(self):
-        '''Test updating game when updating image'''
-        tag1 = create_tag(78392479)
-        image_file = create_image_obj()
-        game = create_game(3343563, image_file)
-        game.image.public_id = "Fake/Public/Id"
-        game.save()
-        data = {
-            'name': 'Fame Game Name',
-            'slug': 'fake-game-name',
-            'tags': [tag1],
-            'status': 1,
-            'id': game.id}
-        files = {'image': image_file}
-        with patch('cloudinary.uploader.destroy') as mock_destroy:
-            with patch('cloudinary.uploader.upload') as mock_upload:
-                mock_upload.return_value = {
-                    'url': 'fakeURL',
-                }
-                response = update_game(data=data, files=files)
-                mock_destroy.assert_called()
-                mock_upload.assert_called()
-                mock_upload.mock_destroy()
-                self.assertEqual(response.content, b"Success - Game updated.")
-
-    @patch("cloudinary.uploader.upload", autospec=True)
-    @patch("cloudinary.uploader.destroy", autospec=True)
+    @patch('website.views.uploader.upload')
+    @patch('website.views.uploader.destroy')
     def test_update_game_success_add_image(self, mock_destroy, mock_upload):
         '''Test updating game when adding image
         when no image already attached.'''
         tag1 = create_tag(342328934)
         image_file = create_image_obj()
-        game = create_game(5623234, None)
+        game = create_game(5623234)
         game.save()
         data = {
             'name': 'Fame Game Name',
@@ -1588,7 +1593,6 @@ class TestUpdateGame(TestCase):
             'status': 1,
             'id': game.id}
         files = {'image': image_file}
-
         mock_upload.return_value = {
             'url': 'fakeURL',
         }

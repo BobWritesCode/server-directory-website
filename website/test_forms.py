@@ -233,7 +233,7 @@ class TestConfirmAccountDeleteForm(TestCase):
 
     def setUp(self):
         self.form = ConfirmAccountDeleteForm({
-            'confirm': 'TestName',
+            'account_delete_confirm': 'TestName',
             'id': 1, })
 
     def check_form_valid(self):
@@ -242,7 +242,7 @@ class TestConfirmAccountDeleteForm(TestCase):
 
     def test_correct_field_types(self):
         '''Test all field types are correct in form'''
-        self.assertEqual(type(self.form.fields['confirm'])
+        self.assertEqual(type(self.form.fields['account_delete_confirm'])
                          .__name__, 'CharField')
 
     def test_using_correct_model(self):
@@ -255,26 +255,26 @@ class TestConfirmAccountDeleteForm(TestCase):
             'id', ])
 
     def test_confirm_max_length(self):
-        '''Test max_length of confirm'''
-        self.form.data['confirm'] = (
-            'a' * self.form.fields['confirm'].max_length)
+        '''Test max_length of account_delete_confirm'''
+        self.form.data['account_delete_confirm'] = (
+            'a' * self.form.fields['account_delete_confirm'].max_length)
         self.assertLessEqual(
-            len(self.form.data['confirm']),
-            self.form.fields['confirm'].max_length
+            len(self.form.data['account_delete_confirm']),
+            self.form.fields['account_delete_confirm'].max_length
             )
-        self.form.data['confirm'] += 'a'
+        self.form.data['account_delete_confirm'] += 'a'
         self.assertGreater(
-            len(self.form.data['confirm']),
-            self.form.fields['confirm'].max_length
+            len(self.form.data['account_delete_confirm']),
+            self.form.fields['account_delete_confirm'].max_length
             )
 
     def test_confirm_is_required(self):
-        '''Test confirm is required'''
-        self.form.data['confirm'] = ''
+        '''Test account_delete_confirm is required'''
+        self.form.data['account_delete_confirm'] = ''
         self.assertFalse(self.form.is_valid())
-        self.assertIn('confirm', self.form.errors.keys())
+        self.assertIn('account_delete_confirm', self.form.errors.keys())
         self.assertEqual(
-            self.form.errors['confirm'][0],
+            self.form.errors['account_delete_confirm'][0],
             ('To confirm deletion please type "<strong>remove</strong>" '
              'in the below box and then hit confirm'))
 
@@ -1009,7 +1009,7 @@ class TestTagsManageForm(TestCase):
         self.assertIn('name', self.form.errors.keys())
         self.assertEqual(
             self.form.errors['name'][0], (
-                'Required.'
+                'Required. (Puma)'
                 )
         )
 
