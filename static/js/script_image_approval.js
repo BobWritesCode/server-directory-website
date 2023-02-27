@@ -74,7 +74,4 @@ window.addEventListener('DOMContentLoaded', () => {
   btnBan.on('click', () => {
     UserBanConfirm();
   });
-  btnNext.on('click', () => {
-    action('image_approval_next');
-  });
 });
