@@ -1609,7 +1609,9 @@ def delete_user(request: object, form: object):
         item_id = form.data["id"]
         # Get user object
         user = get_object_or_404(CustomUser, id=item_id)
-        if user.is_superuser and not request.user.is_superuser:
+        # If target user is not super user
+        # or if request user is super user
+        if not user.is_superuser or request.user.is_superuser:
             # Delete user from database
             user.delete()
 
