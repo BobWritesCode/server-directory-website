@@ -1093,7 +1093,7 @@ def login_view(request: object):
     Login-view and process login.
 
     Args:
-        request (object): GET/POST request from user..
+        request (object): GET/POST request from user.
 
     Returns:
         render(): Loads html page.
