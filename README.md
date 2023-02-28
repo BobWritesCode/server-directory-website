@@ -455,7 +455,7 @@ Depending on if the user is flagged as a staff member will determine if they can
             <strong>Hi {{ user.username }}!</strong>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-light" href="{% url 'my-account' %}">My Account</a>
+            <a class="nav-link text-light" href="{% url 'my_account' %}">My Account</a>
         </li>
         <!-- Here we check to see if the requesting user is a staff member -->
         {% if user.is_staff %}
@@ -519,7 +519,7 @@ In the end it produces exactly what I needed to do, and this code was completely
 # building tag string in the url. I removed other parts of this method not
 # to the tag filtering.
 
-def server_listings(request: object, slug: str, tag_string: str = ""):
+def listings_view(request: object, slug: str, tag_string: str = ""):
 
     # Get only the tags linked to a game.
     game = get_object_or_404(Game, slug=slug)
@@ -573,8 +573,22 @@ def server_listings(request: object, slug: str, tag_string: str = ""):
         # Get all available tags for game selected
         tags = game.tags.all().order_by('name')
 
-    # We can now render the page and provide tags, selected_tags and
-    # tag_string as context.
+    # Now now longer required to to stay a queryset, convert to list
+    # and reorder by bump count.
+    listings = sorted(listings.all(), key=lambda a: a.bump_counter(),
+                      reverse=True)
+
+    return render(
+        request,
+        "listings.html",
+        {
+            "listings": listings,
+            "selected_tags": selected_tags,
+            "tags": tags,
+            "tag_string": tag_string,
+            "slug": slug,
+        },
+    )
 ```
 
 [🔝](#table-of-contents)
@@ -706,30 +720,31 @@ Once the user has successfully input their sign-up details, they will be directe
 
 ```py
 # views.py
+@require_POST
 def send_email_verification(request: object, user: object):
     '''
     Send email address verification to user.
+
+    Decorators:
+        @require_POST: Allow POST only.
 
     Parameters:
         request (object): GET/POST request from user.
         user (object): Target user model object.
     '''
     current_site = get_current_site(request)
-    mail_subject = 'Verify your email address.'
     message = render_to_string('email_templates/verify_email_address.html', {
         'user': user,
         'domain': current_site.domain,
+        'protocol': 'https' if request.is_secure() else 'http',
         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-        'token': default_token_generator.make_token(user),
-    })
-
+        'token': default_token_generator.make_token(user)})
     # Send email to user.
-    send_mail(
-        subject=mail_subject,
+    mail.send_mail(
+        subject='Verify your email address.',
         message=message,
         from_email='contact@warwickhart.com',
-        recipient_list=[user.email]
-    )
+        recipient_list=[user.email])
 ```
 
 To make sure your emails send you need to make sure you set up the following settings correctly in your settings.py.
@@ -738,6 +753,7 @@ To make sure your emails send you need to make sure you set up the following set
 # settings.py
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 MAILER_EMAIL_BACKEND = EMAIL_BACKEND
+DEFAULT_FROM_EMAIL = 'youremail@yourcompany.com'
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USE_SSL = True
@@ -751,13 +767,13 @@ The user will receive an email notification, you can personalise the email using
 {% autoescape off %}
 Hi {{ user.username }},
 
-Please click on the link to confirm your registration,
+Please click on the link below to verify your email address. If you cannot click the link, you can copy and paste it into your browser's URL bar.
 
-https://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{{protocol}}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
 
 If you think, it's not you, then just ignore this email.
 
-Kind regards
+Kind regards,
 The Gamer's-verse team
 
 {% endautoescape %}
@@ -800,7 +816,7 @@ def login_view(request: object):
     Login-view and process login.
 
     Args:
-        request (object): GET/POST request from user..
+        request (object): GET/POST request from user.
 
     Returns:
         render(): Loads html page.
@@ -808,21 +824,20 @@ def login_view(request: object):
     error_message = None
 
     # If user already logged in, just direct them to My Account page.
-    if request.user:
-        return redirect("my-account")
+    if request.user.is_authenticated:
+        return redirect("my_account")
 
     if request.method == 'POST':
         # Get from request user input.
         email = request.POST['email']
         password = request.POST['password']
         # Check credentials are found and a match.
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(email=email, password=password)
         if user is None:
             # ERROR: User not found, or password mismatch.
             error_message = (
                 "Either user does not exist or password does not "
-                "match account."
-            )
+                "match account.")
         else:
             # Check if user is banned.
             if user.is_banned:
@@ -832,15 +847,13 @@ def login_view(request: object):
             # All being okay, log user in.
             else:
                 login(request, user)
-                return redirect("my-account")
-
-    form = LoginForm()
+                return redirect("my_account")
 
     return render(
         request,
         "registration/login.html",
         {
-            "form": form,
+            "form": LoginForm(),
             "error_message": error_message,
         },
     )
@@ -1174,8 +1187,8 @@ Every image to be reviewed will has 4 options:
     image_count = Images.objects.filter(query).count()
     # If no image is currently waiting be approved,
     # then handle request.
-    if image_count > 0:
-        return redirect('staff_image_review')
+    if image_count == 0:
+        return redirect('staff_account')
     else:
         return redirect('staff_account')
     ```
@@ -1321,6 +1334,8 @@ Pressing the same button on the control panel on a banned user will unban them.
 ![Ban modal](./README_Images/feat_ban_modal.png)
 
 ```py
+@staff_member_required
+@login_required
 def ban_user(request: object, _id: int):
     """
     Bans user and prevents user login, rejects all images for deletion,
@@ -1337,10 +1352,9 @@ def ban_user(request: object, _id: int):
     # Get target user.
     user = get_object_or_404(CustomUser, pk=_id)
 
-    # Delete all current user sessions (in case logged in on multiple devices)
-    for session in Session.objects.all():
-        if session.get_decoded().get('_auth_user_id') == user.pk:
-            session.delete()
+    # Delete all current user active sessions.
+    Session.objects.filter(expire_date__gte=timezone.now(),
+                           session_key__contains=user.pk).delete()
 
     # Flag user as banned.
     user.is_banned = True
@@ -1375,8 +1389,7 @@ if "email-verify" in request.POST:
     # Send email verification to the user
     send_email_verification(request, user)
     return redirect(
-        "staff_user_management_user", _id=request.POST['id']
-        )
+        "staff_user_management_user", _id=request.POST['id'])
 ```
 
 [🔝](#table-of-contents)
@@ -1651,15 +1664,15 @@ In `apps.py` we need to add this code block app class, like so:
 # apps.py
 # This should already be there.
 class WebsiteConfig(AppConfig):
+    '''Some default app settings and initialises cron jobs.'''
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'website'
 
-        # Add this.
-        def ready(self):
-            from website import updater
-            updater.start()
-            from website import jobs
-            jobs.daily_jobs()
+    def ready(self):
+        from website import updater
+        from website import jobs
+        updater.start()
+        jobs.daily_jobs()
 ```
 
 This initiates the methods.
@@ -1732,6 +1745,7 @@ def clear_bumps():
     """
     print('clear_bumps(): Starting automated task.')
     # Get bumps that have expired
+    # __lte means 'less than or, equal to', this is used oppose to '<='>
     query = Q(expiry__lte=datetime.now())
     queryset = Bumps.objects.filter(query)
     print(f'clear_bumps(): Deleting {len(queryset)} bump(s).')
@@ -1906,19 +1920,20 @@ One simple way images could build up are as images get replaced, and the storage
 ```py
 # If game image already exists, delete from server and replace with
 # new image.
-if game.image is not None and request.FILES:
+if game.image is not None and files:
     # Delete old image from Cloudinary server
     uploader.destroy(game.image.public_id)
-
     # Get public ID
     txt = game.image.public_id
     public_id = txt.rsplit("/", 1)[1]
     # Upload new image
     new_image = uploader.upload(
-        request.FILES["image"],
+        files["image"],
         public_id=public_id,
         overwrite=True,
-        folder="server_directory/"
+        folder="server_directory/",
+        allowed_formats=['jpg', 'png', 'jpeg'],
+        format='jpg'
     )
     # Save new url to game object
     game.image = new_image["url"]
@@ -2026,11 +2041,7 @@ Then in your `forms.py`, any field you wish to have tinyMCE as the widget you ju
 
 ```py
 short_description = forms.CharField(
-    label="Short description: (min: 100, max: 200 characters)",
-    min_length=100,
-    max_length=200,
-    widget=TinyMCE(attrs={'cols': 80, 'rows': 2}),
-    required=True,
+    widget=TinyMCE(attrs={'cols': 80, 'rows': 2})
 )
 ```
 
