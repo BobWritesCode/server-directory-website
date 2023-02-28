@@ -24,6 +24,13 @@ $(document).ready(() => {
   $("<p class='mb-0 me-1 align-self-center'>www.tiktok.com/@</p>").insertBefore(
     'input[name="tiktok"]',
   );
+  $('#div_id_short_description')
+    .removeClass('mb-3')
+    .addClass('mb-0')
+    .addClass('mt-3');
+  $('#div_id_long_description')
+    .removeClass('mb-3')
+    .addClass('mb-0');
 });
 
 /**
@@ -111,6 +118,16 @@ function validateForm() {
   }
 }
 
+// Returns text statistics for the specified editor by id
+function getStats(id) {
+  const body = tinyMCE.get(id).getBody();
+  const text = tinyMCE.trim(body.innerText || body.textContent);
+  return {
+    chars: text.length,
+    words: text.split(/[\w\u2019\\'-]+/).length,
+  };
+}
+
 /**
  * Submits form via Post
  */
@@ -192,4 +209,9 @@ window.addEventListener('DOMContentLoaded', () => {
         .prop('disabled', false);
     }
   });
+});
+
+window.addEventListener('keyup', () => {
+  $('#short_des_count').text(getStats('id_short_description').chars);
+  $('#long_des_count').text(getStats('id_long_description').chars);
 });
