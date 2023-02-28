@@ -2379,11 +2379,11 @@ When a bug is identified a user can raise an issue in GitHub to flag it. The use
 
 ### Unresolved
 
-[Link to unresolved bugs](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+[Link to unresolved bugs](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+label%3Abug+is%3Aopen)
 
 ### Resolved
 
-[Link to resolved bugs](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+is%3Aclose+label%3Abug)
+[Link to resolved bugs](https://github.com/BobWritesCode/server-directory-website/issues?q=is%3Aissue+label%3Abug+is%3Aclosed)
 
 [🔝](#table-of-contents)
 
