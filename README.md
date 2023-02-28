@@ -10,6 +10,8 @@ Django, Python, JavaScript, BootStrap, CSS and HTML.
 **Also including**:\
 Cloudinary, Select2 and tinyMCE.
 
+![Showcase of site on different screen sizes](README_Images/showcase.png)
+
 ## Live site
 
 [Hosted on Heroku](https://server-directory-website.herokuapp.com/)
