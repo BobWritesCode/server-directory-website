@@ -44,6 +44,7 @@ def clear_bumps():
     """
     print('clear_bumps(): Starting automated task.')
     # Get bumps that have expired
+    # __lte means 'less than or, equal to', this is used oppose to '<='>
     query = Q(expiry__lte=datetime.now())
     queryset = Bumps.objects.filter(query)
     print(f'clear_bumps(): Deleting {len(queryset)} bump(s).')
