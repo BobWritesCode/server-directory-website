@@ -1571,19 +1571,30 @@ Using the [Select2](#select2) dropdown at the top of the page, you can either se
 
 ### Features left to implement
 
+All items link to their GitHub issue.
+
 **Site owner change:**
 
-- When long until bumps expire.
-- How many bumps a user can have active at a time.
-- Change the number of listings a person can list at once.
+- [Set how long until bumps expire](https://github.com/BobWritesCode/server-directory-website/issues/68).
+- [How many bumps a user can have active at a time](https://github.com/BobWritesCode/server-directory-website/issues/69).
+- [Change the number of listings a person can list at once](https://github.com/BobWritesCode/server-directory-website/issues/70).
 
 **Staff:**
 
-- Be able to review already approved images via image ID.
+- [Manage live image button for staff](https://github.com/BobWritesCode/server-directory-website/issues/71).
+- [Provide an image rejection reason](https://github.com/BobWritesCode/server-directory-website/issues/52).
 
 **UX:**
 
-- Add success messages when data is updated.
+- [Auto Archive Server Listing](https://github.com/BobWritesCode/server-directory-website/issues/28).
+- [Have a search bar function](https://github.com/BobWritesCode/server-directory-website/issues/2).
+- [Feature listings](https://github.com/BobWritesCode/server-directory-website/issues/9).
+- [User request email verification button](https://github.com/BobWritesCode/server-directory-website/issues/66).
+
+**Backend:**
+
+- [On account deletion, delete images from Cloudinary](https://github.com/BobWritesCode/server-directory-website/issues/59).
+- [Saving duplicate tag name, get message instead or page reload](https://github.com/BobWritesCode/server-directory-website/issues/67)
 
 ---
 
