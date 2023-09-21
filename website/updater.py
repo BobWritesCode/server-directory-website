@@ -12,5 +12,6 @@ def start():
     """ Run when project starts """
     scheduler = BackgroundScheduler()
     # add_job() Runs at midnight every night.
-    scheduler.add_job(daily_jobs, 'cron', hour='0')
+    # Uncomment to enable
+    # scheduler.add_job(daily_jobs, 'cron', hour='0')
     scheduler.start()
